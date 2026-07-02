@@ -574,11 +574,9 @@ function openLeaderboard() {
   let leaderboard = JSON.parse(localStorage.getItem("paud_leaderboard")) || [];
 
   if (leaderboard.length === 0) {
-    leaderboard = [
-      { name: childName, score: starPoints },
-      { name: "Celsi", score: 1120 },
-      { name: "Rafa", score: 980 },
-      { name: "Siti", score: 850 },
+    let leaderboardData = [
+      { name: "-", stars: 0 },
+      { name: "-", stars: 0 },
     ];
     localStorage.setItem("paud_leaderboard", JSON.stringify(leaderboard));
   }
