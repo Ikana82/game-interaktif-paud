@@ -1,18 +1,6 @@
 // ==========================================
 // 1. STATE & GLOBAL CONFIGURATIONS
 // ==========================================
-window.addEventListener("DOMContentLoaded", () => {
-  // Memeriksa apakah halaman sudah di-refresh di sesi ini
-  if (!sessionStorage.getItem("isFirstRefreshDone")) {
-    // Tandai bahwa refresh pertama sudah dilakukan
-    sessionStorage.setItem("isFirstRefreshDone", "true");
-    // Jalankan perintah reload / refresh
-    window.location.reload();
-  } else {
-    // Jika ingin tandanya hilang saat tab ditutup, biarkan seperti ini.
-    // Jika ingin reset lagi di kunjungan berikutnya, sessionStorage otomatis hapus saat tab ditutup.
-  }
-});
 
 let childName = "Buddy";
 let starPoints = 1250;
@@ -293,9 +281,6 @@ function makeConfettiBurst() {
   runConfettiLoop();
 }
 
-// ==========================================
-// 4. CORE APP FUNCTIONS & LOGIC
-// ==========================================
 function runConfettiLoop() {
   if (!isCelebrating) return;
   ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
@@ -324,6 +309,9 @@ function runConfettiLoop() {
   }
 }
 
+// ==========================================
+// 4. CORE APP FUNCTIONS & LOGIC
+// ==========================================
 function initAppStorage() {
   const cachedMuteState = localStorage.getItem("paud_audio_mute");
   if (cachedMuteState !== null) {
@@ -331,14 +319,19 @@ function initAppStorage() {
   }
   refreshAudioIconUI();
 
-  const cachedName = localStorage.getItem("paud_user_name");
-  const cachedStars = localStorage.getItem("paud_star_points");
+  // 1. GANTI localStorage menjadi sessionStorage khusus untuk NAMA
+  const cachedName = sessionStorage.getItem("paud_user_name");
+  const cachedStars = localStorage.getItem("paud_star_points"); // Skor bintang tetap permanen di HP
 
-  if (cachedName) {
+  if (cachedName && cachedName.trim() !== "" && cachedName !== "undefined") {
     childName = cachedName;
     document.getElementById("display-username").innerText = childName;
     document.getElementById("screen-splash").classList.add("hidden");
     document.getElementById("screen-dashboard").classList.remove("hidden");
+  } else {
+    // Jika tidak ada nama di sesi ini, paksa tampilkan halaman ketik nama
+    document.getElementById("screen-splash").classList.remove("hidden");
+    document.getElementById("screen-dashboard").classList.add("hidden");
   }
 
   if (cachedStars) {
@@ -346,6 +339,33 @@ function initAppStorage() {
     document.getElementById("display-stars").innerText = starPoints;
     document.getElementById("gameplay-score-count").innerText = starPoints;
   }
+}
+
+function handleLogin() {
+  const inputVal = document.getElementById("username-input").value.trim();
+  if (!inputVal) {
+    showCustomAlert(
+      "👦👧",
+      "Tulis Namamu Sayang!",
+      "Ayo ketik namamu dulu di kotak agar kita bisa bermain bersama ya!",
+    );
+    return;
+  }
+
+  childName = inputVal;
+
+  // 2. GANTI JUGA DI SINI: Simpan nama di sessionStorage agar hilang saat refresh
+  sessionStorage.setItem("paud_user_name", childName);
+
+  document.getElementById("display-username").innerText = childName;
+
+  saveToLeaderboard(childName, starPoints);
+
+  playChime("victory");
+  makeConfettiBurst();
+
+  document.getElementById("screen-splash").classList.add("hidden");
+  document.getElementById("screen-dashboard").classList.remove("hidden");
 }
 
 function showCustomAlert(emoji, title, body) {
@@ -387,6 +407,9 @@ function handleLogin() {
   localStorage.setItem("paud_user_name", childName);
   document.getElementById("display-username").innerText = childName;
 
+  // Daftarkan nama baru ke leaderboard dengan skor awal jika belum ada
+  saveToLeaderboard(childName, starPoints);
+
   playChime("victory");
   makeConfettiBurst();
 
@@ -411,6 +434,9 @@ function openBonusModal() {
   document.getElementById("gameplay-score-count").innerText = starPoints;
   localStorage.setItem("paud_star_points", starPoints);
 
+  // Real-time update skor di leaderboard
+  saveToLeaderboard(childName, starPoints);
+
   showCustomAlert(
     "🎁🎉",
     "Kejutan Bintang!",
@@ -427,10 +453,10 @@ function startPlayableSpellingGame() {
   solvedThisSession = [];
 
   document.getElementById("solved-collection-history").innerHTML = `
-        <div id="no-history-banner" class="w-full text-center py-4 text-slate-400 font-bold text-xs">
-            Selesaikan tebakan untuk koleksi mainan! 🎁
-        </div>
-    `;
+    <div id="no-history-banner" class="w-full text-center py-4 text-slate-400 font-bold text-xs">
+        Selesaikan tebakan untuk koleksi mainan! 🎁
+    </div>
+  `;
 
   document.getElementById("gameplay-score-count").innerText = starPoints;
   renderSpellingLevel();
@@ -440,6 +466,7 @@ function exitSpellingGame() {
   playChime("tap");
   localStorage.setItem("paud_star_points", starPoints);
   document.getElementById("display-stars").innerText = starPoints;
+  saveToLeaderboard(childName, starPoints);
 
   document.getElementById("screen-gameplay").classList.add("hidden");
   document.getElementById("screen-dashboard").classList.remove("hidden");
@@ -506,6 +533,7 @@ function checkSelectedOption(selectedLetter, correctLetter) {
     starPoints += 10;
     document.getElementById("gameplay-score-count").innerText = starPoints;
     localStorage.setItem("paud_star_points", starPoints);
+    saveToLeaderboard(childName, starPoints);
     addSolvedToHistory(currentData);
 
     setTimeout(() => {
@@ -572,7 +600,7 @@ function saveToLeaderboard(name, score) {
   }
 
   leaderboard.sort((a, b) => b.score - a.score);
-  leaderboard = leaderboard.slice(0, 5);
+  leaderboard = leaderboard.slice(0, 5); // Hanya simpan top 5 anak hebat
   localStorage.setItem("paud_leaderboard", JSON.stringify(leaderboard));
 }
 
@@ -586,12 +614,10 @@ function openLeaderboard() {
 
   let leaderboard = JSON.parse(localStorage.getItem("paud_leaderboard")) || [];
 
+  // Jika data kosong, tampilkan baris informasi ramah alih-alih merusak sort data
   if (leaderboard.length === 0) {
-    let leaderboardData = [
-      { name: "-", stars: 0 },
-      { name: "-", stars: 0 },
-    ];
-    localStorage.setItem("paud_leaderboard", JSON.stringify(leaderboard));
+    body.innerHTML = `<div class="text-center py-4 text-slate-400 font-bold text-sm">Belum ada anak pintar yang masuk papan peringkat. Yuk jadilah yang pertama! 🏆</div>`;
+    return;
   }
 
   leaderboard.sort((a, b) => b.score - a.score);
@@ -600,7 +626,7 @@ function openLeaderboard() {
   leaderboard.forEach((user, index) => {
     const row = document.createElement("div");
     row.className =
-      "flex justify-between items-center py-3 text-slate-700 font-bold";
+      "flex justify-between items-center py-3 text-slate-700 font-bold border-b border-amber-100/50 last:border-none";
     row.innerHTML = `
             <div class="flex items-center gap-3">
                 <span class="text-xl">${medalList[index] || "⭐️"}</span>
@@ -624,32 +650,3 @@ function closeLeaderboard() {
 window.onload = function () {
   initAppStorage();
 };
-
-function initAppStorage() {
-  const cachedMuteState = localStorage.getItem("paud_audio_mute");
-  if (cachedMuteState !== null) {
-    isAudioMuted = JSON.parse(cachedMuteState);
-  }
-  refreshAudioIconUI();
-
-  const cachedName = localStorage.getItem("paud_user_name");
-  const cachedStars = localStorage.getItem("paud_star_points");
-
-  // PERBAIKAN: Pastikan cachedName ada, bukan null, dan bukan teks kosong/spasi
-  if (cachedName && cachedName.trim() !== "" && cachedName !== "undefined") {
-    childName = cachedName;
-    document.getElementById("display-username").innerText = childName;
-    document.getElementById("screen-splash").classList.add("hidden");
-    document.getElementById("screen-dashboard").classList.remove("hidden");
-  } else {
-    // Jika tidak ada nama yang valid, paksa tumpuk ke halaman splash
-    document.getElementById("screen-splash").classList.remove("hidden");
-    document.getElementById("screen-dashboard").classList.add("hidden");
-  }
-
-  if (cachedStars) {
-    starPoints = parseInt(cachedStars);
-    document.getElementById("display-stars").innerText = starPoints;
-    document.getElementById("gameplay-score-count").innerText = starPoints;
-  }
-}
