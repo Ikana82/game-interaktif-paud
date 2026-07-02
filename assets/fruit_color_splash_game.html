@@ -1,739 +1,1035 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Fruit Color Splash - Matching Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f0fdfa;
-            background-image: 
-                radial-gradient(#ccfbf1 2px, transparent 2px), 
-                radial-gradient(#ccfbf1 2px, #f0fdfa 2px);
-            background-size: 32px 32px;
-            background-position: 0 0, 16px 16px;
-            overflow: hidden;
-            touch-action: none;
-            height: 100vh;
-            height: 100dvh;
-        }
-        .kids-title {
-            font-family: 'Fredoka One', cursive;
-            text-shadow: 3px 3px 0px #1e293b;
-        }
-        .kids-font {
-            font-family: 'Fredoka One', cursive;
-        }
-        .3d-shadow-orange {
-            box-shadow: 0 6px 0px 0px #ea580c;
-        }
-        .btn-3d {
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-        .btn-3d:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0px 0px currentColor;
-        }
-        /* Blender Glass Jar Liquid Effects */
-        .liquid-wave {
-            position: relative;
-            overflow: hidden;
-        }
-        .liquid-wave::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: -50%;
-            width: 200%;
-            height: 100%;
-            background: inherit;
-            border-radius: 38% 42% 40% 45%;
-            animation: waveRotate 4s infinite linear;
-            opacity: 0.8;
-            transform-origin: 50% 48%;
-        }
-        @keyframes waveRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        /* Animations */
-        .bounce-in {
-            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        }
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            50% { transform: scale(1.1); }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .shake-element {
-            animation: shake 0.5s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px) rotate(-3deg); }
-            40%, 80% { transform: translateX(10px) rotate(3deg); }
-        }
-        .float-bubble {
-            animation: floating 3s ease-in-out infinite alternate;
-        }
-        @keyframes floating {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-12px) rotate(3deg); }
-        }
-        .conveyor-slide {
-            animation: slideLeft 20s linear infinite;
-        }
-        @keyframes slideLeft {
-            0% { background-position: 0 0; }
-            100% { background-position: -120px 0; }
-        }
-    </style>
-</head>
-<body class="w-screen flex flex-col justify-between relative overflow-hidden py-3.5 px-3 sm:p-4">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=700;800;900&family=Fredoka+One&display=swap"
+      rel="stylesheet"
+    />
 
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f0fdfa;
+        background-image:
+          radial-gradient(#ccfbf1 2px, transparent 2px),
+          radial-gradient(#ccfbf1 2px, #f0fdfa 2px);
+        background-size: 32px 32px;
+        background-position:
+          0 0,
+          16px 16px;
+        overflow: hidden;
+        touch-action: none;
+        height: 100vh;
+        height: 100dvh;
+      }
+      .kids-title {
+        font-family: "Fredoka One", cursive;
+        text-shadow: 3px 3px 0px #1e293b;
+      }
+      .kids-font {
+        font-family: "Fredoka One", cursive;
+      }
+
+      .btn-3d {
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.1s ease;
+      }
+      .btn-3d:active {
+        transform: translateY(4px);
+        box-shadow: 0 2px 0px 0px currentColor;
+      }
+      /* Blender Glass Jar Liquid Effects */
+      .liquid-wave {
+        position: relative;
+        overflow: hidden;
+      }
+      .liquid-wave::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -50%;
+        width: 200%;
+        height: 100%;
+        background: inherit;
+        border-radius: 38% 42% 40% 45%;
+        animation: waveRotate 4s infinite linear;
+        opacity: 0.8;
+        transform-origin: 50% 48%;
+      }
+      @keyframes waveRotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      /* Animations */
+      .bounce-in {
+        animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      }
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.3);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .shake-element {
+        animation: shake 0.5s ease-in-out;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20%,
+        60% {
+          transform: translateX(-10px) rotate(-3deg);
+        }
+        40%,
+        80% {
+          transform: translateX(10px) rotate(3deg);
+        }
+      }
+      .float-bubble {
+        animation: floating 3s ease-in-out infinite alternate;
+      }
+      @keyframes floating {
+        0% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-12px) rotate(3deg);
+        }
+      }
+      .conveyor-slide {
+        animation: slideLeft 20s linear infinite;
+      }
+      @keyframes slideLeft {
+        0% {
+          background-position: 0 0;
+        }
+        100% {
+          background-position: -120px 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="w-screen flex flex-col justify-between relative overflow-hidden py-3.5 px-3 sm:p-4"
+  >
     <!-- Canvas Layer for Juice Splashes and Particle Bursts -->
-    <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></canvas>
+    <canvas
+      id="particle-canvas"
+      class="absolute inset-0 w-full h-full pointer-events-none z-30"
+    ></canvas>
 
     <!-- START SCREEN -->
-    <div id="screen-start" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-teal-50/95 backdrop-blur-sm transition-all duration-500">
-        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-teal-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
-            <!-- Decorative Floating Fruits -->
-            <div class="absolute -top-8 -left-5 text-3xl sm:text-5xl float-bubble" style="animation-delay: 0.2s">🍓</div>
-            <div class="absolute -top-8 -right-5 text-3xl sm:text-5xl float-bubble" style="animation-delay: 0.8s">🍍</div>
-            <div class="absolute -bottom-6 -left-3 text-3xl sm:text-5xl float-bubble" style="animation-delay: 1.5s">🍏</div>
-            <div class="absolute -bottom-6 -right-3 text-3xl sm:text-5xl float-bubble" style="animation-delay: 2s">🍇</div>
-            
-            <h1 class="text-2xl sm:text-4xl font-black text-teal-600 kids-title tracking-wider mb-0.5">FRUIT COLOR</h1>
-            <h2 class="text-xl sm:text-3xl font-black text-amber-500 kids-title tracking-wider mb-2 sm:mb-4">SPLASH! 💦</h2>
-            
-            <p class="text-teal-800 text-xs sm:text-sm font-bold mb-3 sm:mb-4">Pilah buah-buahan lezat ke dalam blender warna yang cocok!</p>
-
-            <!-- Name Input Card -->
-            <div class="bg-teal-50 border-2 border-teal-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 mb-3 sm:mb-4 shadow-inner">
-                <label class="block text-teal-900 font-extrabold text-xs sm:text-base mb-1 kids-font">Siapa namamu, Koki Cilik?</label>
-                <input type="text" id="player-name" placeholder="TULIS NAMAMU..." maxlength="12"
-                       class="w-full text-center text-sm sm:text-lg font-bold bg-white border-2 border-teal-300 rounded-lg sm:rounded-xl py-1 sm:py-1.5 px-3 focus:outline-none focus:border-amber-400 text-teal-950 placeholder-teal-300 uppercase transition-colors">
-            </div>
-
-            <!-- Choose Character/Avatar -->
-            <div class="mb-3 sm:mb-4">
-                <p class="text-teal-950 font-black text-xs sm:text-sm mb-1.5 kids-font">Pilih Koki Favoritmu:</p>
-                <div class="flex justify-center gap-2 sm:gap-3">
-                    <button onclick="selectAvatar('🐱')" id="avatar-cat" class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md ring-4 ring-transparent ring-teal-500">🐱</button>
-                    <button onclick="selectAvatar('🦊')" id="avatar-fox" class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🦊</button>
-                    <button onclick="selectAvatar('🐼')" id="avatar-panda" class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🐼</button>
-                    <button onclick="selectAvatar('🦁')" id="avatar-lion" class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🦁</button>
-                </div>
-            </div>
-
-            <!-- Start Button -->
-            <button onclick="startGame()" class="btn-3d w-full bg-amber-500 text-white text-base sm:text-xl kids-font py-2.5 sm:py-3 px-6 rounded-xl sm:rounded-2xl border-2 border-amber-600 3d-shadow-orange hover:bg-amber-400 tracking-wider">
-                MULAI BIKIN JUS! 🍹
-            </button>
+    <div
+      id="screen-start"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-teal-50/95 backdrop-blur-sm transition-all duration-500"
+    >
+      <div
+        class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-teal-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative"
+      >
+        <!-- Decorative Floating Fruits -->
+        <div
+          class="absolute -top-8 -left-5 text-3xl sm:text-5xl float-bubble"
+          style="animation-delay: 0.2s"
+        >
+          🍓
         </div>
+        <div
+          class="absolute -top-8 -right-5 text-3xl sm:text-5xl float-bubble"
+          style="animation-delay: 0.8s"
+        >
+          🍍
+        </div>
+        <div
+          class="absolute -bottom-6 -left-3 text-3xl sm:text-5xl float-bubble"
+          style="animation-delay: 1.5s"
+        >
+          🍏
+        </div>
+        <div
+          class="absolute -bottom-6 -right-3 text-3xl sm:text-5xl float-bubble"
+          style="animation-delay: 2s"
+        >
+          🍇
+        </div>
+
+        <h1
+          class="text-2xl sm:text-4xl font-black text-teal-600 kids-title tracking-wider mb-0.5"
+        >
+          FRUIT COLOR
+        </h1>
+        <h2
+          class="text-xl sm:text-3xl font-black text-amber-500 kids-title tracking-wider mb-2 sm:mb-4"
+        >
+          SPLASH! 💦
+        </h2>
+
+        <p class="text-teal-800 text-xs sm:text-sm font-bold mb-3 sm:mb-4">
+          Pilah buah-buahan lezat ke dalam blender warna yang cocok!
+        </p>
+
+        <!-- Name Input Card -->
+        <div
+          class="bg-teal-50 border-2 border-teal-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 mb-3 sm:mb-4 shadow-inner"
+        >
+          <label
+            class="block text-teal-900 font-extrabold text-xs sm:text-base mb-1 kids-font"
+            >Siapa namamu, Koki Cilik?</label
+          >
+          <input
+            type="text"
+            id="player-name"
+            placeholder="TULIS NAMAMU..."
+            maxlength="12"
+            class="w-full text-center text-sm sm:text-lg font-bold bg-white border-2 border-teal-300 rounded-lg sm:rounded-xl py-1 sm:py-1.5 px-3 focus:outline-none focus:border-amber-400 text-teal-950 placeholder-teal-300 uppercase transition-colors"
+          />
+        </div>
+
+        <!-- Choose Character/Avatar -->
+        <div class="mb-3 sm:mb-4">
+          <p
+            class="text-teal-950 font-black text-xs sm:text-sm mb-1.5 kids-font"
+          >
+            Pilih Koki Favoritmu:
+          </p>
+          <div class="flex justify-center gap-2 sm:gap-3">
+            <button
+              onclick="selectAvatar('🐱')"
+              id="avatar-cat"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md ring-4 ring-transparent ring-teal-500"
+            >
+              🐱
+            </button>
+            <button
+              onclick="selectAvatar('🦊')"
+              id="avatar-fox"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
+            >
+              🦊
+            </button>
+            <button
+              onclick="selectAvatar('🐼')"
+              id="avatar-panda"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
+            >
+              🐼
+            </button>
+            <button
+              onclick="selectAvatar('🦁')"
+              id="avatar-lion"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-full border-2 border-teal-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
+            >
+              🦁
+            </button>
+          </div>
+        </div>
+
+        <!-- Start Button -->
+        <button
+          onclick="startGame()"
+          class="btn-3d w-full bg-amber-500 text-white text-base sm:text-xl kids-font py-2.5 sm:py-3 px-6 rounded-xl sm:rounded-2xl border-2 border-amber-600 3d-shadow-orange hover:bg-amber-400 tracking-wider"
+        >
+          MULAI BIKIN JUS! 🍹
+        </button>
+      </div>
     </div>
 
     <!-- GAMEPLAY VIEW CONTAINER -->
-    <div id="game-container" class="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-between hidden h-full overflow-hidden">
-        
-        <!-- HEADER / NAVIGATION -->
-        <div class="flex items-center justify-between gap-2 mb-1">
-            <!-- Back to Menu -->
-            <button onclick="showMainMenu()" class="w-8 h-8 sm:w-11 sm:h-11 bg-rose-500 rounded-full border-2 sm:border-4 border-rose-700 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-rose-600 active:scale-90 transition-all">
-                🏠
-            </button>
+    <div
+      id="game-container"
+      class="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-between hidden h-full overflow-hidden"
+    >
+      <!-- HEADER / NAVIGATION -->
+      <div class="flex items-center justify-between gap-2 mb-1 flex-shrink-0">
+        <!-- Back to Menu -->
+        <button
+          onclick="showMainMenu()"
+          class="w-8 h-8 sm:w-11 sm:h-11 bg-rose-500 rounded-full border-2 sm:border-4 border-rose-700 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-rose-600 active:scale-90 transition-all"
+        >
+          🏠
+        </button>
 
-            <!-- Score & Streak Display -->
-            <div class="flex-grow max-w-[140px] sm:max-w-xs bg-teal-600 text-white px-2 py-0.5 sm:py-1 rounded-xl border-2 border-white flex items-center justify-between shadow-lg">
-                <div class="flex items-center gap-1 sm:gap-2 overflow-hidden">
-                    <span id="player-avatar-badge" class="text-base sm:text-xl flex-shrink-0">🐱</span>
-                    <span id="player-name-badge" class="kids-font text-[8px] sm:text-xs tracking-wide uppercase truncate max-w-[45px] sm:max-w-[80px]">Koki</span>
-                </div>
-                <div class="bg-teal-950/40 text-yellow-300 font-extrabold px-1.5 py-0.5 rounded-full text-[10px] sm:text-base kids-font flex items-center gap-0.5">
-                    🌟 <span id="score-text">0</span>
-                </div>
-            </div>
-
-            <!-- Streak Combustion Badge -->
-            <div id="streak-badge" class="hidden bg-orange-500 text-white text-[8px] sm:text-xs font-black px-1.5 py-0.5 rounded-xl border-2 border-white shadow-md animate-bounce">
-                🔥 COMBO x<span id="streak-count">0</span>
-            </div>
-
-            <!-- Audio Toggle -->
-            <button onclick="toggleSound()" id="sound-btn" class="w-8 h-8 sm:w-11 sm:h-11 bg-sky-400 rounded-full border-2 sm:border-4 border-sky-600 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-sky-500 active:scale-90 transition-all">
-                🔊
-            </button>
+        <!-- Score & Streak Display -->
+        <div
+          class="flex-grow max-w-[140px] sm:max-w-xs bg-teal-600 text-white px-2 py-0.5 sm:py-1 rounded-xl border-2 border-white flex items-center justify-between shadow-lg"
+        >
+          <div class="flex items-center gap-1 sm:gap-2 overflow-hidden">
+            <span
+              id="player-avatar-badge"
+              class="text-base sm:text-xl flex-shrink-0"
+              >🐱</span
+            >
+            <span
+              id="player-name-badge"
+              class="kids-font text-[9px] sm:text-[11px] tracking-wide uppercase max-w-[90px] sm:max-w-[150px]"
+              >Koki</span
+            >
+          </div>
+          <div
+            class="bg-teal-950/40 text-yellow-300 font-extrabold px-1.5 py-0.5 rounded-full text-[11px] sm:text-base kids-font flex items-center gap-0.5"
+          >
+            🌟 <span id="score-text">0</span>
+          </div>
         </div>
 
-        <!-- PROGRESS BAR -->
-        <div class="w-full bg-teal-950/15 rounded-full h-2 sm:h-3.5 p-0.5 mb-1 border border-teal-950/10 overflow-hidden relative">
-            <div id="progress-indicator" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+        <!-- Streak Combustion Badge -->
+        <div
+          id="streak-badge"
+          class="hidden bg-orange-500 text-white text-[8px] sm:text-xs font-black px-1.5 py-0.5 rounded-xl border-2 border-white shadow-md animate-bounce"
+        >
+          🔥 COMBO x<span id="streak-count">0</span>
         </div>
 
-        <!-- MAIN PLAYING COURT (Centered and unified to avoid vertical stretching) -->
-        <div class="flex-grow flex flex-col justify-center gap-1.5 sm:gap-4 relative overflow-hidden max-w-md md:max-w-4xl mx-auto w-full">
-            
-            <!-- TOP FLOOR: FRUIT SPAWNING ZONE -->
-            <div class="relative w-full py-0.5 flex flex-col items-center flex-shrink-0">
-                <!-- Helper Tip Box -->
-                <div id="tap-instruction" class="bg-teal-100 border border-teal-300 rounded-full px-2.5 py-0.5 text-center text-teal-900 font-extrabold text-[8px] sm:text-xs shadow-md mb-1.5 sm:mb-2 animate-pulse">
-                    ✨ Seret buah ke blender sewarna, atau ketuk buah lalu ketuk blendernya!
-                </div>
+        <!-- Audio Toggle -->
+        <button
+          onclick="toggleSound()"
+          id="sound-btn"
+          class="w-8 h-8 sm:w-11 sm:h-11 bg-sky-400 rounded-full border-2 sm:border-4 border-sky-600 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-sky-500 active:scale-90 transition-all"
+        >
+          🔊
+        </button>
+      </div>
 
-                <!-- Conveyor Belt Graphics / Fruit Stand (Made more compact) -->
-                <div class="w-full max-w-[180px] sm:max-w-md h-12 sm:h-18 bg-amber-50 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-amber-300 shadow-inner flex justify-center items-center p-1 relative overflow-hidden">
-                    
-                    <!-- Conveyor Belt Line Roller -->
-                    <div class="absolute bottom-0.5 h-1.5 sm:h-3 left-0 right-0 bg-amber-200 border-y border-amber-300 conveyor-slide" style="background-image: repeating-linear-gradient(45deg, #fcd34d, #fcd34d 10px, #f59e0b 10px, #f59e0b 20px);"></div>
-                    
-                    <!-- Spawning Bubble containing fruit -->
-                    <div id="active-fruit-bubble" class="w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/90 rounded-full border-2 sm:border-4 border-dashed border-teal-400 flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing transition-transform z-10 bounce-in">
-                        <!-- Dynamic active fruit rendered here -->
-                    </div>
-                </div>
+      <!-- PROGRESS BAR -->
+      <div
+        class="w-full bg-teal-950/15 rounded-full h-2 sm:h-3.5 p-0.5 mb-1 border border-teal-950/10 overflow-hidden relative flex-shrink-0"
+      >
+        <div
+          id="progress-indicator"
+          class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-300"
+          style="width: 0%"
+        ></div>
+      </div>
+
+      <!-- MAIN PLAYING COURT -->
+      <div
+        class="flex-grow flex flex-col justify-between gap-1.5 sm:gap-4 relative overflow-hidden max-w-md md:max-w-4xl mx-auto w-full py-2"
+      >
+        <!-- TOP FLOOR: FRUIT SPAWNING ZONE (Diperbaiki agar tidak memotong buah) -->
+        <div
+          class="relative w-full flex flex-col items-center flex-shrink-0 pt-4 pb-2"
+        >
+          <!-- Helper Tip Box -->
+          <div
+            id="tap-instruction"
+            class="bg-teal-100 border border-teal-300 rounded-full px-2.5 py-1 text-center text-teal-900 font-extrabold text-[8px] sm:text-xs shadow-md mb-3 sm:mb-4 animate-pulse max-w-[90%]"
+          >
+            ✨ Seret buah ke blender sewarna, atau ketuk buah lalu ketuk
+            blendernya!
+          </div>
+
+          <!-- Conveyor Belt Graphics (Tinggi ditambah, overflow-hidden dibuang agar leak keluar aman) -->
+          <div
+            class="w-full max-w-[200px] sm:max-w-md h-16 sm:h-24 bg-amber-50 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-amber-300 shadow-inner flex justify-center items-center p-2 relative"
+          >
+            <!-- Conveyor Belt Line Roller -->
+            <div
+              class="absolute bottom-0.5 h-2 sm:h-4 left-0 right-0 bg-amber-200 border-y border-amber-300 conveyor-slide rounded-b-lg sm:rounded-b-xl"
+              style="
+                background-image: repeating-linear-gradient(
+                  45deg,
+                  #fcd34d,
+                  #fcd34d 10px,
+                  #f59e0b 10px,
+                  #f59e0b 20px
+                );
+              "
+            ></div>
+
+            <!-- Spawning Bubble (Ukurannya disesuaikan dan dipastikan center sempurna) -->
+            <div
+              id="active-fruit-bubble"
+              class="w-14 h-14 sm:w-20 sm:h-20 bg-white/95 rounded-full border-3 border-dashed border-teal-400 flex items-center justify-center shadow-xl cursor-grab active:cursor-grabbing transition-transform z-10 bounce-in absolute -top-1 sm:-top-2"
+            >
+              <!-- Dynamic active fruit rendered here -->
             </div>
-
-            <!-- MIDDLE LEVEL: MESSAGE FEEDS & POPUPS -->
-            <div id="feedback-alert" class="h-4 sm:h-6 flex items-center justify-center text-center text-teal-800 kids-font text-[10px] sm:text-base font-black tracking-wide flex-shrink-0"></div>
-
-            <!-- BOTTOM FLOOR: BLENDERS (2-Row Grid on mobile, 1-Row Flex on Desktop) -->
-            <div id="blenders-container" class="flex flex-wrap justify-center gap-x-3 gap-y-2 md:flex-nowrap md:justify-between w-full mt-auto mb-1">
-                <!-- 5 Beautiful Color Blenders (Red, Yellow, Green, Purple, Orange) akan diinjeksi di sini -->
-            </div>
-
+          </div>
         </div>
+
+        <!-- MIDDLE LEVEL: MESSAGE FEEDS & POPUPS -->
+        <div
+          id="feedback-alert"
+          class="h-6 sm:h-8 flex items-center justify-center text-center text-teal-800 kids-font text-[11px] sm:text-xl font-black tracking-wide flex-shrink-0"
+        ></div>
+
+        <!-- BOTTOM FLOOR: BLENDERS -->
+        <div
+          id="blenders-container"
+          class="flex flex-wrap justify-center gap-x-3 gap-y-2 md:flex-nowrap md:justify-between w-full mt-auto mb-1 flex-shrink-0"
+        >
+          <!-- 5 Beautiful Color Blenders diinjeksi di sini -->
+        </div>
+      </div>
     </div>
 
     <!-- REWARD/WIN SCREEN -->
-    <div id="screen-win" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-teal-50/95 backdrop-blur-sm transition-all duration-500 hidden">
-        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-emerald-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
-            <div class="text-4xl sm:text-7xl mb-1 float-bubble">🏆</div>
-            <h2 class="text-lg sm:text-3xl font-black text-emerald-600 kids-title mb-0.5">PINTAR SEKALI!</h2>
-            <p class="text-emerald-950 text-[10px] sm:text-sm font-bold mb-3">Kamu telah sukses mencampur seluruh jus buah dengan sempurna!</p>
-            
-            <!-- Performance Stars -->
-            <div class="flex justify-center gap-1 mb-2.5">
-                <span id="star-1" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
-                <span id="star-2" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
-                <span id="star-3" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
-            </div>
+    <div
+      id="screen-win"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-teal-50/95 backdrop-blur-sm transition-all duration-500 hidden"
+    >
+      <div
+        class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-emerald-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative"
+      >
+        <div class="text-4xl sm:text-7xl mb-1 float-bubble">🏆</div>
+        <h2
+          class="text-lg sm:text-3xl font-black text-emerald-600 kids-title mb-0.5"
+        >
+          PINTAR SEKALI!
+        </h2>
+        <p class="text-emerald-950 text-[10px] sm:text-sm font-bold mb-3">
+          Kamu telah sukses mencampur seluruh jus buah dengan sempurna!
+        </p>
 
-            <!-- Stats Box -->
-            <div class="bg-emerald-50 border-2 border-emerald-200 rounded-lg sm:rounded-xl p-2 mb-3">
-                <span class="text-[8px] sm:text-xs font-bold text-emerald-800 block uppercase tracking-widest">SKOR JUSMU</span>
-                <span id="win-score-text" class="text-xl sm:text-3xl font-black text-emerald-950 kids-font">0</span>
-                <span id="win-combo-text" class="text-[8px] sm:text-xs font-bold text-orange-600 block mt-0.5">Semburan Berantai Hebat!</span>
-            </div>
-
-            <!-- Options buttons -->
-            <div class="flex gap-2 justify-center">
-                <button onclick="showMainMenu()" class="btn-3d flex-1 bg-amber-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-amber-600 3d-shadow-orange active:scale-95 text-[10px] sm:text-sm kids-font">
-                    AVATAR 🦊
-                </button>
-                <button onclick="startGame()" class="btn-3d flex-1 bg-emerald-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-emerald-600 active:scale-95 text-[10px] sm:text-sm kids-font" style="box-shadow: 0 5px 0 0 #059669">
-                    MAIN LAGI 🔄
-                </button>
-            </div>
+        <!-- Performance Stars -->
+        <div class="flex justify-center gap-1 mb-2.5">
+          <span
+            id="star-1"
+            class="text-2xl sm:text-4xl opacity-30 transition-all duration-500"
+            >⭐</span
+          >
+          <span
+            id="star-2"
+            class="text-2xl sm:text-4xl opacity-30 transition-all duration-500"
+            >⭐</span
+          >
+          <span
+            id="star-3"
+            class="text-2xl sm:text-4xl opacity-30 transition-all duration-500"
+            >⭐</span
+          >
         </div>
+
+        <!-- Stats Box -->
+        <div
+          class="bg-emerald-50 border-2 border-emerald-200 rounded-lg sm:rounded-xl p-2 mb-3"
+        >
+          <span
+            class="text-[8px] sm:text-xs font-bold text-emerald-800 block uppercase tracking-widest"
+            >SKOR JUSMU</span
+          >
+          <span
+            id="win-score-text"
+            class="text-xl sm:text-3xl font-black text-emerald-950 kids-font"
+            >0</span
+          >
+          <span
+            id="win-combo-text"
+            class="text-[8px] sm:text-xs font-bold text-orange-600 block mt-0.5"
+            >Semburan Berantai Hebat!</span
+          >
+        </div>
+
+        <!-- Options buttons -->
+        <div class="flex gap-2 justify-center">
+          <button
+            onclick="showMainMenu()"
+            class="btn-3d flex-1 bg-amber-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-amber-600 3d-shadow-orange active:scale-95 text-[10px] sm:text-sm kids-font"
+          >
+            AVATAR 🦊
+          </button>
+          <button
+            onclick="startGame()"
+            class="btn-3d flex-1 bg-emerald-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-emerald-600 active:scale-95 text-[10px] sm:text-sm kids-font"
+            style="box-shadow: 0 5px 0 0 #059669"
+          >
+            MAIN LAGI 🔄
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- AUDIO & LOGIC SCRIPTS -->
     <script>
-        // Comprehensive Fruit Dataset with specific color mapping
-        const fruitCollection = [
-            // RED FRUITS
-            { name: "Apel Merah", emoji: "🍎", color: "red", hex: "#ef4444" },
-            { name: "Stroberi", emoji: "🍓", color: "red", hex: "#ef4444" },
-            { name: "Ceri", emoji: "🍒", color: "red", hex: "#ef4444" },
-            // YELLOW FRUITS
-            { name: "Pisang", emoji: "🍌", color: "yellow", hex: "#eab308" },
-            { name: "Lemon", emoji: "🍋", color: "yellow", hex: "#eab308" },
-            { name: "Nanas", emoji: "🍍", color: "yellow", hex: "#eab308" },
-            // GREEN FRUITS
-            { name: "Apel Hijau", emoji: "🍏", color: "green", hex: "#10b981" },
-            { name: "Melon", emoji: "🍈", color: "green", hex: "#10b981" },
-            { name: "Semangka", emoji: "🍉", color: "green", hex: "#10b981" },
-            { name: "Alpukat", emoji: "🥑", color: "green", hex: "#10b981" },
-            // PURPLE FRUITS
-            { name: "Anggur", emoji: "🍇", color: "purple", hex: "#a855f7" },
-            { name: "Blueberry", emoji: "🫐", color: "purple", hex: "#a855f7" },
-            { name: "Manggis", emoji: "🔮", color: "purple", hex: "#a855f7" },
-            // ORANGE FRUITS
-            { name: "Jeruk", emoji: "🍊", color: "orange", hex: "#f97316" },
-            { name: "Mangga", emoji: "🥭", color: "orange", hex: "#f97316" },
-            { name: "Persik", emoji: "🍑", color: "orange", hex: "#f97316" }
-        ];
+      const fruitCollection = [
+        // RED FRUITS
+        { name: "Apel Merah", emoji: "🍎", color: "red", hex: "#ef4444" },
+        { name: "Stroberi", emoji: "🍓", color: "red", hex: "#ef4444" },
+        { name: "Semangka", emoji: "🍉", color: "red", hex: "#ef4444" },
+        { name: "Ceri", emoji: "🍒", color: "red", hex: "#ef4444" },
+        // YELLOW FRUITS
+        { name: "Pisang", emoji: "🍌", color: "yellow", hex: "#eab308" },
+        { name: "Lemon", emoji: "🍋", color: "yellow", hex: "#eab308" },
+        { name: "Nanas", emoji: "🍍", color: "yellow", hex: "#eab308" },
+        // GREEN FRUITS
+        { name: "Apel Hijau", emoji: "🍏", color: "green", hex: "#10b981" },
+        { name: "Melon", emoji: "🍈", color: "green", hex: "#10b981" },
+        { name: "Alpukat", emoji: "🥑", color: "green", hex: "#10b981" },
+        { name: "Kiwi", emoji: "🥝", color: "green", hex: "#10b981" },
+        // PURPLE FRUITS
+        { name: "Anggur", emoji: "🍇", color: "purple", hex: "#a855f7" },
+        { name: "Blueberry", emoji: "🫐", color: "purple", hex: "#a855f7" },
+        // ORANGE FRUITS
+        { name: "Jeruk", emoji: "🍊", color: "orange", hex: "#f97316" },
+        { name: "Mangga", emoji: "🥭", color: "orange", hex: "#f97316" },
+        { name: "Persik", emoji: "🍑", color: "orange", hex: "#f97316" },
+      ];
 
-        // Blender styles mapped nicely matching Tailwind styling
-        const blenderConfigs = [
-            { id: "red", title: "Merah", titleEmoji: "🔴", borderHex: "#ef4444", bgClass: "bg-red-500", lightBg: "bg-red-55", borderClass: "border-red-500", liquidColor: "rgba(239, 68, 68, 0.75)" },
-            { id: "yellow", title: "Kuning", titleEmoji: "🟡", borderHex: "#eab308", bgClass: "bg-yellow-500", lightBg: "bg-yellow-50", borderClass: "border-yellow-400", liquidColor: "rgba(234, 179, 8, 0.7)" },
-            { id: "green", title: "Hijau", titleEmoji: "🟢", borderHex: "#10b981", bgClass: "bg-emerald-500", lightBg: "bg-emerald-50", borderClass: "border-emerald-550", liquidColor: "rgba(16, 185, 129, 0.75)" },
-            { id: "purple", title: "Ungu", titleEmoji: "🟣", borderHex: "#a855f7", bgClass: "bg-purple-500", lightBg: "bg-purple-50", borderClass: "border-purple-500", liquidColor: "rgba(168, 85, 247, 0.75)" },
-            { id: "orange", title: "Oranye", titleEmoji: "🟠", borderHex: "#f97316", bgClass: "bg-orange-500", lightBg: "bg-orange-50", borderClass: "border-orange-550", liquidColor: "rgba(249, 115, 22, 0.75)" }
-        ];
+      const blenderConfigs = [
+        {
+          id: "red",
+          title: "Merah",
+          titleEmoji: "🔴",
+          borderHex: "#ef4444",
+          bgClass: "bg-red-500",
+          lightBg: "bg-red-55",
+          borderClass: "border-red-500",
+          liquidColor: "rgba(239, 68, 68, 0.75)",
+        },
+        {
+          id: "yellow",
+          title: "Kuning",
+          titleEmoji: "🟡",
+          borderHex: "#eab308",
+          bgClass: "bg-yellow-500",
+          lightBg: "bg-yellow-50",
+          borderClass: "border-yellow-400",
+          liquidColor: "rgba(234, 179, 8, 0.7)",
+        },
+        {
+          id: "green",
+          title: "Hijau",
+          titleEmoji: "🟢",
+          borderHex: "#10b981",
+          bgClass: "bg-emerald-500",
+          lightBg: "bg-emerald-50",
+          borderClass: "border-emerald-550",
+          liquidColor: "rgba(16, 185, 129, 0.75)",
+        },
+        {
+          id: "purple",
+          title: "Ungu",
+          titleEmoji: "🟣",
+          borderHex: "#a855f7",
+          bgClass: "bg-purple-500",
+          lightBg: "bg-purple-50",
+          borderClass: "border-purple-500",
+          liquidColor: "rgba(168, 85, 247, 0.75)",
+        },
+        {
+          id: "orange",
+          title: "Oranye",
+          titleEmoji: "🟠",
+          borderHex: "#f97316",
+          bgClass: "bg-orange-500",
+          lightBg: "bg-orange-50",
+          borderClass: "border-orange-550",
+          liquidColor: "rgba(249, 115, 22, 0.75)",
+        },
+      ];
 
-        // Game state variables
-        let selectedAvatar = '🐱';
-        let playerName = 'Koki';
-        let score = 0;
-        let streak = 0;
-        let activeFruit = null;
-        let isSoundEnabled = true;
-        let gameActive = false;
-        let remainingFruits = [];
-        let totalRoundFruits = 15;
-        let selectedItemForTap = null;
+      let selectedAvatar = "🐱";
+      let playerName = "Koki";
+      let score = 0;
+      let streak = 0;
+      let activeFruit = null;
+      let isSoundEnabled = true;
+      let gameActive = false;
+      let remainingFruits = [];
+      let totalRoundFruits = 15;
+      let selectedItemForTap = null;
 
-        // Particle Canvas Setup
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+      const canvas = document.getElementById("particle-canvas");
+      const ctx = canvas.getContext("2d");
+      let particles = [];
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
 
-        // Synthesized audio feedback engine using Web Audio API
-        function playSound(type) {
-            if (!isSoundEnabled) return;
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = audioCtx.currentTime;
+      function playSound(type) {
+        if (!isSoundEnabled) return;
+        try {
+          const audioCtx = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+          const now = audioCtx.currentTime;
 
-                if (type === 'pop') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(300, now);
-                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(now + 0.1);
-                } 
-                else if (type === 'splash') {
-                    const osc = audioCtx.createOscillator();
-                    const osc2 = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(400, now);
-                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-                    
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(600, now);
-                    osc2.frequency.linearRampToValueAtTime(300, now + 0.2);
-                    
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                    
-                    osc.connect(gain);
-                    osc2.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    
-                    osc.start();
-                    osc2.start();
-                    osc.stop(now + 0.25);
-                    osc2.stop(now + 0.25);
-                } 
-                else if (type === 'buzz') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(250, now);
-                    osc.frequency.linearRampToValueAtTime(100, now + 0.4);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(now + 0.4);
-                } 
-                else if (type === 'fanfare') {
-                    const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
-                    notes.forEach((freq, idx) => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                        gain.gain.setValueAtTime(0.1, now + idx * 0.08);
-                        gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.08 + 0.35);
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + idx * 0.08);
-                        osc.stop(now + idx * 0.08 + 0.35);
-                    });
-                }
-            } catch(e) {
-                console.log("Audio not supported or auto-play prevented.", e);
-            }
-        }
+          if (type === "pop") {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(now + 0.1);
+          } else if (type === "splash") {
+            const osc = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
 
-        function toggleSound() {
-            isSoundEnabled = !isSoundEnabled;
-            const soundBtn = document.getElementById('sound-btn');
-            if (isSoundEnabled) {
-                soundBtn.textContent = "🔊";
-                soundBtn.className = soundBtn.className.replace('bg-gray-400 border-gray-600', 'bg-sky-400 border-sky-600');
-                playSound('pop');
-            } else {
-                soundBtn.textContent = "🔇";
-                soundBtn.className = soundBtn.className.replace('bg-sky-400 border-sky-600', 'bg-gray-400 border-gray-600');
-            }
-        }
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
 
-        // Juice Splatter Particle system
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.size = Math.random() * 5 + 3;
-                this.speedX = Math.random() * 6 - 3;
-                this.speedY = Math.random() * -6 - 2;
-                this.gravity = 0.25;
-                this.opacity = 1;
-                this.life = 0;
-            }
+            osc2.type = "sine";
+            osc2.frequency.setValueAtTime(600, now);
+            osc2.frequency.linearRampToValueAtTime(300, now + 0.2);
 
-            update() {
-                this.speedY += this.gravity;
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.opacity -= 0.03;
-                this.life++;
-            }
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
 
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = Math.max(0, this.opacity);
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.restore();
-            }
-        }
+            osc.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
 
-        function spawnJuiceBlast(x, y, color) {
-            for (let i = 0; i < 20; i++) {
-                particles.push(new Particle(x, y, color));
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].opacity <= 0) {
-                    particles.splice(i, 1);
-                }
-            }
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
-
-        function selectAvatar(avatar) {
-            selectedAvatar = avatar;
-            ['avatar-cat', 'avatar-fox', 'avatar-panda', 'avatar-lion'].forEach(id => {
-                document.getElementById(id).classList.remove('ring-4', 'ring-teal-500', 'bg-teal-200');
+            osc.start();
+            osc2.start();
+            osc.stop(now + 0.25);
+            osc2.stop(now + 0.25);
+          } else if (type === "buzz") {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(250, now);
+            osc.frequency.linearRampToValueAtTime(100, now + 0.4);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(now + 0.4);
+          } else if (type === "fanfare") {
+            const notes = [
+              261.63, 329.63, 392.0, 523.25, 659.25, 783.99, 1046.5,
+            ];
+            notes.forEach((freq, idx) => {
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+              gain.gain.setValueAtTime(0.1, now + idx * 0.08);
+              gain.gain.exponentialRampToValueAtTime(
+                0.005,
+                now + idx * 0.08 + 0.35,
+              );
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start(now + idx * 0.08);
+              osc.stop(now + idx * 0.08 + 0.35);
             });
-            const selectedId = avatar === '🐱' ? 'avatar-cat' : avatar === '🦊' ? 'avatar-fox' : avatar === '🐼' ? 'avatar-panda' : 'avatar-lion';
-            document.getElementById(selectedId).classList.add('ring-4', 'ring-teal-500', 'bg-teal-200');
-            playSound('pop');
+          }
+        } catch (e) {
+          console.log("Audio not supported or auto-play prevented.", e);
+        }
+      }
+
+      function toggleSound() {
+        isSoundEnabled = !isSoundEnabled;
+        const soundBtn = document.getElementById("sound-btn");
+        if (isSoundEnabled) {
+          soundBtn.textContent = "🔊";
+          soundBtn.className = soundBtn.className.replace(
+            "bg-gray-400 border-gray-600",
+            "bg-sky-400 border-sky-600",
+          );
+          playSound("pop");
+        } else {
+          soundBtn.textContent = "🔇";
+          soundBtn.className = soundBtn.className.replace(
+            "bg-sky-400 border-sky-600",
+            "bg-gray-400 border-gray-600",
+          );
+        }
+      }
+
+      class Particle {
+        constructor(x, y, color) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.size = Math.random() * 5 + 3;
+          this.speedX = Math.random() * 6 - 3;
+          this.speedY = Math.random() * -6 - 2;
+          this.gravity = 0.25;
+          this.opacity = 1;
+          this.life = 0;
         }
 
-        function showMainMenu() {
-            document.getElementById('screen-start').classList.remove('hidden');
-            document.getElementById('game-container').classList.add('hidden');
-            document.getElementById('screen-win').classList.add('hidden');
-            gameActive = false;
+        update() {
+          this.speedY += this.gravity;
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.opacity -= 0.03;
+          this.life++;
         }
 
-        // Start Game Setup
-        function startGame() {
-            const inputVal = document.getElementById('player-name').value.trim();
-            playerName = inputVal.length > 0 ? inputVal.toUpperCase() : "KOKI PINTAR";
-            
-            document.getElementById('player-avatar-badge').textContent = selectedAvatar;
-            document.getElementById('player-name-badge').textContent = playerName;
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, this.opacity);
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.restore();
+        }
+      }
 
-            document.getElementById('screen-start').classList.add('hidden');
-            document.getElementById('screen-win').classList.add('hidden');
-            document.getElementById('game-container').classList.remove('hidden');
+      function spawnJuiceBlast(x, y, color) {
+        for (let i = 0; i < 20; i++) {
+          particles.push(new Particle(x, y, color));
+        }
+      }
 
-            score = 0;
-            streak = 0;
-            document.getElementById('score-text').textContent = score;
-            document.getElementById('streak-badge').classList.add('hidden');
-            document.getElementById('progress-indicator').style.width = "0%";
-            document.getElementById('feedback-alert').textContent = "";
-            selectedItemForTap = null;
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update();
+          particles[i].draw();
+          if (particles[i].opacity <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+        requestAnimationFrame(animateParticles);
+      }
+      animateParticles();
 
-            remainingFruits = [];
-            for (let i = 0; i < totalRoundFruits; i++) {
-                const randomFruit = fruitCollection[Math.floor(Math.random() * fruitCollection.length)];
-                remainingFruits.push(JSON.parse(JSON.stringify(randomFruit)));
-            }
+      function selectAvatar(avatar) {
+        selectedAvatar = avatar;
+        ["avatar-cat", "avatar-fox", "avatar-panda", "avatar-lion"].forEach(
+          (id) => {
+            document
+              .getElementById(id)
+              .classList.remove("ring-4", "ring-teal-500", "bg-teal-200");
+          },
+        );
+        const selectedId =
+          avatar === "🐱"
+            ? "avatar-cat"
+            : avatar === "🦊"
+              ? "avatar-fox"
+              : avatar === "🐼"
+                ? "avatar-panda"
+                : "avatar-lion";
+        document
+          .getElementById(selectedId)
+          .classList.add("ring-4", "ring-teal-500", "bg-teal-200");
+        playSound("pop");
+      }
 
-            renderBlenders();
-            spawnNextFruit();
-            gameActive = true;
-            playSound('pop');
+      function showMainMenu() {
+        document.getElementById("screen-start").classList.remove("hidden");
+        document.getElementById("game-container").classList.add("hidden");
+        document.getElementById("screen-win").classList.add("hidden");
+        gameActive = false;
+      }
+
+      function startGame() {
+        const inputVal = document.getElementById("player-name").value.trim();
+        playerName =
+          inputVal.length > 0 ? inputVal.toUpperCase() : "KOKI PINTAR";
+
+        document.getElementById("player-avatar-badge").textContent =
+          selectedAvatar;
+        document.getElementById("player-name-badge").textContent = playerName;
+
+        document.getElementById("screen-start").classList.add("hidden");
+        document.getElementById("screen-win").classList.add("hidden");
+        document.getElementById("game-container").classList.remove("hidden");
+
+        score = 0;
+        streak = 0;
+        document.getElementById("score-text").textContent = score;
+        document.getElementById("streak-badge").classList.add("hidden");
+        document.getElementById("progress-indicator").style.width = "0%";
+        document.getElementById("feedback-alert").textContent = "";
+        selectedItemForTap = null;
+
+        remainingFruits = [];
+        for (let i = 0; i < totalRoundFruits; i++) {
+          const randomFruit =
+            fruitCollection[Math.floor(Math.random() * fruitCollection.length)];
+          remainingFruits.push(JSON.parse(JSON.stringify(randomFruit)));
         }
 
-        // Dynamically Render Blenders with wave animation support
-        function renderBlenders() {
-            const container = document.getElementById('blenders-container');
-            container.innerHTML = "";
+        renderBlenders();
+        spawnNextFruit();
+        gameActive = true;
+        playSound("pop");
+      }
 
-            blenderConfigs.forEach(cfg => {
-                const col = document.createElement('div');
-                col.id = `blender-${cfg.id}`;
-                
-                // Set flexible widths: 30% of row width on mobile, auto-expanding on larger screens
-                col.className = `flex flex-col items-center justify-end relative select-none cursor-pointer transition-transform duration-200 w-[29%] min-w-[85px] xs:w-[30%] xs:min-w-[95px] sm:w-[18%] md:w-auto md:flex-grow min-w-0`;
-                
-                col.onclick = () => handleBlenderClick(cfg.id);
+      function renderBlenders() {
+        const container = document.getElementById("blenders-container");
+        container.innerHTML = "";
 
-                col.addEventListener('dragover', (e) => e.preventDefault());
-                col.addEventListener('dragenter', (e) => {
-                    e.preventDefault();
-                    col.classList.add('scale-105');
-                });
-                col.addEventListener('dragleave', () => col.classList.remove('scale-105'));
-                col.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    col.classList.remove('scale-105');
-                    handleMatchingAttempt(cfg.id);
-                });
+        blenderConfigs.forEach((cfg) => {
+          const col = document.createElement("div");
+          col.id = `blender-${cfg.id}`;
+          col.className = `flex flex-col items-center justify-end relative select-none cursor-pointer transition-transform duration-200 w-[29%] min-w-[85px] xs:w-[30%] xs:min-w-[95px] sm:w-[18%] md:w-auto md:flex-grow min-w-0`;
 
-                col.innerHTML = `
-                    <!-- Glass Container of Blender (Taller and wider on mobile layout) -->
+          col.onclick = () => handleBlenderClick(cfg.id);
+
+          col.addEventListener("dragover", (e) => e.preventDefault());
+          col.addEventListener("dragenter", (e) => {
+            e.preventDefault();
+            col.classList.add("scale-105");
+          });
+          col.addEventListener("dragleave", () =>
+            col.classList.remove("scale-105"),
+          );
+          col.addEventListener("drop", (e) => {
+            e.preventDefault();
+            col.classList.remove("scale-105");
+            handleMatchingAttempt(cfg.id);
+          });
+
+          col.innerHTML = `
                     <div class="w-full max-w-[80px] xs:max-w-[90px] sm:max-w-[85px] h-20 xs:h-24 sm:h-24 md:h-28 ${cfg.lightBg} border-2 sm:border-4 ${cfg.borderClass} rounded-t-lg sm:rounded-t-2xl relative overflow-hidden flex flex-col justify-end shadow-md">
-                        <!-- Liquid with Wave effect -->
                         <div id="wave-${cfg.id}" class="liquid-wave w-full bg-cover transition-all duration-500" style="background-color: ${cfg.liquidColor}; height: 15%"></div>
-                        <!-- Blender Blades Inside -->
                         <div class="absolute bottom-0.5 left-1/2 -translate-x-1/2 text-center text-[8px] sm:text-xs opacity-60 pointer-events-none select-none">⚙️</div>
                     </div>
-                    <!-- Blender Bottom/Engine Panel -->
                     <div class="w-full max-w-[86px] xs:max-w-[98px] sm:max-w-[95px] ${cfg.bgClass} border border-slate-800 sm:border-4 rounded-b-md sm:rounded-b-xl py-0.5 sm:py-1 shadow-lg flex flex-col items-center">
                         <span class="kids-font text-[9px] xs:text-[10px] sm:text-[11px] text-white tracking-wider font-black uppercase text-center block truncate w-full">${cfg.title} <span class="hidden xs:inline">${cfg.titleEmoji}</span></span>
                         <div class="w-2 h-2 sm:w-3 sm:h-3 bg-red-600 rounded-full border border-black shadow mt-0.5 animate-pulse"></div>
                     </div>
                 `;
 
-                container.appendChild(col);
-            });
+          container.appendChild(col);
+        });
+      }
+
+      function spawnNextFruit() {
+        if (remainingFruits.length === 0) {
+          concludeGame();
+          return;
         }
 
-        // Generate and Spawn active fruit onto conveyor belt
-        function spawnNextFruit() {
-            if (remainingFruits.length === 0) {
-                concludeGame();
-                return;
-            }
+        activeFruit = remainingFruits.pop();
+        const bubble = document.getElementById("active-fruit-bubble");
 
-            activeFruit = remainingFruits.pop();
-            const bubble = document.getElementById('active-fruit-bubble');
-            
-            bubble.classList.remove('bounce-in');
-            void bubble.offsetWidth;
-            bubble.classList.add('bounce-in');
+        bubble.classList.remove("bounce-in");
+        void bubble.offsetWidth;
+        bubble.classList.add("bounce-in");
 
-            bubble.innerHTML = `
-                <div class="flex flex-col items-center select-none overflow-hidden max-w-full">
-                    <span class="text-xl xs:text-2xl sm:text-4xl pointer-events-none select-none transform hover:scale-110 transition-transform">${activeFruit.emoji}</span>
-                    <span class="text-[7px] xs:text-[8px] sm:text-[10px] font-black text-teal-900 tracking-wider uppercase mt-0.5 pointer-events-none select-none truncate max-w-[90%]">${activeFruit.name}</span>
+        bubble.innerHTML = `
+                <div class="flex flex-col items-center justify-center select-none overflow-hidden max-w-full p-1">
+                    <span class="text-2xl sm:text-4xl pointer-events-none select-none transform hover:scale-110 transition-transform leading-none">${activeFruit.emoji}</span>
+                    <span class="text-[8px] sm:text-[10px] font-black text-teal-900 tracking-wider uppercase mt-1 pointer-events-none select-none truncate max-w-[95%]">${activeFruit.name}</span>
                 </div>
             `;
 
-            bubble.draggable = true;
-            bubble.ondragstart = (e) => {
-                e.dataTransfer.setData('text/plain', activeFruit.color);
-                playSound('pop');
-            };
+        bubble.draggable = true;
+        bubble.ondragstart = (e) => {
+          e.dataTransfer.setData("text/plain", activeFruit.color);
+          playSound("pop");
+        };
 
-            let touchStartPos = { x: 0, y: 0 };
-            bubble.ontouchstart = (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                touchStartPos = { x: touch.clientX, y: touch.clientY };
-                bubble.style.transition = 'none';
-                bubble.style.zIndex = '100';
-                
-                selectItemForTapMode();
-            };
+        let touchStartPos = { x: 0, y: 0 };
+        bubble.ontouchstart = (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          touchStartPos = { x: touch.clientX, y: touch.clientY };
+          bubble.style.transition = "none";
+          bubble.style.zIndex = "100";
 
-            bubble.ontouchmove = (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                const deltaX = touch.clientX - touchStartPos.x;
-                const deltaY = touch.clientY - touchStartPos.y;
-                bubble.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.15)`;
-            };
+          selectItemForTapMode();
+        };
 
-            bubble.ontouchend = (e) => {
-                e.preventDefault();
-                bubble.style.transition = '';
-                bubble.style.transform = '';
-                bubble.style.zIndex = '';
+        bubble.ontouchmove = (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const deltaX = touch.clientX - touchStartPos.x;
+          const deltaY = touch.clientY - touchStartPos.y;
+          bubble.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.15)`;
+        };
 
-                const touch = e.changedTouches[0];
-                const elementOver = document.elementFromPoint(touch.clientX, touch.clientY);
-                if (elementOver) {
-                    const blenderDiv = elementOver.closest('[id^="blender-"]');
-                    if (blenderDiv) {
-                        const targetColorId = blenderDiv.id.replace('blender-', '');
-                        handleMatchingAttempt(targetColorId);
-                    }
-                }
-            };
+        bubble.ontouchend = (e) => {
+          e.preventDefault();
+          bubble.style.transition = "";
+          bubble.style.transform = "";
+          bubble.style.zIndex = "";
 
-            selectedItemForTap = null;
-            playSound('pop');
-        }
-
-        // Tap highlight indicator logic
-        function selectItemForTapMode() {
-            selectedItemForTap = activeFruit;
-            const bubble = document.getElementById('active-fruit-bubble');
-            bubble.classList.add('ring-2', 'ring-amber-400', 'bg-amber-50');
-            document.getElementById('tap-instruction').textContent = "👉 Ketuk blender yang warnanya sama dengan buah!";
-            document.getElementById('tap-instruction').className = "bg-amber-100 border border-amber-300 rounded-full px-4 py-1 text-center text-amber-900 font-extrabold text-[9px] sm:text-sm shadow-md mb-2 sm:mb-4 animate-bounce";
-        }
-
-        function handleBlenderClick(blenderColorId) {
-            if (!activeFruit) return;
-            handleMatchingAttempt(blenderColorId);
-        }
-
-        // Core Logic: Checks matching and launches corresponding effects
-        function handleMatchingAttempt(targetColorId) {
-            if (!activeFruit) return;
-
-            const isCorrect = activeFruit.color === targetColorId;
-            const targetBlender = document.getElementById(`blender-${targetColorId}`);
-
-            const bubble = document.getElementById('active-fruit-bubble');
-            bubble.classList.remove('ring-2', 'ring-amber-400', 'bg-amber-50');
-            document.getElementById('tap-instruction').textContent = "✨ Seret buah ke blender sewarna, atau ketuk buah lalu ketuk blendernya!";
-            document.getElementById('tap-instruction').className = "bg-teal-100 border border-teal-300 rounded-full px-4 py-1 text-center text-teal-900 font-extrabold text-[8px] sm:text-xs shadow-md mb-2 sm:mb-4 animate-pulse";
-
-            if (isCorrect) {
-                score += 10 + (streak * 2);
-                streak++;
-                
-                const streakBadge = document.getElementById('streak-badge');
-                if (streak >= 3) {
-                    streakBadge.classList.remove('hidden');
-                    document.getElementById('streak-count').textContent = streak;
-                }
-
-                document.getElementById('score-text').textContent = score;
-
-                const liquidWave = document.getElementById(`wave-${targetColorId}`);
-                if (liquidWave) {
-                    const currentHeight = parseFloat(liquidWave.style.height) || 15;
-                    const newHeight = Math.min(90, currentHeight + 15);
-                    liquidWave.style.height = `${newHeight}%`;
-                }
-
-                playSound('splash');
-                const blenderRect = targetBlender.getBoundingClientRect();
-                const burstX = blenderRect.left + (blenderRect.width / 2);
-                const burstY = blenderRect.top + 20;
-                spawnJuiceBlast(burstX, burstY, activeFruit.hex);
-
-                const successQuotes = ["Sempurna! 🍓", "Wow, Segar! 🍹", "Koki Pintar! 🌟", "Luar Biasa! ✨", "Nyam Nyam! 😍"];
-                const alertBox = document.getElementById('feedback-alert');
-                alertBox.textContent = successQuotes[Math.floor(Math.random() * successQuotes.length)];
-                alertBox.className = "h-4 sm:h-8 flex items-center justify-center text-center text-emerald-600 kids-font text-xs sm:text-xl font-black tracking-wide animate-bounce";
-                
-                targetBlender.classList.add('scale-105');
-                setTimeout(() => targetBlender.classList.remove('scale-105'), 200);
-
-                const completedCount = totalRoundFruits - remainingFruits.length;
-                const progressPct = (completedCount / totalRoundFruits) * 100;
-                document.getElementById('progress-indicator').style.width = `${progressPct}%`;
-
-                spawnNextFruit();
-
-            } else {
-                streak = 0;
-                document.getElementById('streak-badge').classList.add('hidden');
-                
-                playSound('buzz');
-                targetBlender.classList.add('shake-element');
-                setTimeout(() => targetBlender.classList.remove('shake-element'), 500);
-
-                const alertBox = document.getElementById('feedback-alert');
-                alertBox.textContent = "Ayo coba lagi, pasangkan warna yang sama! 🍊";
-                alertBox.className = "h-4 sm:h-8 flex items-center justify-center text-center text-rose-500 kids-font text-[9px] sm:text-lg font-black tracking-wide";
-                
-                bubble.classList.add('shake-element');
-                setTimeout(() => bubble.classList.remove('shake-element'), 500);
+          const touch = e.changedTouches[0];
+          const elementOver = document.elementFromPoint(
+            touch.clientX,
+            touch.clientY,
+          );
+          if (elementOver) {
+            const blenderDiv = elementOver.closest('[id^="blender-"]');
+            if (blenderDiv) {
+              const targetColorId = blenderDiv.id.replace("blender-", "");
+              handleMatchingAttempt(targetColorId);
             }
+          }
+        };
+
+        selectedItemForTap = null;
+        playSound("pop");
+      }
+
+      function selectItemForTapMode() {
+        selectedItemForTap = activeFruit;
+        const bubble = document.getElementById("active-fruit-bubble");
+        bubble.classList.add("ring-4", "ring-amber-400", "bg-amber-50");
+        document.getElementById("tap-instruction").textContent =
+          "👉 Ketuk blender yang warnanya sama dengan buah!";
+        document.getElementById("tap-instruction").className =
+          "bg-amber-100 border border-amber-300 rounded-full px-4 py-1 text-center text-amber-900 font-extrabold text-[9px] sm:text-sm shadow-md mb-3 sm:mb-4 animate-bounce";
+      }
+
+      function handleBlenderClick(blenderColorId) {
+        if (!activeFruit) return;
+        handleMatchingAttempt(blenderColorId);
+      }
+
+      function handleMatchingAttempt(targetColorId) {
+        if (!activeFruit) return;
+
+        const isCorrect = activeFruit.color === targetColorId;
+        const targetBlender = document.getElementById(
+          `blender-${targetColorId}`,
+        );
+
+        const bubble = document.getElementById("active-fruit-bubble");
+        bubble.classList.remove("ring-4", "ring-amber-400", "bg-amber-50");
+        document.getElementById("tap-instruction").textContent =
+          "✨ Seret buah ke blender sewarna, atau ketuk buah lalu ketuk blendernya!";
+        document.getElementById("tap-instruction").className =
+          "bg-teal-100 border border-teal-300 rounded-full px-4 py-1 text-center text-teal-900 font-extrabold text-[8px] sm:text-xs shadow-md mb-3 sm:mb-4 animate-pulse";
+
+        if (isCorrect) {
+          score += 10 + streak * 2;
+          streak++;
+
+          const streakBadge = document.getElementById("streak-badge");
+          if (streak >= 3) {
+            streakBadge.classList.remove("hidden");
+            document.getElementById("streak-count").textContent = streak;
+          }
+
+          document.getElementById("score-text").textContent = score;
+
+          const liquidWave = document.getElementById(`wave-${targetColorId}`);
+          if (liquidWave) {
+            const currentHeight = parseFloat(liquidWave.style.height) || 15;
+            const newHeight = Math.min(90, currentHeight + 15);
+            liquidWave.style.height = `${newHeight}%`;
+          }
+
+          playSound("splash");
+          const blenderRect = targetBlender.getBoundingClientRect();
+          const burstX = blenderRect.left + blenderRect.width / 2;
+          const burstY = blenderRect.top + 20;
+          spawnJuiceBlast(burstX, burstY, activeFruit.hex);
+
+          const successQuotes = [
+            "Sempurna! 🍓",
+            "Wow, Segar! 🍹",
+            "Koki Pintar! 🌟",
+            "Luar Bila! ✨",
+            "Nyam Nyam! 😍",
+          ];
+          const alertBox = document.getElementById("feedback-alert");
+          alertBox.textContent =
+            successQuotes[Math.floor(Math.random() * successQuotes.length)];
+          alertBox.className =
+            "h-6 sm:h-8 flex items-center justify-center text-center text-emerald-600 kids-font text-sm sm:text-2xl font-black tracking-wide animate-bounce";
+
+          targetBlender.classList.add("scale-105");
+          setTimeout(() => targetBlender.classList.remove("scale-105"), 200);
+
+          const completedCount = totalRoundFruits - remainingFruits.length;
+          const progressPct = (completedCount / totalRoundFruits) * 100;
+          document.getElementById("progress-indicator").style.width =
+            `${progressPct}%`;
+
+          spawnNextFruit();
+        } else {
+          streak = 0;
+          document.getElementById("streak-badge").classList.add("hidden");
+
+          playSound("buzz");
+          targetBlender.classList.add("shake-element");
+          setTimeout(
+            () => targetBlender.classList.remove("shake-element"),
+            500,
+          );
+
+          const alertBox = document.getElementById("feedback-alert");
+          alertBox.textContent = "Ayo coba lagi, pasangkan warna yang sama! 🍊";
+          alertBox.className =
+            "h-6 sm:h-8 flex items-center justify-center text-center text-rose-500 kids-font text-xs sm:text-xl font-black tracking-wide";
+
+          bubble.classList.add("shake-element");
+          setTimeout(() => bubble.classList.remove("shake-element"), 500);
+        }
+      }
+
+      function concludeGame() {
+        gameActive = false;
+        document.getElementById("game-container").classList.add("hidden");
+        document.getElementById("screen-win").classList.remove("hidden");
+
+        document.getElementById("win-score-text").textContent = score;
+        const comboNote = document.getElementById("win-combo-text");
+        if (score > 120) {
+          comboNote.textContent = "🏆 Gelar: Master Pembuat Jus Cerdas!";
+        } else {
+          comboNote.textContent =
+            "🍹 Jus buahmu terlihat sangat segar & lezat!";
         }
 
-        // Win and Conclude state
-        function concludeGame() {
-            gameActive = false;
-            document.getElementById('game-container').classList.add('hidden');
-            document.getElementById('screen-win').classList.remove('hidden');
+        const star1 = document.getElementById("star-1");
+        const star2 = document.getElementById("star-2");
+        const star3 = document.getElementById("star-3");
 
-            document.getElementById('win-score-text').textContent = score;
-            const comboNote = document.getElementById('win-combo-text');
-            if (score > 120) {
-                comboNote.textContent = "🏆 Gelar: Master Pembuat Jus Cerdas!";
-            } else {
-                comboNote.textContent = "🍹 Jus buahmu terlihat sangat segar & lezat!";
-            }
+        star1.style.opacity = "0.2";
+        star2.style.opacity = "0.2";
+        star3.style.opacity = "0.2";
 
-            const star1 = document.getElementById('star-1');
-            const star2 = document.getElementById('star-2');
-            const star3 = document.getElementById('star-3');
+        setTimeout(() => {
+          star1.style.opacity = "1";
+          star1.style.transform = "scale(1.2)";
+          playSound("pop");
+        }, 400);
 
-            star1.style.opacity = "0.2";
-            star2.style.opacity = "0.2";
-            star3.style.opacity = "0.2";
-
-            setTimeout(() => {
-                star1.style.opacity = "1";
-                star1.style.transform = "scale(1.2)";
-                playSound('pop');
-            }, 400);
-
-            if (score >= 100) {
-                setTimeout(() => {
-                    star2.style.opacity = "1";
-                    star2.style.transform = "scale(1.2)";
-                    playSound('pop');
-                }, 800);
-            }
-
-            if (score >= 150) {
-                setTimeout(() => {
-                    star3.style.opacity = "1";
-                    star3.style.transform = "scale(1.2)";
-                    playSound('pop');
-                }, 1200);
-            }
-
-            playSound('fanfare');
+        if (score >= 100) {
+          setTimeout(() => {
+            star2.style.opacity = "1";
+            star2.style.transform = "scale(1.2)";
+            playSound("pop");
+          }, 800);
         }
+
+        if (score >= 150) {
+          setTimeout(() => {
+            star3.style.opacity = "1";
+            star3.style.transform = "scale(1.2)";
+            playSound("pop");
+          }, 1200);
+        }
+
+        playSound("fanfare");
+      }
     </script>
-</body>
+  </body>
 </html>

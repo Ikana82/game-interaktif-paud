@@ -1,777 +1,1193 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Penyelamat Samudra - Game Sortir PAUD</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #075985;
-            background-image: linear-gradient(to bottom, #0c4a6e, #075985, #0369a1);
-            overflow: hidden;
-            touch-action: none;
-            height: 100vh;
-            height: 100dvh;
-        }
-        .kids-title {
-            font-family: 'Fredoka One', cursive;
-            text-shadow: 3px 3px 0px #0c4a6e;
-        }
-        .kids-font {
-            font-family: 'Fredoka One', cursive;
-        }
-        .ocean-bucket {
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
-        }
-        .btn-3d {
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-        .btn-3d:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0px 0px currentColor;
-        }
-        .bounce-in {
-            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        }
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            50% { transform: scale(1.1); }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .shake-element {
-            animation: shake 0.5s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px) rotate(-2deg); }
-            40%, 80% { transform: translateX(8px) rotate(2deg); }
-        }
-        .float-bubble {
-            animation: floating 4s ease-in-out infinite alternate;
-        }
-        @keyframes floating {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-12px) rotate(3deg); }
-        }
-        .submarine-float {
-            animation: subfloat 6s ease-in-out infinite alternate;
-        }
-        @keyframes subfloat {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(-1deg); }
-            100% { transform: translateY(4px) rotate(1deg); }
-        }
-    </style>
-</head>
-<body class="w-screen flex flex-col justify-between relative overflow-hidden py-3 px-3 sm:p-4 select-none">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=700;800;900&family=Fredoka+One&display=swap"
+      rel="stylesheet"
+    />
 
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #075985;
+        background-image: linear-gradient(to bottom, #0c4a6e, #075985, #0369a1);
+        overflow: hidden;
+        touch-action: none;
+        height: 100vh;
+        height: 100dvh;
+      }
+      .kids-title {
+        font-family: "Fredoka One", cursive;
+        text-shadow: 3px 3px 0px #0c4a6e;
+      }
+      .kids-font {
+        font-family: "Fredoka One", cursive;
+      }
+      .ocean-bucket {
+        transition:
+          transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          box-shadow 0.2s ease;
+      }
+      .btn-3d {
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.1s ease;
+      }
+      .btn-3d:active {
+        transform: translateY(4px);
+        box-shadow: 0 2px 0px 0px currentColor;
+      }
+      .bounce-in {
+        animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      }
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.3);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .shake-element {
+        animation: shake 0.5s ease-in-out;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20%,
+        60% {
+          transform: translateX(-8px) rotate(-2deg);
+        }
+        40%,
+        80% {
+          transform: translateX(8px) rotate(2deg);
+        }
+      }
+      .float-bubble {
+        animation: floating 4s ease-in-out infinite alternate;
+      }
+      @keyframes floating {
+        0% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-12px) rotate(3deg);
+        }
+      }
+      .submarine-float {
+        animation: subfloat 6s ease-in-out infinite alternate;
+      }
+      @keyframes subfloat {
+        0% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-8px) rotate(-1deg);
+        }
+        100% {
+          transform: translateY(4px) rotate(1deg);
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="w-screen flex flex-col justify-between relative overflow-hidden py-3 px-3 sm:p-4 select-none"
+  >
     <!-- Canvas Layer untuk Efek Partikel Air, Gelembung, dan Bintang Kebahagiaan -->
-    <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-35"></canvas>
+    <canvas
+      id="particle-canvas"
+      class="absolute inset-0 w-full h-full pointer-events-none z-35"
+    ></canvas>
 
     <!-- LAYAR MULAI (START SCREEN) -->
-    <div id="screen-start" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-sky-950/90 backdrop-blur-md transition-all duration-500">
-        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-sky-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
-            <!-- Dekorasi Hewan Melayang -->
-            <div class="absolute -top-8 -left-5 text-4xl sm:text-5xl float-bubble" style="animation-delay: 0.2s">🐳</div>
-            <div class="absolute -top-10 right-4 text-4xl sm:text-5xl float-bubble" style="animation-delay: 0.8s">🤿</div>
-            <div class="absolute -bottom-6 -left-3 text-4xl sm:text-5xl float-bubble" style="animation-delay: 1.5s">🐚</div>
-            <div class="absolute -bottom-6 -right-3 text-4xl sm:text-5xl float-bubble" style="animation-delay: 2s">🐢</div>
-            
-            <h1 class="text-2xl sm:text-4xl font-black text-sky-600 kids-title tracking-wider mb-0.5">PENYELAMAT</h1>
-            <h2 class="text-xl sm:text-3xl font-black text-amber-500 kids-title tracking-wider mb-2 sm:mb-4">SAMUDRA! 🌊</h2>
-            
-            <p class="text-sky-950 text-xs sm:text-sm font-bold mb-3 sm:mb-4">Pilahlah hewan laut, sampah, kerang, dan rumput laut pada tempatnya agar laut kembali jernih!</p>
-
-            <!-- Pengisian Nama Pemain -->
-            <div class="bg-sky-50 border-2 border-sky-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 mb-3 sm:mb-4 shadow-inner">
-                <label class="block text-sky-950 font-extrabold text-xs sm:text-base mb-1 kids-font">Siapa namamu, Penyelamat Cilik?</label>
-                <input type="text" id="player-name" placeholder="TULIS NAMAMU..." maxlength="12"
-                       class="w-full text-center text-sm sm:text-lg font-bold bg-white border-2 border-sky-300 rounded-lg sm:rounded-xl py-1 sm:py-1.5 px-3 focus:outline-none focus:border-sky-500 text-sky-950 placeholder-sky-300 uppercase transition-colors">
-            </div>
-
-            <!-- Pemilihan Karakter / Avatar -->
-            <div class="mb-3 sm:mb-4">
-                <p class="text-sky-950 font-black text-xs sm:text-sm mb-1.5 kids-font">Pilih Karakter Penyelammu:</p>
-                <div class="flex justify-center gap-2 sm:gap-3">
-                    <button onclick="selectAvatar('🐱')" id="avatar-cat" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md ring-4 ring-transparent ring-sky-500">🐱</button>
-                    <button onclick="selectAvatar('🦊')" id="avatar-fox" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🦊</button>
-                    <button onclick="selectAvatar('🐼')" id="avatar-panda" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🐼</button>
-                    <button onclick="selectAvatar('🦁')" id="avatar-lion" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🦁</button>
-                </div>
-            </div>
-
-            <!-- Tombol Mulai -->
-            <button onclick="startGame()" class="btn-3d w-full bg-sky-500 hover:bg-sky-400 text-white text-base sm:text-xl kids-font py-2.5 sm:py-3 px-6 rounded-xl sm:rounded-2xl border-2 border-sky-700 shadow-[0_6px_0px_0px_#0369a1] tracking-wider">
-                AYO JELAJAHI LAUT! 🤿
-            </button>
+    <div
+      id="screen-start"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-sky-950/90 backdrop-blur-md transition-all duration-500"
+    >
+      <div
+        class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-sky-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative"
+      >
+        <!-- Dekorasi Hewan Melayang -->
+        <div
+          class="absolute -top-8 -left-5 text-4xl sm:text-5xl float-bubble"
+          style="animation-delay: 0.2s"
+        >
+          🐳
         </div>
+        <div
+          class="absolute -top-10 right-4 text-4xl sm:text-5xl float-bubble"
+          style="animation-delay: 0.8s"
+        >
+          🤿
+        </div>
+        <div
+          class="absolute -bottom-6 -left-3 text-4xl sm:text-5xl float-bubble"
+          style="animation-delay: 1.5s"
+        >
+          🐚
+        </div>
+        <div
+          class="absolute -bottom-6 -right-3 text-4xl sm:text-5xl float-bubble"
+          style="animation-delay: 2s"
+        >
+          🐢
+        </div>
+
+        <h1
+          class="text-2xl sm:text-4xl font-black text-sky-600 kids-title tracking-wider mb-0.5"
+        >
+          PENYELAMAT
+        </h1>
+        <h2
+          class="text-xl sm:text-3xl font-black text-amber-500 kids-title tracking-wider mb-2 sm:mb-4"
+        >
+          SAMUDRA! 🌊
+        </h2>
+
+        <p class="text-sky-950 text-xs sm:text-sm font-bold mb-3 sm:mb-4">
+          Pilahlah hewan laut, sampah, kerang, dan rumput laut pada tempatnya
+          agar laut kembali jernih!
+        </p>
+
+        <!-- Pengisian Nama Pemain -->
+        <div
+          class="bg-sky-50 border-2 border-sky-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 mb-3 sm:mb-4 shadow-inner"
+        >
+          <label
+            class="block text-sky-950 font-extrabold text-xs sm:text-base mb-1 kids-font"
+            >Siapa namamu, Penyelamat Cilik?</label
+          >
+          <input
+            type="text"
+            id="player-name"
+            placeholder="TULIS NAMAMU..."
+            maxlength="12"
+            class="w-full text-center text-sm sm:text-lg font-bold bg-white border-2 border-sky-300 rounded-lg sm:rounded-xl py-1 sm:py-1.5 px-3 focus:outline-none focus:border-sky-500 text-sky-950 placeholder-sky-300 uppercase transition-colors"
+          />
+        </div>
+
+        <!-- Pemilihan Karakter / Avatar -->
+        <div class="mb-3 sm:mb-4">
+          <p
+            class="text-sky-950 font-black text-xs sm:text-sm mb-1.5 kids-font"
+          >
+            Pilih Karakter Penyelammu:
+          </p>
+          <div class="flex justify-center gap-2 sm:gap-3">
+            <button
+              onclick="selectAvatar('🐱')"
+              id="avatar-cat"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md ring-4 ring-transparent ring-sky-500"
+            >
+              🐱
+            </button>
+            <button
+              onclick="selectAvatar('🦊')"
+              id="avatar-fox"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
+            >
+              🦊
+            </button>
+            <button
+              onclick="selectAvatar('🐼')"
+              id="avatar-panda"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
+            >
+              🐼
+            </button>
+            <button
+              onclick="selectAvatar('🦁')"
+              id="avatar-lion"
+              class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md"
+            >
+              🦁
+            </button>
+          </div>
+        </div>
+
+        <!-- Tombol Mulai -->
+        <button
+          onclick="startGame()"
+          class="btn-3d w-full bg-sky-500 hover:bg-sky-400 text-white text-base sm:text-xl kids-font py-2.5 sm:py-3 px-6 rounded-xl sm:rounded-2xl border-2 border-sky-700 shadow-[0_6px_0px_0px_#0369a1] tracking-wider"
+        >
+          AYO JELAJAHI LAUT! 🤿
+        </button>
+      </div>
     </div>
 
     <!-- AREA UTAMA PERMAINAN -->
-    <div id="game-container" class="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-between hidden h-full overflow-hidden z-10">
-        
-        <!-- BAGIAN HEADER ATAS -->
-        <div class="flex items-center justify-between gap-2 mb-1">
-            <!-- Kembali ke Beranda -->
-            <button onclick="showMainMenu()" class="w-8 h-8 sm:w-11 sm:h-11 bg-rose-500 rounded-full border-2 sm:border-4 border-rose-700 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-rose-600 active:scale-90 transition-all">
-                🏠
-            </button>
+    <div
+      id="game-container"
+      class="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-between hidden h-full overflow-hidden z-10"
+    >
+      <!-- BAGIAN HEADER ATAS -->
+      <div class="flex items-center justify-between gap-2 mb-1">
+        <!-- Kembali ke Beranda -->
+        <button
+          onclick="showMainMenu()"
+          class="w-8 h-8 sm:w-11 sm:h-11 bg-rose-500 rounded-full border-2 sm:border-4 border-rose-700 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-rose-600 active:scale-90 transition-all"
+        >
+          🏠
+        </button>
 
-            <!-- Panel Profil & Skor -->
-            <div class="flex-grow max-w-[140px] sm:max-w-xs bg-sky-600 text-white px-2 py-0.5 sm:py-1 rounded-xl border-2 border-white flex items-center justify-between shadow-lg">
-                <div class="flex items-center gap-1 sm:gap-2 overflow-hidden">
-                    <span id="player-avatar-badge" class="text-base sm:text-xl flex-shrink-0">🐱</span>
-                    <span id="player-name-badge" class="kids-font text-[8px] sm:text-xs tracking-wide uppercase truncate max-w-[45px] sm:max-w-[80px]">Pemain</span>
-                </div>
-                <div class="bg-sky-950/40 text-yellow-300 font-extrabold px-1.5 py-0.5 rounded-full text-[10px] sm:text-base kids-font flex items-center gap-0.5">
-                    ⭐ <span id="score-text">0</span>
-                </div>
-            </div>
-
-            <!-- Indikator Tema / Level -->
-            <div class="bg-amber-500 text-white text-[8px] sm:text-xs font-black px-2.5 py-1 rounded-xl border-2 border-white shadow-md uppercase tracking-wider kids-font">
-                MENYORTIR LAUT 🌊
-            </div>
-
-            <!-- Pengontrol Suara -->
-            <button onclick="toggleSound()" id="sound-btn" class="w-8 h-8 sm:w-11 sm:h-11 bg-indigo-400 rounded-full border-2 sm:border-4 border-indigo-600 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-indigo-500 active:scale-90 transition-all">
-                🔊
-            </button>
+        <!-- Panel Profil & Skor -->
+        <div
+          class="flex-grow max-w-[140px] sm:max-w-xs bg-sky-600 text-white px-2 py-0.5 sm:py-1 rounded-xl border-2 border-white flex items-center justify-between shadow-lg"
+        >
+          <div class="flex items-center gap-1 sm:gap-2 overflow-hidden">
+            <span
+              id="player-avatar-badge"
+              class="text-base sm:text-xl flex-shrink-0"
+              >🐱</span
+            >
+            <span
+              id="player-name-badge"
+              class="kids-font text-[8px] sm:text-xs tracking-wide uppercase truncate max-w-[45px] sm:max-w-[80px]"
+              >Pemain</span
+            >
+          </div>
+          <div
+            class="bg-sky-950/40 text-yellow-300 font-extrabold px-1.5 py-0.5 rounded-full text-[10px] sm:text-base kids-font flex items-center gap-0.5"
+          >
+            ⭐ <span id="score-text">0</span>
+          </div>
         </div>
 
-        <!-- BILAH PROGRES PERKEMBANGAN -->
-        <div class="w-full bg-sky-950/20 rounded-full h-2 sm:h-3.5 p-0.5 mb-1 border border-sky-950/10 overflow-hidden relative">
-            <div id="progress-indicator" class="bg-gradient-to-r from-teal-400 to-sky-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+        <!-- Indikator Tema / Level -->
+        <div
+          class="bg-amber-500 text-white text-[8px] sm:text-xs font-black px-2.5 py-1 rounded-xl border-2 border-white shadow-md uppercase tracking-wider kids-font"
+        >
+          MENYORTIR BENDA & HEWAN LAUT 🌊
         </div>
 
-        <!-- PALAGAN UTAMA -->
-        <div class="flex-grow flex flex-col justify-between gap-1.5 sm:gap-3 relative overflow-hidden w-full py-0.5">
-            
-            <!-- INSTRUKSI POPUP PETUNJUK -->
-            <div id="tip-indicator" class="bg-sky-100/90 border border-sky-300 rounded-full px-2.5 py-0.5 text-center text-sky-950 font-extrabold text-[8px] sm:text-[11px] shadow-sm mx-auto animate-pulse flex-shrink-0">
-                🐙 Seret objek laut dari kapal selam ke keranjang yang sesuai di bawah!
-            </div>
+        <!-- Pengontrol Suara -->
+        <button
+          onclick="toggleSound()"
+          id="sound-btn"
+          class="w-8 h-8 sm:w-11 sm:h-11 bg-indigo-400 rounded-full border-2 sm:border-4 border-indigo-600 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-indigo-500 active:scale-90 transition-all"
+        >
+          🔊
+        </button>
+      </div>
 
-            <!-- TENGAH: KAPAL SELAM KUNING TEMPAT SPAWN OBJEK (Melingkar gelembung) -->
-            <div class="flex flex-col items-center justify-center relative flex-grow py-1">
-                <!-- Submarine Decor (Yellow Submarine from photo reference) -->
-                <div class="submarine-float flex flex-col items-center justify-center relative">
-                    <!-- The Submarine Graphic in SVG (Highly cute, styled like image_616a37.jpg) -->
-                    <div class="w-24 h-16 sm:w-36 sm:h-24 text-amber-400 relative">
-                        <svg viewBox="0 0 100 60" class="w-full h-full drop-shadow-xl">
-                            <!-- Propeller -->
-                            <rect x="2" y="24" width="4" height="12" rx="1" fill="#ea580c"/>
-                            <polygon points="4,20 2,10 6,10" fill="#9a3412"/>
-                            <polygon points="4,40 2,50 6,50" fill="#9a3412"/>
-                            <!-- Submarine Body -->
-                            <ellipse cx="50" cy="30" rx="36" ry="22" fill="#fbbf24"/>
-                            <ellipse cx="50" cy="30" rx="32" ry="18" fill="#fcd34d"/>
-                            <!-- Scope / Periscope -->
-                            <rect x="46" y="2" width="8" height="8" fill="#d97706"/>
-                            <rect x="52" y="2" width="10" height="4" fill="#fbbf24"/>
-                            <!-- Fin -->
-                            <path d="M 40,8 L 60,8 L 50,22 Z" fill="#d97706" />
-                            <!-- Windows (Portholes) with white highlights -->
-                            <circle cx="36" cy="30" r="7" fill="#38bdf8" stroke="#d97706" stroke-width="2"/>
-                            <circle cx="36" cy="30" r="5" fill="#bae6fd"/>
-                            <circle cx="64" cy="30" r="7" fill="#38bdf8" stroke="#d97706" stroke-width="2"/>
-                            <circle cx="64" cy="30" r="5" fill="#bae6fd"/>
-                        </svg>
+      <!-- BILAH PROGRES PERKEMBANGAN -->
+      <div
+        class="w-full bg-sky-950/20 rounded-full h-2 sm:h-3.5 p-0.5 mb-1 border border-sky-950/10 overflow-hidden relative"
+      >
+        <div
+          id="progress-indicator"
+          class="bg-gradient-to-r from-teal-400 to-sky-400 h-full rounded-full transition-all duration-300"
+          style="width: 0%"
+        ></div>
+      </div>
 
-                        <!-- SPAWNING BUBBLE containing active items (Fitted on top of the submarine window) -->
-                        <div id="active-item-bubble" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[45%] w-14 h-14 sm:w-20 sm:h-20 bg-white/90 rounded-full border-4 border-dashed border-sky-400 flex flex-col items-center justify-center shadow-2xl cursor-grab active:cursor-grabbing hover:scale-105 transition-all z-20 bounce-in">
-                            <!-- Dynamic Spawning Item inside the bubble -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FEEDBACK TEKS DINAMIS -->
-            <div id="feedback-toast" class="h-3 sm:h-5 flex items-center justify-center text-center text-teal-300 kids-font text-[9px] sm:text-lg font-black tracking-wide flex-shrink-0 mb-1"></div>
-
-            <!-- BAGIAN BAWAH: 4 KERANJANG SORTIR (2x2 Grid on Mobile, 4-Column Row on Laptop) -->
-            <div id="sorting-containers" class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 w-full max-w-lg md:max-w-4xl mx-auto flex-shrink-0">
-                <!-- 4 Baskets will be rendered here dynamically (Hewan Laut, Sampah, Kerang, Tumbuhan) -->
-            </div>
-
+      <!-- PALAGAN UTAMA -->
+      <div
+        class="flex-grow flex flex-col justify-between gap-1.5 sm:gap-3 relative overflow-hidden w-full py-0.5"
+      >
+        <!-- INSTRUKSI POPUP PETUNJUK -->
+        <div
+          id="tip-indicator"
+          class="bg-sky-100/90 border border-sky-300 rounded-full px-2.5 py-0.5 text-center text-sky-950 font-extrabold text-[8px] sm:text-[11px] shadow-sm mx-auto animate-pulse flex-shrink-0"
+        >
+          🐙 Seret objek laut dari kapal selam ke keranjang yang sesuai di
+          bawah!
         </div>
+
+        <!-- TENGAH: KAPAL SELAM KUNING TEMPAT SPAWN OBJEK (Melingkar gelembung) -->
+        <div
+          class="flex flex-col items-center justify-center relative flex-grow py-1"
+        >
+          <!-- Submarine Decor (Yellow Submarine from photo reference) -->
+          <div
+            class="submarine-float flex flex-col items-center justify-center relative"
+          >
+            <!-- The Submarine Graphic in SVG (Highly cute, styled like image_616a37.jpg) -->
+            <div class="w-24 h-16 sm:w-36 sm:h-24 text-amber-400 relative">
+              <svg viewBox="0 0 100 60" class="w-full h-full drop-shadow-xl">
+                <!-- Propeller -->
+                <rect
+                  x="2"
+                  y="24"
+                  width="4"
+                  height="12"
+                  rx="1"
+                  fill="#ea580c"
+                />
+                <polygon points="4,20 2,10 6,10" fill="#9a3412" />
+                <polygon points="4,40 2,50 6,50" fill="#9a3412" />
+                <!-- Submarine Body -->
+                <ellipse cx="50" cy="30" rx="36" ry="22" fill="#fbbf24" />
+                <ellipse cx="50" cy="30" rx="32" ry="18" fill="#fcd34d" />
+                <!-- Scope / Periscope -->
+                <rect x="46" y="2" width="8" height="8" fill="#d97706" />
+                <rect x="52" y="2" width="10" height="4" fill="#fbbf24" />
+                <!-- Fin -->
+                <path d="M 40,8 L 60,8 L 50,22 Z" fill="#d97706" />
+                <!-- Windows (Portholes) with white highlights -->
+                <circle
+                  cx="36"
+                  cy="30"
+                  r="7"
+                  fill="#38bdf8"
+                  stroke="#d97706"
+                  stroke-width="2"
+                />
+                <circle cx="36" cy="30" r="5" fill="#bae6fd" />
+                <circle
+                  cx="64"
+                  cy="30"
+                  r="7"
+                  fill="#38bdf8"
+                  stroke="#d97706"
+                  stroke-width="2"
+                />
+                <circle cx="64" cy="30" r="5" fill="#bae6fd" />
+              </svg>
+
+              <!-- SPAWNING BUBBLE containing active items (Fitted on top of the submarine window) -->
+              <div
+                id="active-item-bubble"
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[45%] w-14 h-14 sm:w-20 sm:h-20 bg-white/90 rounded-full border-4 border-dashed border-sky-400 flex flex-col items-center justify-center shadow-2xl cursor-grab active:cursor-grabbing hover:scale-105 transition-all z-20 bounce-in"
+              >
+                <!-- Dynamic Spawning Item inside the bubble -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FEEDBACK TEKS DINAMIS -->
+        <div
+          id="feedback-toast"
+          class="h-3 sm:h-5 flex items-center justify-center text-center text-teal-300 kids-font text-[9px] sm:text-lg font-black tracking-wide flex-shrink-0 mb-1"
+        ></div>
+
+        <!-- BAGIAN BAWAH: 4 KERANJANG SORTIR (2x2 Grid on Mobile, 4-Column Row on Laptop) -->
+        <div
+          id="sorting-containers"
+          class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 w-full max-w-lg md:max-w-4xl mx-auto flex-shrink-0"
+        >
+          <!-- 4 Baskets will be rendered here dynamically (Hewan Laut, Sampah, Kerang, Tumbuhan) -->
+        </div>
+      </div>
     </div>
 
     <!-- LAYAR HADIAH KEMENANGAN (WIN SCREEN) -->
-    <div id="screen-win" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-sky-950/95 backdrop-blur-md transition-all duration-500 hidden">
-        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-emerald-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
-            <div class="text-5xl sm:text-7xl mb-1 float-bubble">🏆</div>
-            <h2 class="text-lg sm:text-3xl font-black text-emerald-600 kids-title mb-0.5">SAMUDRA KEMBALI BERSIH!</h2>
-            <p id="win-salute" class="text-sky-950 text-[10px] sm:text-sm font-bold mb-3">Kamu adalah penyelamat laut yang luar biasa pintar!</p>
-            
-            <!-- Bintang Penghargaan -->
-            <div class="flex justify-center gap-1 mb-2.5">
-                <span id="star-1" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
-                <span id="star-2" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
-                <span id="star-3" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
-            </div>
+    <div
+      id="screen-win"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-sky-950/95 backdrop-blur-md transition-all duration-500 hidden"
+    >
+      <div
+        class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-emerald-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative"
+      >
+        <div class="text-5xl sm:text-7xl mb-1 float-bubble">🏆</div>
+        <h2
+          class="text-lg sm:text-3xl font-black text-emerald-600 kids-title mb-0.5"
+        >
+          SAMUDRA KEMBALI BERSIH!
+        </h2>
+        <p
+          id="win-salute"
+          class="text-sky-950 text-[10px] sm:text-sm font-bold mb-3"
+        >
+          Kamu adalah penyelamat laut yang luar biasa pintar!
+        </p>
 
-            <!-- Kotak Statistik -->
-            <div class="bg-emerald-50 border-2 border-emerald-200 rounded-lg sm:rounded-xl p-2.5 mb-3">
-                <span class="text-[8px] sm:text-xs font-bold text-emerald-800 block uppercase tracking-widest">SKOR AKHIR PENYELAMAT</span>
-                <span id="win-score" class="text-xl sm:text-3xl font-black text-emerald-950 kids-font">0</span>
-                <span class="text-[8px] sm:text-xs font-bold text-sky-600 block mt-0.5">Terima kasih telah membersihkan rumah kami! 🐳🐢</span>
-            </div>
-
-            <!-- Tombol Navigasi Akhir -->
-            <div class="flex gap-2 justify-center">
-                <button onclick="showMainMenu()" class="btn-3d flex-1 bg-amber-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-amber-600 shadow-[0_4px_0_0_#d97706] active:scale-95 text-[10px] sm:text-sm kids-font">
-                    MENU UTAMA 🏠
-                </button>
-                <button onclick="startGame()" class="btn-3d flex-1 bg-emerald-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-emerald-600 shadow-[0_4px_0_0_#059669] active:scale-95 text-[10px] sm:text-sm kids-font">
-                    MAIN LAGI 🔄
-                </button>
-            </div>
+        <!-- Bintang Penghargaan -->
+        <div class="flex justify-center gap-1 mb-2.5">
+          <span
+            id="star-1"
+            class="text-2xl sm:text-4xl opacity-30 transition-all duration-500"
+            >⭐</span
+          >
+          <span
+            id="star-2"
+            class="text-2xl sm:text-4xl opacity-30 transition-all duration-500"
+            >⭐</span
+          >
+          <span
+            id="star-3"
+            class="text-2xl sm:text-4xl opacity-30 transition-all duration-500"
+            >⭐</span
+          >
         </div>
+
+        <!-- Kotak Statistik -->
+        <div
+          class="bg-emerald-50 border-2 border-emerald-200 rounded-lg sm:rounded-xl p-2.5 mb-3"
+        >
+          <span
+            class="text-[8px] sm:text-xs font-bold text-emerald-800 block uppercase tracking-widest"
+            >SKOR AKHIR PENYELAMAT</span
+          >
+          <span
+            id="win-score"
+            class="text-xl sm:text-3xl font-black text-emerald-950 kids-font"
+            >0</span
+          >
+          <span
+            class="text-[8px] sm:text-xs font-bold text-sky-600 block mt-0.5"
+            >Terima kasih telah membersihkan rumah kami! 🐳🐢</span
+          >
+        </div>
+
+        <!-- Tombol Navigasi Akhir -->
+        <div class="flex gap-2 justify-center">
+          <button
+            onclick="showMainMenu()"
+            class="btn-3d flex-1 bg-amber-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-amber-600 shadow-[0_4px_0_0_#d97706] active:scale-95 text-[10px] sm:text-sm kids-font"
+          >
+            MENU UTAMA 🏠
+          </button>
+          <button
+            onclick="startGame()"
+            class="btn-3d flex-1 bg-emerald-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-emerald-600 shadow-[0_4px_0_0_#059669] active:scale-95 text-[10px] sm:text-sm kids-font"
+          >
+            MAIN LAGI 🔄
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- LOGIKA & KONTROL SUARA AUDIO SINTESIS -->
     <script>
-        // Ocean Items Database
-        const oceanItemsDataset = [
-            // HEWAN LAUT
-            { id: "fish", category: "hewan", name: "Paus Biru", emoji: "🐳", color: "#38bdf8", description: "Selamatkan Paus!" },
-            { id: "turtle", category: "hewan", name: "Penyu", emoji: "🐢", color: "#22c55e", description: "Bantu Penyu berenang!" },
-            { id: "octopus", category: "hewan", name: "Gurita", emoji: "🐙", color: "#ec4899", description: "Gurita riang!" },
-            { id: "jellyfish", category: "hewan", name: "Ubur-ubur", emoji: "🪼", color: "#c084fc", description: "Ubur-ubur melayang!" },
-            
-            // SAMPAH LAUT (Edukatif, untuk dibersihkan!)
-            { id: "bottle", category: "sampah", name: "Botol Plastik", emoji: "🥤", color: "#ef4444", description: "Ambil sampah plastik!" },
-            { id: "bag", category: "sampah", name: "Kantong Plastik", emoji: "🛍️", color: "#f43f5e", description: "Bersihkan plastik laut!" },
-            { id: "tin", category: "sampah", name: "Kaleng Bekas", emoji: "🥫", color: "#e11d48", description: "Daur ulang kaleng logam!" },
-            { id: "tire", category: "sampah", name: "Ban Bekas", emoji: "🛞", color: "#475569", description: "Singkirkan ban kotor!" },
+      // Ocean Items Database
+      const oceanItemsDataset = [
+        // HEWAN LAUT
+        {
+          id: "fish",
+          category: "hewan",
+          name: "Paus Biru",
+          emoji: "🐳",
+          color: "#38bdf8",
+          description: "Selamatkan Paus!",
+        },
+        {
+          id: "turtle",
+          category: "hewan",
+          name: "Penyu",
+          emoji: "🐢",
+          color: "#22c55e",
+          description: "Bantu Penyu berenang!",
+        },
+        {
+          id: "octopus",
+          category: "hewan",
+          name: "Gurita",
+          emoji: "🐙",
+          color: "#ec4899",
+          description: "Gurita riang!",
+        },
+        {
+          id: "jellyfish",
+          category: "hewan",
+          name: "Ubur-ubur",
+          emoji: "🪼",
+          color: "#c084fc",
+          description: "Ubur-ubur melayang!",
+        },
 
-            // KERANG LAUT
-            { id: "scallop", category: "kerang", name: "Kerang Kipas", emoji: "🐚", color: "#fdba74", description: "Kumpulkan kerang cantik!" },
-            { id: "spiral", category: "kerang", name: "Keong Laut", emoji: "🐌", color: "#f59e0b", description: "Koleksi cangkang spiral!" },
-            { id: "pearl", category: "kerang", name: "Tiram Mutiara", emoji: "🦪", color: "#e2e8f0", description: "Mutiara laut berkilau!" },
+        // SAMPAH LAUT (Edukatif, untuk dibersihkan!)
+        {
+          id: "bottle",
+          category: "sampah",
+          name: "Botol Plastik",
+          emoji: "🥤",
+          color: "#ef4444",
+          description: "Ambil sampah plastik!",
+        },
+        {
+          id: "bag",
+          category: "sampah",
+          name: "Kantong Plastik",
+          emoji: "🛍️",
+          color: "#f43f5e",
+          description: "Bersihkan plastik laut!",
+        },
+        {
+          id: "tin",
+          category: "sampah",
+          name: "Kaleng Bekas",
+          emoji: "🥫",
+          color: "#e11d48",
+          description: "Daur ulang kaleng logam!",
+        },
+        {
+          id: "tire",
+          category: "sampah",
+          name: "Ban Bekas",
+          emoji: "🛞",
+          color: "#475569",
+          description: "Singkirkan ban kotor!",
+        },
 
-            // RUMPUT LAUT & ALGA
-            { id: "kelp", category: "tumbuhan", name: "Kelp Hijau", emoji: "🌿", color: "#15803d", description: "Tanam kembali Kelp!" },
-            { id: "algae", category: "tumbuhan", name: "Alga Merah", emoji: "🍁", color: "#b91c1c", description: "Lestarikan Alga merah!" },
-            { id: "seagrass", category: "tumbuhan", name: "Lamun Laut", emoji: "🌱", color: "#4ade80", description: "Jaga hutan lamun!" }
-        ];
+        // KERANG LAUT
+        {
+          id: "scallop",
+          category: "kerang",
+          name: "Kerang Kipas",
+          emoji: "🐚",
+          color: "#fdba74",
+          description: "Kumpulkan kerang cantik!",
+        },
+        {
+          id: "spiral",
+          category: "kerang",
+          name: "Keong Laut",
+          emoji: "🐌",
+          color: "#f59e0b",
+          description: "Koleksi cangkang spiral!",
+        },
+        {
+          id: "pearl",
+          category: "kerang",
+          name: "Tiram Mutiara",
+          emoji: "🦪",
+          color: "#e2e8f0",
+          description: "Mutiara laut berkilau!",
+        },
 
-        // Keranjang Klasifikasi Bawah
-        const categoryBuckets = [
-            { id: "hewan", title: "Hewan Laut", emoji: "🐠", borderClass: "border-sky-400", bgClass: "bg-sky-500/10", tagBg: "bg-sky-600", color: "#0ea5e9" },
-            { id: "sampah", title: "Sampah Laut", emoji: "🗑️", borderClass: "border-rose-400", bgClass: "bg-rose-500/10", tagBg: "bg-rose-600", color: "#ef4444" },
-            { id: "kerang", title: "Kerang Laut", emoji: "🐚", borderClass: "border-amber-400", bgClass: "bg-amber-500/10", tagBg: "bg-amber-600", color: "#f59e0b" },
-            { id: "tumbuhan", title: "Rumput Laut", emoji: "🌿", borderClass: "border-emerald-400", bgClass: "bg-emerald-500/10", tagBg: "bg-emerald-600", color: "#10b981" }
-        ];
+        // RUMPUT LAUT & ALGA
+        {
+          id: "kelp",
+          category: "tumbuhan",
+          name: "Kelp Hijau",
+          emoji: "🌿",
+          color: "#15803d",
+          description: "Tanam kembali Kelp!",
+        },
+        {
+          id: "algae",
+          category: "tumbuhan",
+          name: "Alga Merah",
+          emoji: "🍁",
+          color: "#b91c1c",
+          description: "Lestarikan Alga merah!",
+        },
+        {
+          id: "seagrass",
+          category: "tumbuhan",
+          name: "Lamun Laut",
+          emoji: "🌱",
+          color: "#4ade80",
+          description: "Jaga hutan lamun!",
+        },
+      ];
 
-        let selectedAvatar = '🐱';
-        let playerName = 'PINTAR';
-        let score = 0;
-        let isSoundEnabled = true;
-        let activeItem = null;
-        let matchedCount = 0;
-        let remainingItems = [];
-        let totalItemsInRound = 12;
-        let selectedBucketForTap = null;
+      // Keranjang Klasifikasi Bawah
+      const categoryBuckets = [
+        {
+          id: "hewan",
+          title: "Hewan Laut",
+          emoji: "🐠",
+          borderClass: "border-sky-400",
+          bgClass: "bg-sky-500/10",
+          tagBg: "bg-sky-600",
+          color: "#0ea5e9",
+        },
+        {
+          id: "sampah",
+          title: "Sampah Laut",
+          emoji: "🗑️",
+          borderClass: "border-rose-400",
+          bgClass: "bg-rose-500/10",
+          tagBg: "bg-rose-600",
+          color: "#ef4444",
+        },
+        {
+          id: "kerang",
+          title: "Kerang Laut",
+          emoji: "🐚",
+          borderClass: "border-amber-400",
+          bgClass: "bg-amber-500/10",
+          tagBg: "bg-amber-600",
+          color: "#f59e0b",
+        },
+        {
+          id: "tumbuhan",
+          title: "Rumput Laut",
+          emoji: "🌿",
+          borderClass: "border-emerald-400",
+          bgClass: "bg-emerald-500/10",
+          tagBg: "bg-emerald-600",
+          color: "#10b981",
+        },
+      ];
 
-        // Inisialisasi Kanvas untuk Bubble Laut & Partikel Sukses
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let backgroundBubbles = [];
+      let selectedAvatar = "🐱";
+      let playerName = "PINTAR";
+      let score = 0;
+      let isSoundEnabled = true;
+      let activeItem = null;
+      let matchedCount = 0;
+      let remainingItems = [];
+      let totalItemsInRound = 12;
+      let selectedBucketForTap = null;
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+      // Inisialisasi Kanvas untuk Bubble Laut & Partikel Sukses
+      const canvas = document.getElementById("particle-canvas");
+      const ctx = canvas.getContext("2d");
+      let particles = [];
+      let backgroundBubbles = [];
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      // Gelembung air bawah laut statis/mengalir di latar belakang
+      class BackgroundBubble {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = canvas.height + Math.random() * 100;
+          this.size = Math.random() * 15 + 5;
+          this.speedY = Math.random() * -1.5 - 0.5;
+          this.drift = Math.sin(Math.random() * 2) * 0.2;
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        // Gelembung air bawah laut statis/mengalir di latar belakang
-        class BackgroundBubble {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = canvas.height + Math.random() * 100;
-                this.size = Math.random() * 15 + 5;
-                this.speedY = Math.random() * -1.5 - 0.5;
-                this.drift = Math.sin(Math.random() * 2) * 0.2;
-            }
-            update() {
-                this.y += this.speedY;
-                this.x += this.drift;
-                if (this.y < -30) {
-                    this.y = canvas.height + 30;
-                    this.x = Math.random() * canvas.width;
-                }
-            }
-            draw() {
-                ctx.save();
-                ctx.strokeStyle = "rgba(186, 230, 253, 0.25)";
-                ctx.fillStyle = "rgba(186, 230, 253, 0.05)";
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                // Bubble highlight sheen
-                ctx.beginPath();
-                ctx.arc(this.x - this.size/3, this.y - this.size/3, this.size/4, 0, Math.PI*2);
-                ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
-                ctx.fill();
-                ctx.restore();
-            }
+        update() {
+          this.y += this.speedY;
+          this.x += this.drift;
+          if (this.y < -30) {
+            this.y = canvas.height + 30;
+            this.x = Math.random() * canvas.width;
+          }
         }
-
-        // Inisialisasi gelembung latar belakang
-        for (let i = 0; i < 15; i++) {
-            backgroundBubbles.push(new BackgroundBubble());
+        draw() {
+          ctx.save();
+          ctx.strokeStyle = "rgba(186, 230, 253, 0.25)";
+          ctx.fillStyle = "rgba(186, 230, 253, 0.05)";
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          // Bubble highlight sheen
+          ctx.beginPath();
+          ctx.arc(
+            this.x - this.size / 3,
+            this.y - this.size / 3,
+            this.size / 4,
+            0,
+            Math.PI * 2,
+          );
+          ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+          ctx.fill();
+          ctx.restore();
         }
+      }
 
-        // Sintesis Audio Ceria menggunakan Web Audio API murni
-        function playSound(type) {
-            if (!isSoundEnabled) return;
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = audioCtx.currentTime;
+      // Inisialisasi gelembung latar belakang
+      for (let i = 0; i < 15; i++) {
+        backgroundBubbles.push(new BackgroundBubble());
+      }
 
-                if (type === 'pop') {
-                    // Bubble pop sound effect
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(300, now);
-                    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.06);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(now + 0.06);
-                } 
-                else if (type === 'correct') {
-                    // Harmonious marine bells
-                    const notes = [440, 554.37, 659.25, 880];
-                    notes.forEach((freq, idx) => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
-                        gain.gain.setValueAtTime(0.08, now + idx * 0.06);
-                        gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.06 + 0.18);
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + idx * 0.06);
-                        osc.stop(now + idx * 0.06 + 0.18);
-                    });
-                } 
-                else if (type === 'wrong') {
-                    // Gentle bubbly rejection
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(180, now);
-                    osc.frequency.linearRampToValueAtTime(70, now + 0.35);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(now + 0.35);
-                } 
-                else if (type === 'tada') {
-                    // Undersea celebration fanfare
-                    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
-                    notes.forEach((freq, idx) => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                        gain.gain.setValueAtTime(0.1, now + idx * 0.08);
-                        gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.08 + 0.4);
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + idx * 0.08);
-                        osc.stop(now + idx * 0.08 + 0.4);
-                    });
-                }
-            } catch(e) {
-                console.log("Audio API issue: ", e);
-            }
-        }
+      // Sintesis Audio Ceria menggunakan Web Audio API murni
+      function playSound(type) {
+        if (!isSoundEnabled) return;
+        try {
+          const audioCtx = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+          const now = audioCtx.currentTime;
 
-        function toggleSound() {
-            isSoundEnabled = !isSoundEnabled;
-            const btn = document.getElementById('sound-btn');
-            if (isSoundEnabled) {
-                btn.textContent = "🔊";
-                btn.className = btn.className.replace('bg-gray-400 border-gray-600', 'bg-indigo-400 border-indigo-600');
-                playSound('pop');
-            } else {
-                btn.textContent = "🔇";
-                btn.className = btn.className.replace('bg-indigo-400 border-indigo-600', 'bg-gray-400 border-gray-600');
-            }
-        }
-
-        // Partikel Kemenangan Berbentuk Bintang Mini
-        class StarParticle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.size = Math.random() * 5 + 4;
-                this.speedX = Math.random() * 6 - 3;
-                this.speedY = Math.random() * -5 - 2;
-                this.gravity = 0.16;
-                this.opacity = 1;
-                this.angle = Math.random() * Math.PI * 2;
-                this.spin = Math.random() * 0.08 - 0.04;
-            }
-            update() {
-                this.speedY += this.gravity;
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.angle += this.spin;
-                this.opacity -= 0.025;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = Math.max(0, this.opacity);
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
-                ctx.beginPath();
-                ctx.fillStyle = this.color;
-                for (let i = 0; i < 5; i++) {
-                    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size,
-                               Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
-                    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (this.size/2),
-                               Math.sin((54 + i * 72) * Math.PI / 180) * (this.size/2));
-                }
-                ctx.closePath();
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        function triggerSuccessBurst(x, y, color) {
-            for (let i = 0; i < 20; i++) {
-                particles.push(new StarParticle(x, y, color));
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Menggambar gelembung laut di latar belakang
-            backgroundBubbles.forEach(b => {
-                b.update();
-                b.draw();
+          if (type === "pop") {
+            // Bubble pop sound effect
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.exponentialRampToValueAtTime(1100, now + 0.06);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(now + 0.06);
+          } else if (type === "correct") {
+            // Harmonious marine bells
+            const notes = [440, 554.37, 659.25, 880];
+            notes.forEach((freq, idx) => {
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+              gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+              gain.gain.exponentialRampToValueAtTime(
+                0.005,
+                now + idx * 0.06 + 0.18,
+              );
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start(now + idx * 0.06);
+              osc.stop(now + idx * 0.06 + 0.18);
             });
-
-            // Menggambar partikel bintang kemenangan
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].opacity <= 0) {
-                    particles.splice(i, 1);
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // Mengatur Karakter/Avatar Pilihan Anak
-        function selectAvatar(avatar) {
-            selectedAvatar = avatar;
-            ['avatar-cat', 'avatar-fox', 'avatar-panda', 'avatar-lion'].forEach(id => {
-                document.getElementById(id).classList.remove('ring-4', 'ring-sky-400', 'bg-sky-200');
+          } else if (type === "wrong") {
+            // Gentle bubbly rejection
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(180, now);
+            osc.frequency.linearRampToValueAtTime(70, now + 0.35);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(now + 0.35);
+          } else if (type === "tada") {
+            // Undersea celebration fanfare
+            const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+            notes.forEach((freq, idx) => {
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+              gain.gain.setValueAtTime(0.1, now + idx * 0.08);
+              gain.gain.exponentialRampToValueAtTime(
+                0.005,
+                now + idx * 0.08 + 0.4,
+              );
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start(now + idx * 0.08);
+              osc.stop(now + idx * 0.08 + 0.4);
             });
-            const selId = avatar === '🐱' ? 'avatar-cat' : avatar === '🦊' ? 'avatar-fox' : avatar === '🐼' ? 'avatar-panda' : 'avatar-lion';
-            document.getElementById(selId).classList.add('ring-4', 'ring-sky-400', 'bg-sky-200');
-            playSound('pop');
+          }
+        } catch (e) {
+          console.log("Audio API issue: ", e);
+        }
+      }
+
+      function toggleSound() {
+        isSoundEnabled = !isSoundEnabled;
+        const btn = document.getElementById("sound-btn");
+        if (isSoundEnabled) {
+          btn.textContent = "🔊";
+          btn.className = btn.className.replace(
+            "bg-gray-400 border-gray-600",
+            "bg-indigo-400 border-indigo-600",
+          );
+          playSound("pop");
+        } else {
+          btn.textContent = "🔇";
+          btn.className = btn.className.replace(
+            "bg-indigo-400 border-indigo-600",
+            "bg-gray-400 border-gray-600",
+          );
+        }
+      }
+
+      // Partikel Kemenangan Berbentuk Bintang Mini
+      class StarParticle {
+        constructor(x, y, color) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.size = Math.random() * 5 + 4;
+          this.speedX = Math.random() * 6 - 3;
+          this.speedY = Math.random() * -5 - 2;
+          this.gravity = 0.16;
+          this.opacity = 1;
+          this.angle = Math.random() * Math.PI * 2;
+          this.spin = Math.random() * 0.08 - 0.04;
+        }
+        update() {
+          this.speedY += this.gravity;
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.angle += this.spin;
+          this.opacity -= 0.025;
+        }
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, this.opacity);
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.angle);
+          ctx.beginPath();
+          ctx.fillStyle = this.color;
+          for (let i = 0; i < 5; i++) {
+            ctx.lineTo(
+              Math.cos(((18 + i * 72) * Math.PI) / 180) * this.size,
+              Math.sin(((18 + i * 72) * Math.PI) / 180) * this.size,
+            );
+            ctx.lineTo(
+              Math.cos(((54 + i * 72) * Math.PI) / 180) * (this.size / 2),
+              Math.sin(((54 + i * 72) * Math.PI) / 180) * (this.size / 2),
+            );
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      function triggerSuccessBurst(x, y, color) {
+        for (let i = 0; i < 20; i++) {
+          particles.push(new StarParticle(x, y, color));
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Menggambar gelembung laut di latar belakang
+        backgroundBubbles.forEach((b) => {
+          b.update();
+          b.draw();
+        });
+
+        // Menggambar partikel bintang kemenangan
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update();
+          particles[i].draw();
+          if (particles[i].opacity <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Mengatur Karakter/Avatar Pilihan Anak
+      function selectAvatar(avatar) {
+        selectedAvatar = avatar;
+        ["avatar-cat", "avatar-fox", "avatar-panda", "avatar-lion"].forEach(
+          (id) => {
+            document
+              .getElementById(id)
+              .classList.remove("ring-4", "ring-sky-400", "bg-sky-200");
+          },
+        );
+        const selId =
+          avatar === "🐱"
+            ? "avatar-cat"
+            : avatar === "🦊"
+              ? "avatar-fox"
+              : avatar === "🐼"
+                ? "avatar-panda"
+                : "avatar-lion";
+        document
+          .getElementById(selId)
+          .classList.add("ring-4", "ring-sky-400", "bg-sky-200");
+        playSound("pop");
+      }
+
+      function showMainMenu() {
+        document.getElementById("screen-start").classList.remove("hidden");
+        document.getElementById("game-container").classList.add("hidden");
+        document.getElementById("screen-win").classList.add("hidden");
+      }
+
+      // Pengesetan Awal Game
+      function startGame() {
+        const val = document.getElementById("player-name").value.trim();
+        playerName = val.length > 0 ? val.toUpperCase() : "PENYELAM CILIK";
+
+        document.getElementById("player-avatar-badge").textContent =
+          selectedAvatar;
+        document.getElementById("player-name-badge").textContent = playerName;
+
+        document.getElementById("screen-start").classList.add("hidden");
+        document.getElementById("screen-win").classList.add("hidden");
+        document.getElementById("game-container").classList.remove("hidden");
+
+        score = 0;
+        matchedCount = 0;
+        document.getElementById("score-text").textContent = score;
+        document.getElementById("progress-indicator").style.width = "0%";
+        document.getElementById("feedback-toast").textContent = "";
+        selectedBucketForTap = null;
+
+        // Mempersiapkan item acak untuk sesi permainan ini
+        remainingItems = [];
+        const shuffledDataset = [...oceanItemsDataset].sort(
+          () => Math.random() - 0.5,
+        );
+        for (let i = 0; i < totalItemsInRound; i++) {
+          remainingItems.push(shuffledDataset[i % shuffledDataset.length]);
         }
 
-        function showMainMenu() {
-            document.getElementById('screen-start').classList.remove('hidden');
-            document.getElementById('game-container').classList.add('hidden');
-            document.getElementById('screen-win').classList.add('hidden');
-        }
+        renderBuckets();
+        spawnNextItem();
+        playSound("pop");
+      }
 
-        // Pengesetan Awal Game
-        function startGame() {
-            const val = document.getElementById('player-name').value.trim();
-            playerName = val.length > 0 ? val.toUpperCase() : "PENYELAM CILIK";
+      // Tampilkan 4 Keranjang Klasifikasi di Sebelah Bawah
+      function renderBuckets() {
+        const container = document.getElementById("sorting-containers");
+        container.innerHTML = "";
 
-            document.getElementById('player-avatar-badge').textContent = selectedAvatar;
-            document.getElementById('player-name-badge').textContent = playerName;
+        categoryBuckets.forEach((bucket) => {
+          const col = document.createElement("div");
+          col.id = `bucket-${bucket.id}`;
+          // Gaya kartu komik ceria tahan terpotong di desktop (grid-cols-2 md:grid-cols-4)
+          col.className = `ocean-bucket flex flex-col items-center justify-between p-2 sm:p-3 bg-white border-4 ${bucket.borderClass} rounded-2xl shadow-xl cursor-pointer ${bucket.bgClass} relative h-20 sm:h-28`;
 
-            document.getElementById('screen-start').classList.add('hidden');
-            document.getElementById('screen-win').classList.add('hidden');
-            document.getElementById('game-container').classList.remove('hidden');
+          col.onclick = () => {
+            handleMatchingAttempt(bucket.id);
+          };
 
-            score = 0;
-            matchedCount = 0;
-            document.getElementById('score-text').textContent = score;
-            document.getElementById('progress-indicator').style.width = "0%";
-            document.getElementById('feedback-toast').textContent = "";
-            selectedBucketForTap = null;
+          // Drag and drop listeners
+          col.addEventListener("dragover", (e) => e.preventDefault());
+          col.addEventListener("dragenter", (e) => {
+            e.preventDefault();
+            col.classList.add("scale-105", "bg-white/80");
+          });
+          col.addEventListener("dragleave", () => {
+            col.classList.remove("scale-105", "bg-white/80");
+          });
+          col.addEventListener("drop", (e) => {
+            e.preventDefault();
+            col.classList.remove("scale-105", "bg-white/80");
+            const droppedCategory = e.dataTransfer.getData("text/plain");
+            handleMatchingAttempt(bucket.id);
+          });
 
-            // Mempersiapkan item acak untuk sesi permainan ini
-            remainingItems = [];
-            const shuffledDataset = [...oceanItemsDataset].sort(() => Math.random() - 0.5);
-            for (let i = 0; i < totalItemsInRound; i++) {
-                remainingItems.push(shuffledDataset[i % shuffledDataset.length]);
-            }
-
-            renderBuckets();
-            spawnNextItem();
-            playSound('pop');
-        }
-
-        // Tampilkan 4 Keranjang Klasifikasi di Sebelah Bawah
-        function renderBuckets() {
-            const container = document.getElementById('sorting-containers');
-            container.innerHTML = "";
-
-            categoryBuckets.forEach(bucket => {
-                const col = document.createElement('div');
-                col.id = `bucket-${bucket.id}`;
-                // Gaya kartu komik ceria tahan terpotong di desktop (grid-cols-2 md:grid-cols-4)
-                col.className = `ocean-bucket flex flex-col items-center justify-between p-2 sm:p-3 bg-white border-4 ${bucket.borderClass} rounded-2xl shadow-xl cursor-pointer ${bucket.bgClass} relative h-20 sm:h-28`;
-                
-                col.onclick = () => {
-                    handleMatchingAttempt(bucket.id);
-                };
-
-                // Drag and drop listeners
-                col.addEventListener('dragover', (e) => e.preventDefault());
-                col.addEventListener('dragenter', (e) => {
-                    e.preventDefault();
-                    col.classList.add('scale-105', 'bg-white/80');
-                });
-                col.addEventListener('dragleave', () => {
-                    col.classList.remove('scale-105', 'bg-white/80');
-                });
-                col.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    col.classList.remove('scale-105', 'bg-white/80');
-                    const droppedCategory = e.dataTransfer.getData('text/plain');
-                    handleMatchingAttempt(bucket.id);
-                });
-
-                col.innerHTML = `
+          col.innerHTML = `
                     <div class="flex items-center justify-center gap-1 sm:gap-2 flex-grow">
                         <span class="text-3xl sm:text-5xl select-none pointer-events-none transform hover:scale-110 transition-transform">${bucket.emoji}</span>
                     </div>
                     <span class="${bucket.tagBg} text-white font-black text-[8px] sm:text-[10px] uppercase px-2 py-0.5 rounded-full tracking-wider w-full text-center truncate select-none pointer-events-none">${bucket.title}</span>
                 `;
 
-                container.appendChild(col);
-            });
+          container.appendChild(col);
+        });
+      }
+
+      // Munculkan Objek Laut Baru dari Kapal Selam
+      function spawnNextItem() {
+        if (remainingItems.length === 0) {
+          concludeGame();
+          return;
         }
 
-        // Munculkan Objek Laut Baru dari Kapal Selam
-        function spawnNextItem() {
-            if (remainingItems.length === 0) {
-                concludeGame();
-                return;
-            }
+        activeItem = remainingItems.pop();
+        const bubble = document.getElementById("active-item-bubble");
 
-            activeItem = remainingItems.pop();
-            const bubble = document.getElementById('active-item-bubble');
-            
-            bubble.classList.remove('bounce-in');
-            void bubble.offsetWidth; // Trigger reflow
-            bubble.classList.add('bounce-in');
+        bubble.classList.remove("bounce-in");
+        void bubble.offsetWidth; // Trigger reflow
+        bubble.classList.add("bounce-in");
 
-            bubble.innerHTML = `
+        bubble.innerHTML = `
                 <div class="flex flex-col items-center justify-center overflow-hidden max-w-full">
                     <span class="text-2xl sm:text-4xl select-none pointer-events-none">${activeItem.emoji}</span>
                     <span class="text-[7px] sm:text-[9px] font-black text-sky-950 tracking-wider uppercase mt-0.5 select-none pointer-events-none truncate max-w-[85%]">${activeItem.name}</span>
                 </div>
             `;
 
-            // Setup Seret (Drag)
-            bubble.draggable = true;
-            bubble.ondragstart = (e) => {
-                e.dataTransfer.setData('text/plain', activeItem.category);
-                playSound('pop');
-            };
+        // Setup Seret (Drag)
+        bubble.draggable = true;
+        bubble.ondragstart = (e) => {
+          e.dataTransfer.setData("text/plain", activeItem.category);
+          playSound("pop");
+        };
 
-            // Setup Klik (Ketuk Bubble untuk Masuk ke Mode Berkedip)
-            bubble.onclick = (e) => {
-                e.stopPropagation();
-                playSound('pop');
-                highlightActiveItemForTap();
-            };
+        // Setup Klik (Ketuk Bubble untuk Masuk ke Mode Berkedip)
+        bubble.onclick = (e) => {
+          e.stopPropagation();
+          playSound("pop");
+          highlightActiveItemForTap();
+        };
 
-            // Kontrol Seret khusus Layar Sentuh Mobile (Anti-Error)
-            let touchStartPos = { x: 0, y: 0 };
-            bubble.ontouchstart = (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                touchStartPos = { x: touch.clientX, y: touch.clientY };
-                bubble.style.transition = 'none';
-                bubble.style.zIndex = '100';
-                highlightActiveItemForTap();
-            };
+        // Kontrol Seret khusus Layar Sentuh Mobile (Anti-Error)
+        let touchStartPos = { x: 0, y: 0 };
+        bubble.ontouchstart = (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          touchStartPos = { x: touch.clientX, y: touch.clientY };
+          bubble.style.transition = "none";
+          bubble.style.zIndex = "100";
+          highlightActiveItemForTap();
+        };
 
-            bubble.ontouchmove = (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                const deltaX = touch.clientX - touchStartPos.x;
-                const deltaY = touch.clientY - touchStartPos.y;
-                bubble.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.15)`;
-            };
+        bubble.ontouchmove = (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const deltaX = touch.clientX - touchStartPos.x;
+          const deltaY = touch.clientY - touchStartPos.y;
+          bubble.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.15)`;
+        };
 
-            bubble.ontouchend = (e) => {
-                e.preventDefault();
-                bubble.style.transition = '';
-                bubble.style.transform = '';
-                bubble.style.zIndex = '';
+        bubble.ontouchend = (e) => {
+          e.preventDefault();
+          bubble.style.transition = "";
+          bubble.style.transform = "";
+          bubble.style.zIndex = "";
 
-                const touch = e.changedTouches[0];
-                const elementOver = document.elementFromPoint(touch.clientX, touch.clientY);
-                if (elementOver) {
-                    const bucketDiv = elementOver.closest('[id^="bucket-"]');
-                    if (bucketDiv) {
-                        const targetCategoryId = bucketDiv.id.replace('bucket-', '');
-                        handleMatchingAttempt(targetCategoryId);
-                    }
-                }
-            };
-
-            clearTapHighlight();
-        }
-
-        // Mengaktifkan Mode Ketuk Pintar
-        function highlightActiveItemForTap() {
-            const bubble = document.getElementById('active-item-bubble');
-            bubble.classList.add('ring-4', 'ring-amber-400', 'bg-amber-50');
-            
-            document.getElementById('tip-indicator').textContent = `👉 Sekarang ketuk salah satu keranjang di bawah untuk ${activeItem.name}!`;
-            document.getElementById('tip-indicator').className = "bg-amber-100 border border-amber-300 rounded-full px-4 py-1 text-center text-amber-950 font-extrabold text-[9px] sm:text-xs shadow-md mx-auto animate-bounce flex-shrink-0";
-        }
-
-        function clearTapHighlight() {
-            const bubble = document.getElementById('active-item-bubble');
-            if (bubble) {
-                bubble.classList.remove('ring-4', 'ring-amber-400', 'bg-amber-50');
+          const touch = e.changedTouches[0];
+          const elementOver = document.elementFromPoint(
+            touch.clientX,
+            touch.clientY,
+          );
+          if (elementOver) {
+            const bucketDiv = elementOver.closest('[id^="bucket-"]');
+            if (bucketDiv) {
+              const targetCategoryId = bucketDiv.id.replace("bucket-", "");
+              handleMatchingAttempt(targetCategoryId);
             }
-            document.getElementById('tip-indicator').textContent = "🐙 Seret objek laut dari kapal selam ke keranjang yang sesuai di bawah!";
-            document.getElementById('tip-indicator').className = "bg-sky-100/90 border border-sky-300 rounded-full px-2.5 py-0.5 text-center text-sky-950 font-extrabold text-[8px] sm:text-[11px] shadow-sm mx-auto animate-pulse flex-shrink-0";
+          }
+        };
+
+        clearTapHighlight();
+      }
+
+      // Mengaktifkan Mode Ketuk Pintar
+      function highlightActiveItemForTap() {
+        const bubble = document.getElementById("active-item-bubble");
+        bubble.classList.add("ring-4", "ring-amber-400", "bg-amber-50");
+
+        document.getElementById("tip-indicator").textContent =
+          `👉 Sekarang ketuk salah satu keranjang di bawah untuk ${activeItem.name}!`;
+        document.getElementById("tip-indicator").className =
+          "bg-amber-100 border border-amber-300 rounded-full px-4 py-1 text-center text-amber-950 font-extrabold text-[9px] sm:text-xs shadow-md mx-auto animate-bounce flex-shrink-0";
+      }
+
+      function clearTapHighlight() {
+        const bubble = document.getElementById("active-item-bubble");
+        if (bubble) {
+          bubble.classList.remove("ring-4", "ring-amber-400", "bg-amber-50");
+        }
+        document.getElementById("tip-indicator").textContent =
+          "🐙 Seret objek laut dari kapal selam ke keranjang yang sesuai di bawah!";
+        document.getElementById("tip-indicator").className =
+          "bg-sky-100/90 border border-sky-300 rounded-full px-2.5 py-0.5 text-center text-sky-950 font-extrabold text-[8px] sm:text-[11px] shadow-sm mx-auto animate-pulse flex-shrink-0";
+      }
+
+      // Mesin Utama Sortir Samudra (Sorting Matching Engine)
+      function handleMatchingAttempt(targetCategoryId) {
+        if (!activeItem) return;
+
+        const isCorrect = activeItem.category === targetCategoryId;
+        const targetBucket = document.getElementById(
+          `bucket-${targetCategoryId}`,
+        );
+
+        if (isCorrect) {
+          // Jawaban Benar!
+          score += 15;
+          document.getElementById("score-text").textContent = score;
+
+          // Memancarkan partikel air & bintang dari koordinat keranjang tujuan
+          const rect = targetBucket.getBoundingClientRect();
+          const burstX = rect.left + rect.width / 2;
+          const burstY = rect.top + rect.height / 2;
+          triggerSuccessBurst(burstX, burstY, activeItem.color);
+
+          // Mainkan suara sukses air jernih
+          playSound("correct");
+
+          // Tampilkan pujian hangat di layar
+          const praises = [
+            "Hebat Sekali! 🐬",
+            "Samudra Berterima Kasih! 🌊",
+            "Penyelamat Cerdas! ⭐",
+            "Sempurna! 🐳",
+            "Laut Jadi Bersih! 🐢",
+          ];
+          const toast = document.getElementById("feedback-toast");
+          toast.textContent =
+            praises[Math.floor(Math.random() * praises.length)];
+          toast.className =
+            "h-3 sm:h-5 flex items-center justify-center text-center text-emerald-300 kids-font text-xs sm:text-xl font-black tracking-wide animate-bounce mb-1";
+
+          // Tambahkan efek memantul di keranjang
+          targetBucket.classList.add("scale-105");
+          setTimeout(() => targetBucket.classList.remove("scale-105"), 200);
+
+          // Tingkatkan progres permainan
+          matchedCount++;
+          const progressPct = (matchedCount / totalItemsInRound) * 100;
+          document.getElementById("progress-indicator").style.width =
+            `${progressPct}%`;
+
+          // Spawn item berikutnya
+          spawnNextItem();
+        } else {
+          // Jawaban Salah
+          playSound("wrong");
+
+          // Goyangkan keranjang salah
+          targetBucket.classList.add("shake-element");
+          setTimeout(() => targetBucket.classList.remove("shake-element"), 500);
+
+          // Goyangkan bubble item
+          const bubble = document.getElementById("active-item-bubble");
+          if (bubble) {
+            bubble.classList.add("shake-element");
+            setTimeout(() => bubble.classList.remove("shake-element"), 500);
+          }
+
+          // Tampilkan pesan bimbingan edukatif
+          const toast = document.getElementById("feedback-toast");
+          toast.textContent = `Ayo pasangkan ${activeItem.name} ke keranjang sewarna! 🌊`;
+          toast.className =
+            "h-3 sm:h-5 flex items-center justify-center text-center text-rose-400 kids-font text-[9px] sm:text-sm font-black tracking-wide mb-1";
+
+          clearTapHighlight();
+        }
+      }
+
+      // Tampilkan Layar Akhir Hadiah & Selamat
+      function concludeGame() {
+        document.getElementById("progress-indicator").style.width = "100%";
+        playSound("tada");
+
+        document.getElementById("game-container").classList.add("hidden");
+        document.getElementById("screen-win").classList.remove("hidden");
+        document.getElementById("win-score").textContent = score;
+
+        const salute = document.getElementById("win-salute");
+        salute.textContent = `Hore! Penyelamat Cilik ${playerName} telah sukses memilah seluruh objek dan membersihkan laut kita!`;
+
+        const star1 = document.getElementById("star-1");
+        const star2 = document.getElementById("star-2");
+        const star3 = document.getElementById("star-3");
+
+        star1.style.opacity = "0.2";
+        star2.style.opacity = "0.2";
+        star3.style.opacity = "0.2";
+
+        setTimeout(() => {
+          star1.style.opacity = "1";
+          star1.style.transform = "scale(1.2)";
+          playSound("pop");
+        }, 400);
+
+        if (score >= 90) {
+          setTimeout(() => {
+            star2.style.opacity = "1";
+            star2.style.transform = "scale(1.2)";
+            playSound("pop");
+          }, 800);
         }
 
-        // Mesin Utama Sortir Samudra (Sorting Matching Engine)
-        function handleMatchingAttempt(targetCategoryId) {
-            if (!activeItem) return;
-
-            const isCorrect = activeItem.category === targetCategoryId;
-            const targetBucket = document.getElementById(`bucket-${targetCategoryId}`);
-
-            if (isCorrect) {
-                // Jawaban Benar!
-                score += 15;
-                document.getElementById('score-text').textContent = score;
-
-                // Memancarkan partikel air & bintang dari koordinat keranjang tujuan
-                const rect = targetBucket.getBoundingClientRect();
-                const burstX = rect.left + (rect.width / 2);
-                const burstY = rect.top + (rect.height / 2);
-                triggerSuccessBurst(burstX, burstY, activeItem.color);
-
-                // Mainkan suara sukses air jernih
-                playSound('correct');
-
-                // Tampilkan pujian hangat di layar
-                const praises = ["Hebat Sekali! 🐬", "Samudra Berterima Kasih! 🌊", "Penyelamat Cerdas! ⭐", "Sempurna! 🐳", "Laut Jadi Bersih! 🐢"];
-                const toast = document.getElementById('feedback-toast');
-                toast.textContent = praises[Math.floor(Math.random() * praises.length)];
-                toast.className = "h-3 sm:h-5 flex items-center justify-center text-center text-emerald-300 kids-font text-xs sm:text-xl font-black tracking-wide animate-bounce mb-1";
-
-                // Tambahkan efek memantul di keranjang
-                targetBucket.classList.add('scale-105');
-                setTimeout(() => targetBucket.classList.remove('scale-105'), 200);
-
-                // Tingkatkan progres permainan
-                matchedCount++;
-                const progressPct = (matchedCount / totalItemsInRound) * 100;
-                document.getElementById('progress-indicator').style.width = `${progressPct}%`;
-
-                // Spawn item berikutnya
-                spawnNextItem();
-
-            } else {
-                // Jawaban Salah
-                playSound('wrong');
-
-                // Goyangkan keranjang salah
-                targetBucket.classList.add('shake-element');
-                setTimeout(() => targetBucket.classList.remove('shake-element'), 500);
-
-                // Goyangkan bubble item
-                const bubble = document.getElementById('active-item-bubble');
-                if (bubble) {
-                    bubble.classList.add('shake-element');
-                    setTimeout(() => bubble.classList.remove('shake-element'), 500);
-                }
-
-                // Tampilkan pesan bimbingan edukatif
-                const toast = document.getElementById('feedback-toast');
-                toast.textContent = `Ayo pasangkan ${activeItem.name} ke keranjang sewarna! 🌊`;
-                toast.className = "h-3 sm:h-5 flex items-center justify-center text-center text-rose-400 kids-font text-[9px] sm:text-sm font-black tracking-wide mb-1";
-
-                clearTapHighlight();
-            }
+        if (score >= 150) {
+          setTimeout(() => {
+            star3.style.opacity = "1";
+            star3.style.transform = "scale(1.2)";
+            playSound("pop");
+          }, 1200);
         }
-
-        // Tampilkan Layar Akhir Hadiah & Selamat
-        function concludeGame() {
-            document.getElementById('progress-indicator').style.width = "100%";
-            playSound('tada');
-
-            document.getElementById('game-container').classList.add('hidden');
-            document.getElementById('screen-win').classList.remove('hidden');
-            document.getElementById('win-score').textContent = score;
-
-            const salute = document.getElementById('win-salute');
-            salute.textContent = `Hore! Penyelamat Cilik ${playerName} telah sukses memilah seluruh objek dan membersihkan laut kita!`;
-
-            const star1 = document.getElementById('star-1');
-            const star2 = document.getElementById('star-2');
-            const star3 = document.getElementById('star-3');
-
-            star1.style.opacity = "0.2";
-            star2.style.opacity = "0.2";
-            star3.style.opacity = "0.2";
-
-            setTimeout(() => {
-                star1.style.opacity = "1";
-                star1.style.transform = "scale(1.2)";
-                playSound('pop');
-            }, 400);
-
-            if (score >= 90) {
-                setTimeout(() => {
-                    star2.style.opacity = "1";
-                    star2.style.transform = "scale(1.2)";
-                    playSound('pop');
-                }, 800);
-            }
-
-            if (score >= 150) {
-                setTimeout(() => {
-                    star3.style.opacity = "1";
-                    star3.style.transform = "scale(1.2)";
-                    playSound('pop');
-                }, 1200);
-            }
-        }
+      }
     </script>
-</body>
+  </body>
 </html>
