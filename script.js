@@ -1,6 +1,19 @@
 // ==========================================
 // 1. STATE & GLOBAL CONFIGURATIONS
 // ==========================================
+window.addEventListener("DOMContentLoaded", () => {
+  // Memeriksa apakah halaman sudah di-refresh di sesi ini
+  if (!sessionStorage.getItem("isFirstRefreshDone")) {
+    // Tandai bahwa refresh pertama sudah dilakukan
+    sessionStorage.setItem("isFirstRefreshDone", "true");
+    // Jalankan perintah reload / refresh
+    window.location.reload();
+  } else {
+    // Jika ingin tandanya hilang saat tab ditutup, biarkan seperti ini.
+    // Jika ingin reset lagi di kunjungan berikutnya, sessionStorage otomatis hapus saat tab ditutup.
+  }
+});
+
 let childName = "Buddy";
 let starPoints = 1250;
 let activeLevel = 0;
