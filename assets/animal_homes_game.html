@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Petualangan Rumah Hewan - Game PAUD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0f9ff;
+            background-image: 
+                radial-gradient(#bae6fd 2px, transparent 2px), 
+                radial-gradient(#bae6fd 2px, #f0f9ff 2px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            overflow: hidden;
+            touch-action: none;
+            height: 100vh;
+            height: 100dvh;
+        }
+        .kids-title {
+            font-family: 'Fredoka One', cursive;
+            text-shadow: 3px 3px 0px #0369a1;
+        }
+        .kids-font {
+            font-family: 'Fredoka One', cursive;
+        }
+        .cartoon-board {
+            background: #e0f2fe;
+            background-image: repeating-linear-gradient(0deg, #e0f2fe, #e0f2fe 20px, #bae6fd 20px, #bae6fd 22px);
+            border: 6px solid #0284c7;
+            box-shadow: inset 0 6px 0 rgba(255,255,255,0.4), 0 8px 0 #0369a1, 0 15px 20px -5px rgba(0,0,0,0.2);
+        }
+        .wooden-slot {
+            box-shadow: inset 3px 3px 8px rgba(0,0,0,0.2), 1px 1px 0px rgba(255,255,255,0.6);
+            background-color: rgba(3, 105, 161, 0.08);
+        }
+        .draggable-piece {
+            filter: drop-shadow(0px 5px 0px rgba(0, 0, 0, 0.12));
+            transition: transform 0.15s ease, opacity 0.15s ease;
+            cursor: grab;
+        }
+        .draggable-piece:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+        .btn-3d {
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px 0px currentColor;
+        }
+        .bounce-in {
+            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake-element {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px) rotate(-2deg); }
+            40%, 80% { transform: translateX(8px) rotate(2deg); }
+        }
+        .float-bubble {
+            animation: floating 3s ease-in-out infinite alternate;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-8px) rotate(3deg); }
+        }
+    </style>
+</head>
+<body class="w-screen flex flex-col justify-between relative overflow-hidden py-3.5 px-3 sm:p-4 select-none">
+
+    <!-- Canvas Layer untuk Efek Partikel Bintang & Balon -->
+    <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-35"></canvas>
+
+    <!-- LAYAR MULAI (START SCREEN) -->
+    <div id="screen-start" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-sky-55/95 backdrop-blur-sm transition-all duration-500">
+        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-sky-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
+            <!-- Dekorasi Hewan Melayang -->
+            <div class="absolute -top-8 -left-5 text-4xl sm:text-5xl float-bubble" style="animation-delay: 0.2s">🐟</div>
+            <div class="absolute -top-8 -right-5 text-4xl sm:text-5xl float-bubble" style="animation-delay: 0.8s">🐦</div>
+            <div class="absolute -bottom-6 -left-3 text-4xl sm:text-5xl float-bubble" style="animation-delay: 1.5s">🐝</div>
+            <div class="absolute -bottom-6 -right-3 text-4xl sm:text-5xl float-bubble" style="animation-delay: 2s">🐇</div>
+            
+            <h1 class="text-2xl sm:text-4xl font-black text-sky-600 kids-title tracking-wider mb-0.5">RUMAH HEWAN</h1>
+            <h2 class="text-xl sm:text-3xl font-black text-amber-500 kids-title tracking-wider mb-2 sm:mb-4">CERIA! 🏡</h2>
+            
+            <p class="text-sky-950 text-xs sm:text-sm font-bold mb-3 sm:mb-4">Bantu teman-teman hewan menemukan rumah mereka yang hangat!</p>
+
+            <!-- Pengisian Nama Pemain -->
+            <div class="bg-sky-50 border-2 border-sky-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 mb-3 sm:mb-4 shadow-inner">
+                <label class="block text-sky-950 font-extrabold text-xs sm:text-base mb-1 kids-font">Siapa namamu, Penyelamat Hewan?</label>
+                <input type="text" id="player-name" placeholder="TULIS NAMAMU..." maxlength="12"
+                       class="w-full text-center text-sm sm:text-lg font-bold bg-white border-2 border-sky-300 rounded-lg sm:rounded-xl py-1 sm:py-1.5 px-3 focus:outline-none focus:border-sky-500 text-sky-950 placeholder-sky-300 uppercase transition-colors">
+            </div>
+
+            <!-- Pemilihan Karakter / Avatar -->
+            <div class="mb-3 sm:mb-4">
+                <p class="text-sky-950 font-black text-xs sm:text-sm mb-1.5 kids-font">Pilih Teman Petualangmu:</p>
+                <div class="flex justify-center gap-2 sm:gap-3">
+                    <button onclick="selectAvatar('🐱')" id="avatar-cat" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md ring-4 ring-transparent ring-sky-500">🐱</button>
+                    <button onclick="selectAvatar('🦊')" id="avatar-fox" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🦊</button>
+                    <button onclick="selectAvatar('🐼')" id="avatar-panda" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🐼</button>
+                    <button onclick="selectAvatar('🦁')" id="avatar-lion" class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-100 rounded-full border-2 border-sky-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🦁</button>
+                </div>
+            </div>
+
+            <!-- Tombol Mulai -->
+            <button onclick="startGame()" class="btn-3d w-full bg-sky-500 hover:bg-sky-400 text-white text-base sm:text-xl kids-font py-2.5 sm:py-3 px-6 rounded-xl sm:rounded-2xl border-2 border-sky-700 shadow-[0_6px_0px_0px_#0369a1] tracking-wider">
+                AYO BANTU MEREKA! 🎒
+            </button>
+        </div>
+    </div>
+
+    <!-- AREA UTAMA PERMAINAN -->
+    <div id="game-container" class="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-between hidden h-full overflow-hidden">
+        
+        <!-- BAGIAN HEADER ATAS -->
+        <div class="flex items-center justify-between gap-2 mb-1">
+            <!-- Kembali ke Beranda -->
+            <button onclick="showMainMenu()" class="w-8 h-8 sm:w-11 sm:h-11 bg-rose-500 rounded-full border-2 sm:border-4 border-rose-700 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-rose-600 active:scale-90 transition-all">
+                🏠
+            </button>
+
+            <!-- Panel Profil & Skor -->
+            <div class="flex-grow max-w-[140px] sm:max-w-xs bg-sky-600 text-white px-2 py-0.5 sm:py-1 rounded-xl border-2 border-white flex items-center justify-between shadow-lg">
+                <div class="flex items-center gap-1 sm:gap-2 overflow-hidden">
+                    <span id="player-avatar-badge" class="text-base sm:text-xl flex-shrink-0">🐱</span>
+                    <span id="player-name-badge" class="kids-font text-[8px] sm:text-xs tracking-wide uppercase truncate max-w-[45px] sm:max-w-[80px]">Pemain</span>
+                </div>
+                <div class="bg-sky-950/40 text-yellow-300 font-extrabold px-1.5 py-0.5 rounded-full text-[10px] sm:text-base kids-font flex items-center gap-0.5">
+                    ⭐ <span id="score-text">0</span>
+                </div>
+            </div>
+
+            <!-- Indikator Tema / Level -->
+            <div id="level-indicator" class="bg-amber-500 text-white text-[8px] sm:text-xs font-black px-2.5 py-1 rounded-xl border-2 border-white shadow-md uppercase tracking-wider kids-font">
+                RUMAH HEWAN 🏡
+            </div>
+
+            <!-- Pengontrol Suara -->
+            <button onclick="toggleSound()" id="sound-btn" class="w-8 h-8 sm:w-11 sm:h-11 bg-indigo-400 rounded-full border-2 sm:border-4 border-indigo-600 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-indigo-500 active:scale-90 transition-all">
+                🔊
+            </button>
+        </div>
+
+        <!-- BILAH PROGRES PERKEMBANGAN -->
+        <div class="w-full bg-sky-950/15 rounded-full h-2 sm:h-3.5 p-0.5 mb-1 border border-sky-950/10 overflow-hidden relative">
+            <div id="progress-indicator" class="bg-gradient-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- PALAGAN UTAMA (Tata Letak 2 Kolom Seimbang: Kiri Hewan, Kanan Rumah) -->
+        <div class="flex-grow flex flex-col justify-center gap-1.5 sm:gap-3 relative overflow-hidden max-w-md md:max-w-4xl mx-auto w-full py-0.5">
+            
+            <!-- INSTRUKSI POPUP PETUNJUK -->
+            <div id="tip-indicator" class="bg-sky-100 border border-sky-200 rounded-full px-2.5 py-0.5 text-center text-sky-900 font-extrabold text-[8px] sm:text-[11px] shadow-sm mx-auto animate-pulse flex-shrink-0">
+                🐾 Tarik hewan berwarna ke rumah kayunya yang cocok di sebelah kanan!
+            </div>
+
+            <!-- GRID ELEMEN PERMAINAN (Sangat pas untuk laptop landscape maupun HP portrait) -->
+            <div class="grid grid-cols-2 gap-3 sm:gap-6 items-stretch w-full flex-grow overflow-hidden">
+                
+                <!-- KOLOM KIRI: HEWAN BERWARNA -->
+                <div class="bg-sky-50/70 rounded-2xl border-2 border-sky-200 p-2 sm:p-4 flex flex-col justify-evenly items-center shadow-inner overflow-y-auto">
+                    <span class="text-[8px] sm:text-[10px] text-sky-800 font-black kids-font tracking-widest uppercase border-b border-sky-200 w-full text-center pb-1">Teman Hewan</span>
+                    <div id="pieces-tray" class="flex flex-col gap-2 sm:gap-4 justify-center items-center w-full flex-grow py-1">
+                        <!-- Hewan berwarna diinjeksi di sini -->
+                    </div>
+                </div>
+
+                <!-- KOLOM KANAN: PAPAN KAYU RUMAH HEWAN -->
+                <div class="cartoon-board rounded-2xl p-2 sm:p-4 flex flex-col justify-evenly items-center shadow-lg overflow-y-auto">
+                    <span class="text-[8px] sm:text-[10px] text-sky-900 font-black kids-font tracking-widest uppercase border-b border-sky-300 w-full text-center pb-1">Rumah Kayu</span>
+                    <div id="board-slots" class="flex flex-col gap-2 sm:gap-4 justify-center items-center w-full flex-grow py-1">
+                        <!-- Rumah hewan diinjeksi di sini -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FEEDBACK TEKS DINAMIS -->
+            <div id="feedback-toast" class="h-3 sm:h-5 flex items-center justify-center text-center text-sky-800 kids-font text-[9px] sm:text-base font-black tracking-wide flex-shrink-0"></div>
+
+        </div>
+    </div>
+
+    <!-- LAYAR HADIAH KEMENANGAN (WIN SCREEN) -->
+    <div id="screen-win" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-sky-50/95 backdrop-blur-sm transition-all duration-500 hidden">
+        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-emerald-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
+            <div class="text-5xl sm:text-7xl mb-1 float-bubble">🏆</div>
+            <h2 class="text-lg sm:text-3xl font-black text-emerald-600 kids-title mb-0.5">HEBAT DAN PINTAR!</h2>
+            <p id="win-salute" class="text-sky-950 text-[10px] sm:text-sm font-bold mb-3">Kamu berhasil menolong semua hewan kembali ke rumah hangatnya!</p>
+            
+            <!-- Bintang Penghargaan -->
+            <div class="flex justify-center gap-1 mb-2.5">
+                <span id="star-1" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
+                <span id="star-2" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
+                <span id="star-3" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
+            </div>
+
+            <!-- Kotak Statistik -->
+            <div class="bg-emerald-50 border-2 border-emerald-200 rounded-lg sm:rounded-xl p-2.5 mb-3">
+                <span class="text-[8px] sm:text-xs font-bold text-emerald-800 block uppercase tracking-widest">SKOR PENYELAMAT</span>
+                <span id="win-score" class="text-xl sm:text-3xl font-black text-emerald-950 kids-font">0</span>
+                <span class="text-[8px] sm:text-xs font-bold text-sky-600 block mt-0.5">Hore! Seluruh hewan mengucapkan terima kasih! 🎉</span>
+            </div>
+
+            <!-- Tombol Navigasi Akhir -->
+            <div class="flex gap-2 justify-center">
+                <button onclick="showMainMenu()" class="btn-3d flex-1 bg-amber-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-amber-600 shadow-[0_4px_0_0_#d97706] active:scale-95 text-[10px] sm:text-sm kids-font">
+                    MENU UTAMA 🏠
+                </button>
+                <button onclick="startGame()" class="btn-3d flex-1 bg-emerald-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-emerald-600 shadow-[0_4px_0_0_#059669] active:scale-95 text-[10px] sm:text-sm kids-font">
+                    MAIN LAGI 🔄
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIKA & KONTROL SUARA AUDIO -->
+    <script>
+        // Kumpulan data pasangan hewan dan rumahnya
+        const animalHomesList = [
+            { id: "fish", name: "Ikan", emoji: "🐟", homeEmoji: "🫧", homeName: "Akuarium", color: "#3b82f6" },
+            { id: "bird", name: "Burung", emoji: "🐦", homeEmoji: "🪹", homeName: "Sarang", color: "#10b981" },
+            { id: "bee", name: "Lebah", emoji: "🐝", homeEmoji: "🍯", homeName: "Sarang Lebah", color: "#eab308" },
+            { id: "chicken", name: "Ayam", emoji: "🐓", homeEmoji: "🛖", homeName: "Kandang", color: "#f97316" },
+            { id: "rabbit", name: "Kelinci", emoji: "🐇", homeEmoji: "🕳️", homeName: "Lubang Tanah", color: "#a855f7" }
+        ];
+
+        let selectedAvatar = '🐱';
+        let playerName = 'PINTAR';
+        let score = 0;
+        let isSoundEnabled = true;
+        let selectedTrayPiece = null;
+        let matchedCountThisRound = 0;
+        let activeItems = [];
+
+        // Inisialisasi Kanvas Partikel
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Sintesis Suara Ceria menggunakan Web Audio API
+        function playSound(type) {
+            if (!isSoundEnabled) return;
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioCtx.currentTime;
+
+                if (type === 'pop') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.exponentialRampToValueAtTime(820, now + 0.08);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(now + 0.08);
+                } 
+                else if (type === 'correct') {
+                    const notes = [440, 554.37, 659.25, 880];
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                        gain.gain.setValueAtTime(0.08, now + idx * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.07 + 0.2);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.07);
+                        osc.stop(now + idx * 0.07 + 0.2);
+                    });
+                } 
+                else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(80, now + 0.35);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(now + 0.35);
+                } 
+                else if (type === 'tada') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.1, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.08 + 0.4);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.4);
+                    });
+                }
+            } catch(e) {
+                console.log("Audio API issue: ", e);
+            }
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const btn = document.getElementById('sound-btn');
+            if (isSoundEnabled) {
+                btn.textContent = "🔊";
+                btn.className = btn.className.replace('bg-gray-400 border-gray-600', 'bg-indigo-400 border-indigo-600');
+                playSound('pop');
+            } else {
+                btn.textContent = "🔇";
+                btn.className = btn.className.replace('bg-indigo-400 border-indigo-600', 'bg-gray-400 border-gray-600');
+            }
+        }
+
+        // Generator Partikel Bintang
+        class StarParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = Math.random() * 5 + 4;
+                this.speedX = Math.random() * 6 - 3;
+                this.speedY = Math.random() * -6 - 2;
+                this.gravity = 0.18;
+                this.opacity = 1;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.08 - 0.04;
+            }
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.angle += this.spin;
+                this.opacity -= 0.025;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.opacity);
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size,
+                               Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
+                    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (this.size/2),
+                               Math.sin((54 + i * 72) * Math.PI / 180) * (this.size/2));
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function triggerSuccessBurst(x, y, color) {
+            for (let i = 0; i < 20; i++) {
+                particles.push(new StarParticle(x, y, color));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].opacity <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Mengatur Karakter/Avatar Pilihan Anak
+        function selectAvatar(avatar) {
+            selectedAvatar = avatar;
+            ['avatar-cat', 'avatar-fox', 'avatar-panda', 'avatar-lion'].forEach(id => {
+                document.getElementById(id).classList.remove('ring-4', 'ring-sky-500', 'bg-sky-200');
+            });
+            const selId = avatar === '🐱' ? 'avatar-cat' : avatar === '🦊' ? 'avatar-fox' : avatar === '🐼' ? 'avatar-panda' : 'avatar-lion';
+            document.getElementById(selId).classList.add('ring-4', 'ring-sky-500', 'bg-sky-200');
+            playSound('pop');
+        }
+
+        function showMainMenu() {
+            document.getElementById('screen-start').classList.remove('hidden');
+            document.getElementById('game-container').classList.add('hidden');
+            document.getElementById('screen-win').classList.add('hidden');
+        }
+
+        // Pengesetan Awal Game
+        function startGame() {
+            const val = document.getElementById('player-name').value.trim();
+            playerName = val.length > 0 ? val.toUpperCase() : "SAHABAT HEWAN";
+
+            document.getElementById('player-avatar-badge').textContent = selectedAvatar;
+            document.getElementById('player-name-badge').textContent = playerName;
+
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-win').classList.add('hidden');
+            document.getElementById('game-container').classList.remove('hidden');
+
+            score = 0;
+            matchedCountThisRound = 0;
+            document.getElementById('score-text').textContent = score;
+            document.getElementById('progress-indicator').style.width = "0%";
+            document.getElementById('feedback-toast').textContent = "";
+            selectedTrayPiece = null;
+
+            activeItems = animalHomesList;
+
+            renderShadowSlots();
+            renderTrayPieces();
+            updateProgressBar();
+            playSound('pop');
+        }
+
+        function updateProgressBar() {
+            const pct = (matchedCountThisRound / activeItems.length) * 100;
+            document.getElementById('progress-indicator').style.width = `${pct}%`;
+        }
+
+        // Tampilkan Slot Rumah Kayu di Sebelah Kanan
+        function renderShadowSlots() {
+            const board = document.getElementById('board-slots');
+            board.innerHTML = "";
+
+            // Pengacakan posisi rumah untuk melatih fokus pengamatan anak
+            const shuffledSlots = [...activeItems].sort(() => Math.random() - 0.5);
+
+            shuffledSlots.forEach(item => {
+                const slotDiv = document.createElement('div');
+                slotDiv.id = `slot-${item.id}`;
+                slotDiv.className = `wooden-slot w-full max-w-[130px] sm:max-w-[200px] h-10 sm:h-14 rounded-xl flex items-center justify-center relative border border-sky-900/25 transition-transform duration-200`;
+                
+                slotDiv.innerHTML = `
+                    <div class="flex items-center gap-1 sm:gap-2 justify-center opacity-65 text-sky-950 font-black">
+                        <span class="text-xl sm:text-3xl">${item.homeEmoji}</span>
+                        <span class="text-[7px] sm:text-[9px] uppercase tracking-wider block sm:hidden md:block select-none pointer-events-none">${item.homeName}</span>
+                    </div>
+                `;
+
+                // Drag Enter listeners
+                slotDiv.addEventListener('dragover', (e) => e.preventDefault());
+                slotDiv.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    slotDiv.classList.add('scale-105', 'bg-sky-200/30');
+                });
+                slotDiv.addEventListener('dragleave', () => {
+                    slotDiv.classList.remove('scale-105', 'bg-sky-200/30');
+                });
+                slotDiv.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    slotDiv.classList.remove('scale-105', 'bg-sky-200/30');
+                    const droppedItemId = e.dataTransfer.getData('text/plain');
+                    handleMatchAttempt(droppedItemId, item.id, slotDiv);
+                });
+
+                // Klik manual (Ketuk untuk mencocokkan)
+                slotDiv.onclick = () => {
+                    if (selectedTrayPiece) {
+                        handleMatchAttempt(selectedTrayPiece.id, item.id, slotDiv);
+                    }
+                };
+
+                board.appendChild(slotDiv);
+            });
+        }
+
+        // Tampilkan Hewan Berwarna di Sebelah Kiri
+        function renderTrayPieces() {
+            const tray = document.getElementById('pieces-tray');
+            tray.innerHTML = "";
+
+            // Pengacakan posisi hewan berwarna
+            const shuffledTray = [...activeItems].sort(() => Math.random() - 0.5);
+
+            shuffledTray.forEach(item => {
+                const pieceDiv = document.createElement('div');
+                pieceDiv.id = `piece-${item.id}`;
+                pieceDiv.className = `draggable-piece w-full max-w-[130px] sm:max-w-[200px] h-10 sm:h-14 bg-white border border-sky-200 rounded-xl flex items-center justify-center shadow-md relative transition-all active:scale-95`;
+                pieceDiv.style.backgroundColor = `${item.color}15`; // Warna latar tipis yang serasi
+                pieceDiv.style.borderColor = item.color;
+
+                pieceDiv.innerHTML = `
+                    <div class="flex items-center gap-1.5 sm:gap-2.5 px-2 overflow-hidden w-full justify-center select-none pointer-events-none">
+                        <span class="text-xl sm:text-3xl">${item.emoji}</span>
+                        <span class="text-[8px] sm:text-xs font-black tracking-wider uppercase truncate" style="color: ${item.color}">${item.name}</span>
+                    </div>
+                `;
+
+                // Setup Seret (Drag)
+                pieceDiv.draggable = true;
+                pieceDiv.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                    selectedTrayPiece = item;
+                    pieceDiv.classList.add('opacity-40');
+                    playSound('pop');
+                };
+                pieceDiv.ondragend = () => {
+                    pieceDiv.classList.remove('opacity-40');
+                };
+
+                // Setup Klik (Ketuk Hewan)
+                pieceDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    playSound('pop');
+                    highlightPieceForTap(item, pieceDiv);
+                };
+
+                // Kontrol Seret khusus Layar Sentuh Mobile (Anti-Error)
+                let touchStartPos = { x: 0, y: 0 };
+                pieceDiv.ontouchstart = (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    touchStartPos = { x: touch.clientX, y: touch.clientY };
+                    pieceDiv.style.transition = 'none';
+                    pieceDiv.style.zIndex = '100';
+                    highlightPieceForTap(item, pieceDiv);
+                };
+
+                pieceDiv.ontouchmove = (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - touchStartPos.x;
+                    const deltaY = touch.clientY - touchStartPos.y;
+                    pieceDiv.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.1)`;
+                };
+
+                pieceDiv.ontouchend = (e) => {
+                    e.preventDefault();
+                    pieceDiv.style.transition = '';
+                    pieceDiv.style.transform = '';
+                    pieceDiv.style.zIndex = '';
+
+                    const touch = e.changedTouches[0];
+                    const elementOver = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (elementOver) {
+                        const slotDiv = elementOver.closest('[id^="slot-"]');
+                        if (slotDiv) {
+                            const targetItemId = slotDiv.id.replace('slot-', '');
+                            handleMatchAttempt(item.id, targetItemId, slotDiv);
+                        }
+                    }
+                };
+
+                tray.appendChild(pieceDiv);
+            });
+        }
+
+        // Pengelolaan Sorotan Gelembung Ketukan
+        function highlightPieceForTap(item, element) {
+            document.querySelectorAll('.draggable-piece').forEach(p => {
+                p.classList.remove('ring-4', 'ring-sky-400', 'scale-105');
+            });
+
+            selectedTrayPiece = item;
+            element.classList.add('ring-4', 'ring-sky-400', 'scale-105');
+
+            document.getElementById('tip-indicator').textContent = `👉 Sekarang ketuk ${item.homeName} untuk rumah si ${item.name}!`;
+            document.getElementById('tip-indicator').className = "bg-amber-100 border border-amber-300 rounded-full px-4 py-1 text-center text-amber-950 font-extrabold text-[9px] sm:text-xs shadow-md mx-auto animate-bounce flex-shrink-0";
+        }
+
+        function clearTapHighlight() {
+            selectedTrayPiece = null;
+            document.querySelectorAll('.draggable-piece').forEach(p => {
+                p.classList.remove('ring-4', 'ring-sky-400', 'scale-105');
+            });
+            document.getElementById('tip-indicator').textContent = "🐾 Tarik hewan berwarna ke rumah kayunya yang cocok di sebelah kanan!";
+            document.getElementById('tip-indicator').className = "bg-sky-100 border border-sky-200 rounded-full px-4 py-1 text-center text-sky-900 font-extrabold text-[8px] sm:text-[11px] shadow-sm mx-auto animate-pulse flex-shrink-0";
+        }
+
+        // Mesin Utama Pemeriksaan Kecocokan (Matching Engine)
+        function handleMatchAttempt(pieceId, slotId, slotElement) {
+            const isMatch = pieceId === slotId;
+
+            if (isMatch) {
+                // Jawaban Benar!
+                score += 20;
+                document.getElementById('score-text').textContent = score;
+
+                // Memasukkan hewan ke dalam rumahnya
+                const itemObj = activeItems.find(i => i.id === pieceId);
+                slotElement.innerHTML = `
+                    <div class="flex items-center gap-1 sm:gap-2 justify-center text-sky-950 font-bold scale-100 bounce-in">
+                        <span class="text-2xl sm:text-4xl animate-bounce">${itemObj.emoji}</span>
+                        <span class="text-[7px] sm:text-[9px] uppercase font-black tracking-wider block sm:hidden md:block" style="color: ${itemObj.color}">${itemObj.name}</span>
+                    </div>
+                `;
+                slotElement.style.pointerEvents = "none"; // Kunci slot agar tidak bisa digeser lagi
+                slotElement.style.backgroundColor = "#ffffff";
+                slotElement.style.border = `2.5px solid ${itemObj.color}`;
+
+                // Hapus kepingan hewan dari baki kiri
+                const pieceElement = document.getElementById(`piece-${pieceId}`);
+                if (pieceElement) {
+                    pieceElement.style.opacity = '0';
+                    setTimeout(() => pieceElement.remove(), 250);
+                }
+
+                // Semburkan kembang api bintang ceria
+                const rect = slotElement.getBoundingClientRect();
+                const burstX = rect.left + (rect.width / 2);
+                const burstY = rect.top + (rect.height / 2);
+                triggerSuccessBurst(burstX, burstY, itemObj.color);
+
+                // Mainkan suara sukses
+                playSound('correct');
+
+                // Toast visual pujian untuk meningkatkan motivasi anak
+                const congratulationsText = ["Hebat Sekali! 🌟", "Kamu Pintar! 🏡", "Sempurna! ✨", "Cerdas! 🦄", "Luar Biasa! 🧩"];
+                const toast = document.getElementById('feedback-toast');
+                toast.textContent = congratulationsText[Math.floor(Math.random() * congratulationsText.length)];
+                toast.className = "h-3 sm:h-5 flex items-center justify-center text-center text-emerald-600 kids-font text-xs sm:text-xl font-black tracking-wide animate-bounce";
+
+                matchedCountThisRound++;
+                updateProgressBar();
+                clearTapHighlight();
+
+                // Periksa apakah babak telah selesai semua
+                if (matchedCountThisRound === activeItems.length) {
+                    setTimeout(() => {
+                        concludeGame();
+                    }, 1400);
+                }
+
+            } else {
+                // Jawaban Salah
+                playSound('wrong');
+
+                // Goyangkan slot rumah
+                slotElement.classList.add('shake-element', 'bg-rose-100');
+                setTimeout(() => {
+                    slotElement.classList.remove('shake-element', 'bg-rose-100');
+                }, 500);
+
+                // Goyangkan kepingan hewan aktif
+                if (selectedTrayPiece) {
+                    const activePiece = document.getElementById(`piece-${selectedTrayPiece.id}`);
+                    if (activePiece) {
+                        activePiece.classList.add('shake-element');
+                        setTimeout(() => activePiece.classList.remove('shake-element'), 500);
+                    }
+                }
+
+                const toast = document.getElementById('feedback-toast');
+                toast.textContent = "Coba lagi, pasangkan hewan ke rumahnya yang tepat! 🏡";
+                toast.className = "h-3 sm:h-5 flex items-center justify-center text-center text-rose-500 kids-font text-[9px] sm:text-sm font-black tracking-wide";
+
+                clearTapHighlight();
+            }
+        }
+
+        // Tampilkan Layar Akhir Hadiah & Selamat
+        function concludeGame() {
+            document.getElementById('progress-indicator').style.width = "100%";
+            playSound('tada');
+
+            document.getElementById('game-container').classList.add('hidden');
+            document.getElementById('screen-win').classList.remove('hidden');
+            document.getElementById('win-score').textContent = score;
+
+            const salute = document.getElementById('win-salute');
+            salute.textContent = `Hore! Penyelamat Hewan Cilik ${playerName} telah sukses mengantar semua hewan ke rumah hangatnya dengan cerdas!`;
+
+            const star1 = document.getElementById('star-1');
+            const star2 = document.getElementById('star-2');
+            const star3 = document.getElementById('star-3');
+
+            star1.style.opacity = "0.2";
+            star2.style.opacity = "0.2";
+            star3.style.opacity = "0.2";
+
+            setTimeout(() => {
+                star1.style.opacity = "1";
+                star1.style.transform = "scale(1.2)";
+                playSound('pop');
+            }, 400);
+
+            if (score >= 60) {
+                setTimeout(() => {
+                    star2.style.opacity = "1";
+                    star2.style.transform = "scale(1.2)";
+                    playSound('pop');
+                }, 800);
+            }
+
+            if (score >= 100) {
+                setTimeout(() => {
+                    star3.style.opacity = "1";
+                    star3.style.transform = "scale(1.2)";
+                    playSound('pop');
+                }, 1200);
+            }
+        }
+    </script>
+</body>
+</html>

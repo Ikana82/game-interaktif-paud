@@ -1,0 +1,131 @@
+body {
+  font-family: "Quicksand", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.font-bubble {
+  font-family: "Fredoka", sans-serif;
+}
+
+/* Custom text strokes matching the beautiful 3D cartoon style */
+.text-stroke-yellow {
+  text-shadow:
+    -3px -3px 0 #d97706,
+    3px -3px 0 #d97706,
+    -3px 3px 0 #d97706,
+    3px 3px 0 #d97706,
+    0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.text-stroke-purple {
+  text-shadow:
+    -3px -3px 0 #6d28d9,
+    3px -3px 0 #6d28d9,
+    -3px 3px 0 #6d28d9,
+    3px 3px 0 #6d28d9,
+    0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.text-stroke-white {
+  text-shadow:
+    -2px -2px 0 #fff,
+    2px -2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px 2px 0 #fff;
+}
+
+/* Cloud Float Animation */
+@keyframes floatCloud {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(5px);
+  }
+}
+
+.animate-cloud {
+  animation: floatCloud 6s ease-in-out infinite;
+}
+
+/* Rocket Float Animation */
+@keyframes floatRocket {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(4deg);
+  }
+}
+
+.animate-rocket {
+  animation: floatRocket 3.5s ease-in-out infinite;
+}
+
+/* Subtle Pulsing for Active Playable Game */
+@keyframes cardPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5);
+  }
+}
+
+.active-game-pulse {
+  animation: cardPulse 2s infinite ease-in-out;
+}
+
+/* Rainbow path stroke animation */
+@keyframes drawRainbow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.rainbow-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawRainbow 2s ease-out forwards;
+}
+
+/* Custom scrollbar for game history list */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.5);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Fade In Screen Transition Effect */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}

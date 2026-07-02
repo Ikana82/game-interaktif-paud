@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pilih Game - Belajar Seru, Bermain Cerdas!</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Quicksand -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Quicksand:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    class="bg-gradient-to-b from-sky-300 via-blue-200 to-emerald-200 min-h-screen flex items-center justify-center p-3 sm:p-6 overflow-x-hidden relative"
+  >
+    <!-- Rainbow background graphic -->
+    <svg
+      class="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 pointer-events-none opacity-90 select-none z-0"
+      viewBox="0 0 200 200"
+    >
+      <path
+        class="rainbow-line"
+        d="M-20,180 A160,160 0 0,1 140,20"
+        fill="none"
+        stroke="#ff5e7e"
+        stroke-width="12"
+        style="animation-delay: 0.1s"
+      />
+      <path
+        class="rainbow-line"
+        d="M-20,180 A145,145 0 0,1 125,35"
+        fill="none"
+        stroke="#ff9f43"
+        stroke-width="12"
+        style="animation-delay: 0.2s"
+      />
+      <path
+        class="rainbow-line"
+        d="M-20,180 A130,130 0 0,1 110,50"
+        fill="none"
+        stroke="#fec107"
+        stroke-width="12"
+        style="animation-delay: 0.3s"
+      />
+      <path
+        class="rainbow-line"
+        d="M-20,180 A115,115 0 0,1 95,65"
+        fill="none"
+        stroke="#28c76f"
+        stroke-width="12"
+        style="animation-delay: 0.4s"
+      />
+      <path
+        class="rainbow-line"
+        d="M-20,180 A100,100 0 0,1 80,80"
+        fill="none"
+        stroke="#00cfe8"
+        stroke-width="12"
+        style="animation-delay: 0.5s"
+      />
+    </svg>
+
+    <!-- Floating Background Clouds -->
+    <div
+      class="absolute top-8 left-[20%] text-white/40 text-6xl pointer-events-none select-none animate-cloud z-0"
+    >
+      <i class="fa-solid fa-cloud"></i>
+    </div>
+    <div
+      class="absolute top-16 right-[15%] text-white/30 text-8xl pointer-events-none select-none animate-cloud z-0"
+      style="animation-delay: 2s"
+    >
+      <i class="fa-solid fa-cloud"></i>
+    </div>
+    <div
+      class="absolute bottom-24 left-[10%] text-white/20 text-7xl pointer-events-none select-none animate-cloud z-0"
+      style="animation-delay: 4s"
+    >
+      <i class="fa-solid fa-cloud"></i>
+    </div>
+
+    <!-- Celebration Canvas for Confetti -->
+    <canvas
+      id="confetti-canvas"
+      class="absolute inset-0 w-full h-full pointer-events-none z-50"
+    ></canvas>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="w-full max-w-6xl z-10">
+      <!-- SCREEN 1: SPLASH & NAME INPUT -->
+      <div
+        id="screen-splash"
+        class="max-w-md mx-auto bg-white/95 backdrop-blur-md rounded-3xl p-8 border-4 border-amber-400 shadow-2xl text-center space-y-6 transform scale-100 transition duration-300"
+      >
+        <div class="relative inline-block">
+          <span class="text-8xl select-none animate-bounce inline-block"
+            >🎨</span
+          >
+          <span class="absolute -top-2 -right-2 text-4xl animate-pulse"
+            >✨</span
+          >
+        </div>
+
+        <div class="space-y-2">
+          <h1
+            class="text-4xl font-bubble font-black text-amber-500 tracking-wide"
+          >
+            PINTAR BELAJAR
+          </h1>
+          <p class="text-slate-600 font-bold text-md">
+            Selamat datang di Dunia Bermain Penuh Warna!
+          </p>
+        </div>
+
+        <!-- Input Box -->
+        <div
+          class="bg-amber-50 rounded-2xl p-4 border-2 border-dashed border-amber-300 space-y-3"
+        >
+          <label class="block font-bubble font-bold text-indigo-900 text-lg"
+            >Siapa Namamu? 👦👧</label
+          >
+          <input
+            type="text"
+            id="username-input"
+            placeholder="Tulis namamu di sini..."
+            maxlength="12"
+            class="w-full text-center px-4 py-3 bg-white border-3 border-emerald-400 focus:border-amber-400 rounded-xl focus:outline-none text-xl font-bold text-indigo-900 placeholder-slate-400 shadow-inner transition-all"
+          />
+        </div>
+
+        <button
+          onclick="handleLogin()"
+          class="w-full py-4 bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-bubble font-bold text-2xl rounded-2xl shadow-lg hover:shadow-xl transform active:scale-95 transition-all border-b-6 border-amber-700 cursor-pointer flex items-center justify-center gap-3"
+        >
+          MULAI BERMAIN <i class="fa-solid fa-circle-play text-3xl"></i>
+        </button>
+      </div>
+
+      <!-- SCREEN 2: GAME SELECTION DASHBOARD -->
+      <div id="screen-dashboard" class="hidden space-y-4 animate-fadeIn">
+        <!-- Dashboard Header Section -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-center gap-4 px-2"
+        >
+          <!-- User Profile Card -->
+          <div
+            class="bg-white/95 backdrop-blur-sm border-4 border-sky-400 rounded-full py-1.5 pl-2 pr-6 flex items-center gap-3 shadow-lg transform hover:scale-105 transition"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-amber-400 flex items-center justify-center text-2xl border-2 border-white shadow"
+            >
+              👦
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-500 leading-none">
+                Hi,
+                <span id="display-username" class="text-indigo-900 font-black"
+                  >Buddy!</span
+                >
+                👋
+              </div>
+              <div
+                class="text-amber-500 font-bubble text-lg font-black flex items-center gap-1 leading-none mt-1"
+              >
+                <span class="text-yellow-400 drop-shadow-sm animate-pulse"
+                  >⭐</span
+                >
+                <span id="display-stars">1250</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Interactive Title Banner -->
+          <div class="text-center space-y-1 py-1 relative">
+            <h1
+              class="text-5xl sm:text-7xl font-bubble font-black flex justify-center gap-3 leading-none select-none tracking-wide drop-shadow-md"
+            >
+              <span class="text-amber-400 text-stroke-yellow">PILIH</span>
+              <span class="text-indigo-600 text-stroke-purple">GAME</span>
+            </h1>
+            <!-- Pink Ribbon Slogan -->
+            <div
+              class="inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-rose-500 text-white font-bubble text-sm sm:text-md px-8 py-1.5 rounded-full shadow-md border-b-4 border-rose-700 tracking-wide select-none transform hover:scale-105 transition-transform"
+            >
+              Belajar Seru, Bermain Cerdas!
+            </div>
+          </div>
+
+          <!-- Functional Control Action Buttons -->
+          <div class="flex gap-2">
+            <button
+              onclick="openBonusModal()"
+              class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-b from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 border-b-4 border-purple-700 text-white flex items-center justify-center text-xl shadow-md cursor-pointer hover:scale-110 active:scale-90 transition"
+            >
+              🎁
+            </button>
+            <button
+              onclick="openLeaderboard()"
+              class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 border-b-4 border-amber-700 text-white flex items-center justify-center text-xl shadow-md cursor-pointer hover:scale-110 active:scale-90 transition"
+            >
+              🏆
+            </button>
+            <button
+              id="audio-toggle-btn"
+              onclick="toggleAudioMute()"
+              class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-b from-sky-400 to-sky-500 border-b-4 border-sky-700 text-white flex items-center justify-center text-xl shadow-md cursor-pointer hover:scale-110 active:scale-90 transition"
+            >
+              <i id="audio-toggle-icon" class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Game Selection Grid Frame -->
+        <div
+          class="bg-white/90 backdrop-blur-md rounded-3xl p-5 sm:p-7 border-6 border-white shadow-2xl relative"
+        >
+          <!-- Boy Mascot (Left Side) -->
+          <div
+            class="absolute -left-16 bottom-0 w-36 h-48 hidden lg:block select-none pointer-events-none animate-cloud z-10"
+          >
+            <svg viewBox="0 0 100 120" class="w-full h-full drop-shadow-xl">
+              <path
+                d="M20,40 Q25,25 35,22 Q50,15 65,22 Q75,25 80,40 C85,35 85,25 70,18 C55,10 40,12 25,18 C15,25 15,35 20,40 Z"
+                fill="#6f3d22"
+              />
+              <circle cx="21" cy="46" r="6" fill="#fdd1b5" />
+              <circle cx="79" cy="46" r="6" fill="#fdd1b5" />
+              <circle cx="50" cy="46" r="28" fill="#ffe1cc" />
+              <circle cx="40" cy="43" r="3.5" fill="#1e293b" />
+              <circle cx="60" cy="43" r="3.5" fill="#1e293b" />
+              <circle cx="30" cy="48" r="4" fill="#f87171" opacity="0.6" />
+              <circle cx="70" cy="48" r="4" fill="#f87171" opacity="0.6" />
+              <path
+                d="M42,54 Q50,62 58,54"
+                fill="none"
+                stroke="#be123c"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+              <path d="M25,74 Q50,68 75,74 L75,120 L25,120 Z" fill="#22c55e" />
+              <path
+                d="M50,74 L50,110"
+                stroke="#15803d"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M22,80 Q10,70 5,55"
+                stroke="#22c55e"
+                stroke-width="12"
+                stroke-linecap="round"
+              />
+              <circle cx="5" cy="55" r="8" fill="#ffe1cc" />
+            </svg>
+          </div>
+
+          <!-- Panda Mascot & Rocket (Right Side) -->
+          <div
+            class="absolute -right-16 bottom-0 w-36 h-48 hidden lg:block select-none pointer-events-none animate-rocket z-10"
+          >
+            <svg viewBox="0 0 100 120" class="w-full h-full drop-shadow-xl">
+              <circle cx="28" cy="30" r="11" fill="#1e293b" />
+              <circle cx="72" cy="30" r="11" fill="#1e293b" />
+              <ellipse
+                cx="50"
+                cy="52"
+                rx="32"
+                ry="26"
+                fill="#ffffff"
+                stroke="#e2e8f0"
+                stroke-width="2"
+              />
+              <ellipse
+                cx="38"
+                cy="50"
+                rx="9"
+                ry="11"
+                fill="#1e293b"
+                transform="rotate(-15, 38, 50)"
+              />
+              <ellipse
+                cx="62"
+                cy="50"
+                rx="9"
+                ry="11"
+                fill="#1e293b"
+                transform="rotate(15, 62, 50)"
+              />
+              <circle cx="38" cy="48" r="3" fill="#ffffff" />
+              <circle cx="62" cy="48" r="3" fill="#ffffff" />
+              <circle cx="24" cy="58" r="4" fill="#fca5a5" opacity="0.6" />
+              <circle cx="76" cy="58" r="4" fill="#fca5a5" opacity="0.6" />
+              <ellipse cx="50" cy="56" rx="5" ry="3.5" fill="#1e293b" />
+              <path
+                d="M48,60 Q50,63 52,60"
+                fill="none"
+                stroke="#1e293b"
+                stroke-width="1.5"
+              />
+              <path
+                d="M28,76 Q50,70 72,76 L75,120 L25,120 Z"
+                fill="#ffffff"
+                stroke="#e2e8f0"
+                stroke-width="2"
+              />
+              <path
+                d="M26,80 Q14,90 10,105"
+                stroke="#1e293b"
+                stroke-width="11"
+                stroke-linecap="round"
+              />
+              <g transform="translate(65, 0) scale(0.6)">
+                <path d="M20,10 Q20,30 20,50 L40,65 L0,65 Z" fill="#ef4444" />
+                <rect x="10" y="30" width="20" height="40" fill="#f8fafc" />
+                <circle cx="20" cy="50" r="5" fill="#3b82f6" />
+                <path d="M10,70 L20,90 L30,70 Z" fill="#f97316" />
+              </g>
+            </svg>
+          </div>
+
+          <!-- 10 CARDS GRID -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            <!-- 1. Animal Homes Game -->
+            <button
+              button
+              onclick="location.href = 'assets/animal_homes_game.html'"
+              class="group bg-gradient-to-b from-sky-100 to-indigo-50 border-4 border-purple-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-emerald-200/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >🐶🏡</span
+                >
+              </div>
+              <div
+                class="bg-indigo-600 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Animal Homes Game
+              </div>
+            </button>
+
+            <!-- 2. Baby Mother Match -->
+            <button
+              onclick="location.href = 'assets/baby_mother_match.html'"
+              class="group bg-gradient-to-b from-amber-50 to-rose-50 border-4 border-pink-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-pink-100/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >🐔🐤</span
+                >
+              </div>
+              <div
+                class="bg-pink-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Baby Mother Match
+              </div>
+            </button>
+
+            <!-- 3. Fruit Color Splash Game -->
+            <button
+              onclick="location.href = 'assets/fruit_color_splash_game.html'"
+              class="group bg-gradient-to-b from-emerald-50 to-teal-50 border-4 border-emerald-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-emerald-100/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >🍎🍌</span
+                >
+              </div>
+              <div
+                class="bg-emerald-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Fruit Color Splash
+              </div>
+            </button>
+
+            <!-- 4. Game Klasifikasi Warna Hewan -->
+            <button
+              onclick="
+                location.href = 'assets/game-klasifikasi-warna-hewan.html'
+              "
+              class="group bg-gradient-to-b from-orange-50 to-yellow-50 border-4 border-amber-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-amber-100/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >🦁🐘</span
+                >
+              </div>
+              <div
+                class="bg-amber-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Klasifikasi Warna
+              </div>
+            </button>
+
+            <!-- 5. ACTIVE PLAYABLE GAME: Game Melengkapi Huruf -->
+            <button
+              onclick="location.href = 'assets/game-melengkapi-huruf.html'"
+              class="group bg-gradient-to-b from-sky-100 via-sky-50 to-blue-100 border-4 border-blue-400 rounded-2xl overflow-hidden flex flex-col justify-between h-44 active-game-pulse hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer ring-4 ring-blue-300 ring-offset-2 relative"
+            >
+              <div
+                class="absolute top-2 right-2 bg-rose-500 text-white font-bubble text-[10px] font-bold px-2 py-0.5 rounded-full shadow border border-white animate-pulse"
+              >
+                AKTIF 🎮
+              </div>
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-blue-200/50 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:scale-110 transition duration-300 z-10 filter drop-shadow-md"
+                  >🔤✏️</span
+                >
+                <span
+                  class="text-xs font-bold text-blue-600 font-bubble mt-1 z-10"
+                  >Tebak & Ketik!</span
+                >
+              </div>
+              <div
+                class="bg-blue-600 text-white font-bubble text-xs font-bold py-2.5 w-full text-center tracking-wider shadow-inner"
+              >
+                Melengkapi Huruf
+              </div>
+            </button>
+
+            <!-- 6. Ocean Sorting Game -->
+            <button
+              onclick="location.href = 'assets/ocean_sorting_game.html'"
+              class="group bg-gradient-to-b from-cyan-50 to-blue-50 border-4 border-sky-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-sky-100/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >🐢🐠</span
+                >
+              </div>
+              <div
+                class="bg-sky-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Ocean Sorting Game
+              </div>
+            </button>
+
+            <!-- 7. Shadow Matching Game -->
+            <button
+              onclick="location.href = 'assets/shadow_matching_game.html'"
+              class="group bg-gradient-to-b from-indigo-50 to-violet-50 border-4 border-indigo-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-indigo-100/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >👥🐱</span
+                >
+              </div>
+              <div
+                class="bg-indigo-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Shadow Matching
+              </div>
+            </button>
+
+            <!-- 8. Shape Matching Game -->
+            <button
+              onclick="location.href = 'assets/shape_matching_game.html'"
+              class="group bg-gradient-to-b from-amber-50 to-yellow-100/50 border-4 border-yellow-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-yellow-100/30 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >🔺⭐</span
+                >
+              </div>
+              <div
+                class="bg-amber-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Shape Matching
+              </div>
+            </button>
+
+            <!-- 9. Number Puzzle Game -->
+            <button
+              onclick="location.href = 'assets/number_puzzle_game.html'"
+              class="group bg-gradient-to-b from-teal-50 to-emerald-50 border-4 border-teal-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-teal-100/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >🔢🧩</span
+                >
+              </div>
+              <div
+                class="bg-teal-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Number Puzzle
+              </div>
+            </button>
+
+            <!-- 10. Tebak Profesi Anak -->
+            <button
+              onclick="location.href = 'assets/tebak_profesi_anak.html'"
+              class="group bg-gradient-to-b from-rose-50 to-pink-50 border-4 border-pink-200 rounded-2xl overflow-hidden flex flex-col justify-between h-44 shadow-md hover:scale-105 hover:shadow-xl transition duration-300 cursor-pointer"
+            >
+              <div
+                class="flex-grow flex flex-col items-center justify-center p-2 relative"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-pink-100/40 via-transparent to-transparent"
+                ></div>
+                <span
+                  class="text-6xl group-hover:animate-bounce z-10 filter drop-shadow-md"
+                  >👩‍🍳🍳</span
+                >
+              </div>
+              <div
+                class="bg-pink-500 text-white font-bubble text-xs py-2 w-full text-center tracking-wide shadow-inner"
+              >
+                Tebak Profesi Anak
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Features Badges Footer Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+          <div
+            class="bg-white/95 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-3 border border-purple-200 shadow-md hover:translate-y-[-2px] transition duration-200"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-2xl shadow-sm"
+            >
+              🧠
+            </div>
+            <div>
+              <div class="font-bubble text-indigo-900 text-sm font-bold">
+                Melatih Otak
+              </div>
+              <div
+                class="text-slate-500 text-xs font-semibold leading-tight mt-0.5"
+              >
+                Tingkatkan logika & kemampuan berpikir
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-white/95 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-3 border border-emerald-200 shadow-md hover:translate-y-[-2px] transition duration-200"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-2xl shadow-sm"
+            >
+              👈
+            </div>
+            <div>
+              <div class="font-bubble text-emerald-800 text-sm font-bold">
+                Mudah Digunakan
+              </div>
+              <div
+                class="text-slate-500 text-xs font-semibold leading-tight mt-0.5"
+              >
+                Game interaktif yang mudah dimainkan
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-white/95 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-3 border border-rose-200 shadow-md hover:translate-y-[-2px] transition duration-200"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 text-2xl shadow-sm"
+            >
+              ❤️
+            </div>
+            <div>
+              <div class="font-bubble text-rose-800 text-sm font-bold">
+                Aman & Edukatif
+              </div>
+              <div
+                class="text-slate-500 text-xs font-semibold leading-tight mt-0.5"
+              >
+                Konten positif untuk tumbuh kembang anak
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-white/95 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-3 border border-amber-200 shadow-md hover:translate-y-[-2px] transition duration-200"
+          >
+            <div
+              class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl shadow-sm"
+            >
+              ⭐
+            </div>
+            <div>
+              <div class="font-bubble text-amber-800 text-sm font-bold">
+                Belajar Sambil Bermain
+              </div>
+              <div
+                class="text-slate-500 text-xs font-semibold leading-tight mt-0.5"
+              >
+                Belajar jadi lebih seru dan menyenangkan!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: GAMEPLAY ARENA "MELENGKAPI HURUF" -->
+      <div id="screen-gameplay" class="hidden space-y-4 animate-fadeIn">
+        <div
+          class="flex justify-between items-center bg-white/95 backdrop-blur-sm border-4 border-emerald-400 rounded-2xl px-4 sm:px-6 py-3 shadow-lg"
+        >
+          <button
+            onclick="exitSpellingGame()"
+            class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-xl text-white font-black shadow-md cursor-pointer hover:scale-110 active:scale-95 transition"
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+
+          <div
+            class="bg-emerald-600 rounded-full py-1.5 px-6 sm:px-8 flex items-center justify-center gap-2 border-2 border-emerald-400 shadow-inner"
+          >
+            <span
+              class="text-yellow-300 text-lg sm:text-xl font-bold font-bubble animate-bounce"
+              >⭐</span
+            >
+            <span
+              id="gameplay-score-count"
+              class="text-white font-bubble text-xl sm:text-2xl font-black leading-none"
+              >0</span
+            >
+          </div>
+
+          <div
+            class="bg-amber-400 border-2 border-white shadow-md text-indigo-900 font-bubble px-4 sm:px-5 py-2 rounded-xl font-bold text-md sm:text-lg leading-none"
+          >
+            LEVEL <span id="gameplay-level-badge">1</span>
+          </div>
+        </div>
+
+        <!-- Gameplay Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+          <!-- Left Sidebar Panel: History -->
+          <div
+            class="lg:col-span-3 order-3 lg:order-1 bg-white/95 backdrop-blur-sm rounded-3xl border-3 border-orange-300 p-4 flex flex-col justify-start gap-3 shadow-lg"
+          >
+            <div
+              class="text-center font-bubble font-bold text-amber-600 border-b-2 border-orange-100 pb-2 text-sm uppercase tracking-wider"
+            >
+              Koleksi Kita 🏆
+            </div>
+            <div
+              id="solved-collection-history"
+              class="custom-scrollbar flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-y-auto max-h-[140px] lg:max-h-[360px] p-1"
+            >
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+
+          <!-- Center Panel: Main Question -->
+          <div
+            class="lg:col-span-6 order-1 lg:order-2 bg-white rounded-3xl border-5 border-amber-400 p-6 shadow-2xl flex flex-col items-center justify-between relative min-h-[320px] sm:min-h-[400px] overflow-hidden"
+          >
+            <div
+              class="w-full bg-slate-100 h-3 rounded-full border border-slate-200 overflow-hidden shadow-inner"
+            >
+              <div
+                id="progress-loading-fill"
+                class="bg-gradient-to-r from-emerald-400 to-emerald-500 h-full w-0 transition-all duration-300"
+              ></div>
+            </div>
+
+            <div
+              id="active-benda-emoji"
+              class="text-8xl sm:text-9xl my-4 sm:my-6 filter drop-shadow-xl transform transition hover:scale-110 duration-300"
+            >
+              🍊
+            </div>
+
+            <div
+              class="w-full border-t-4 border-dashed border-amber-200 my-2"
+            ></div>
+
+            <div
+              id="active-letters-container"
+              class="flex flex-wrap items-center justify-center gap-3 font-bubble font-bold text-3xl sm:text-5xl text-rose-500 py-3"
+            >
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+
+          <!-- Right Sidebar Panel: Selection options -->
+          <div
+            class="lg:col-span-3 order-2 lg:order-3 bg-white/95 backdrop-blur-sm rounded-3xl border-3 border-orange-300 p-4 flex flex-col gap-3 shadow-lg min-h-[200px]"
+          >
+            <div
+              class="text-center font-bubble font-bold text-indigo-900 border-b-2 border-orange-100 pb-2 text-sm uppercase tracking-wider"
+            >
+              Pilih Hurufnya 👈
+            </div>
+            <div
+              id="options-letter-stack"
+              class="flex-grow flex flex-row lg:flex-col justify-around gap-2 py-1"
+            >
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 4: LEADERBOARD SCREEN -->
+      <div
+        id="screen-leaderboard"
+        class="hidden max-w-md mx-auto bg-white rounded-3xl p-6 border-5 border-amber-400 shadow-2xl text-center space-y-6 animate-fadeIn"
+      >
+        <div class="text-6xl select-none">🏆✨</div>
+        <h2 class="text-3xl font-bubble text-amber-500 leading-none">
+          Anak Pintar Berbintang
+        </h2>
+
+        <div
+          id="leaderboard-table-body"
+          class="bg-amber-50/50 rounded-2xl p-4 divide-y-2 divide-amber-100 border-2 border-amber-100"
+        >
+          <!-- Loaded dynamically -->
+        </div>
+
+        <button
+          onclick="closeLeaderboard()"
+          class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bubble font-bold text-lg rounded-2xl shadow-md border-b-4 border-indigo-900 cursor-pointer transition"
+        >
+          Kembali ke Pilih Game
+        </button>
+      </div>
+    </div>
+
+    <!-- CUSTOM POPUP MODAL NOTIFICATION -->
+    <div
+      id="custom-alert-modal"
+      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div
+        class="bg-white rounded-3xl p-6 border-4 border-amber-400 text-center max-w-sm w-full space-y-4 shadow-2xl transform scale-95 transition-all duration-300"
+      >
+        <div id="custom-alert-emoji" class="text-5xl">🎁</div>
+        <h3
+          id="custom-alert-title"
+          class="text-2xl font-bubble font-black text-indigo-900"
+        >
+          Hadiah Kejutan!
+        </h3>
+        <p id="custom-alert-body" class="text-slate-600 font-bold text-md">
+          Selamat!
+        </p>
+        <button
+          onclick="closeCustomAlert()"
+          class="px-8 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bubble font-bold text-lg rounded-xl border-b-4 border-emerald-700 shadow cursor-pointer transition"
+        >
+          YAY! OK! 🥰
+        </button>
+      </div>
+    </div>
+
+    <!-- Custom Javascript Link -->
+    <script src="script.js"></script>
+  </body>
+</html>

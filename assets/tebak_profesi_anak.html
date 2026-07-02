@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game Anak: Tebak Profesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0fdf4; /* Warna hijau pastel lembut */
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(#86efac 20%, transparent 20%), radial-gradient(#86efac 20%, transparent 20%);
+            background-color: #dcfce7;
+            background-position: 0 0, 25px 25px;
+            background-size: 50px 50px;
+            animation: moveBackground 15s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            from { background-position: 0 0, 25px 25px; }
+            to { background-position: 50px 50px, 75px 75px; }
+        }
+
+        /* Animasi Mengambang untuk karakter */
+        .float-anim {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Animasi Tombol saat diklik atau muncul */
+        .pop-in {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .shake-wrong {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .card-hover:active {
+            transform: scale(0.95);
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .shadow-bubbly {
+            box-shadow: 0 8px 0px rgba(0,0,0,0.1);
+        }
+        .shadow-bubbly:active {
+            box-shadow: 0 2px 0px rgba(0,0,0,0.1);
+            transform: translateY(6px);
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen flex items-center justify-center p-4 relative">
+    
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Kontainer Game Utama -->
+    <div id="game-container" class="relative w-full max-w-md bg-white rounded-3xl p-6 shadow-xl border-4 border-white text-center overflow-hidden z-10 min-h-[500px] flex flex-col justify-center">
+        
+        <!-- ==================== SCREEN: START ==================== -->
+        <div id="screen-start" class="flex flex-col items-center">
+            <div class="text-6xl mb-4 float-anim">🧑‍🏫👩‍🚀👨‍🍳</div>
+            <h1 class="text-4xl font-bold text-green-600 mb-2 drop-shadow-md">Tebak Profesi!</h1>
+            <p class="text-lg text-gray-600 mb-8 font-medium">Bantu teman-teman kita menemukan alat kerja mereka yuk!</p>
+            
+            <button onclick="startGame()" class="pop-in bg-yellow-400 hover:bg-yellow-500 text-yellow-900 text-2xl font-bold py-4 px-10 rounded-full shadow-bubbly transition-colors border-4 border-yellow-200">
+                ▶️ MULAI MAIN
+            </button>
+        </div>
+
+        <!-- ==================== SCREEN: GAME ==================== -->
+        <div id="screen-game" class="hidden flex-col items-center w-full h-full justify-between">
+            
+            <!-- Header: Score & Progress -->
+            <div class="w-full flex justify-between items-center mb-6">
+                <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-2xl font-bold border-2 border-blue-200">
+                    ⭐ Skor: <span id="score-display">0</span>
+                </div>
+                <div class="bg-pink-100 text-pink-800 px-4 py-2 rounded-2xl font-bold border-2 border-pink-200">
+                    Level <span id="level-display">1</span>/10
+                </div>
+            </div>
+
+            <!-- Area Pertanyaan -->
+            <div class="mb-6 flex-1 flex flex-col justify-center">
+                <h2 id="question-text" class="text-2xl font-bold text-gray-700 mb-4 leading-tight">Siapa yang menggunakan alat ini?</h2>
+                <div id="question-image" class="text-8xl float-anim mb-4 drop-shadow-xl">🩺</div>
+            </div>
+
+            <!-- Pilihan Jawaban -->
+            <div id="options-container" class="w-full grid grid-cols-2 gap-4">
+                <!-- Tombol akan di-generate oleh JS -->
+            </div>
+            
+            <!-- Pesan Feedback (Benar/Salah) -->
+            <div id="feedback-message" class="absolute inset-0 bg-white/90 hidden items-center justify-center flex-col z-20 rounded-2xl">
+                <div id="feedback-icon" class="text-8xl mb-4">🎉</div>
+                <h2 id="feedback-text" class="text-4xl font-bold text-green-500 mb-4">Hebat!</h2>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-400 hover:bg-blue-500 text-white text-xl font-bold py-3 px-8 rounded-full shadow-bubbly border-4 border-blue-200">
+                    Lanjut ➡️
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== SCREEN: END ==================== -->
+        <div id="screen-end" class="hidden flex-col items-center">
+            <div class="text-7xl mb-4 float-anim">🏆</div>
+            <h1 class="text-4xl font-bold text-purple-600 mb-2">Permainan Selesai!</h1>
+            <p class="text-xl text-gray-600 mb-6 font-medium">Kamu berhasil mengumpulkan:</p>
+            <div class="text-5xl font-bold text-yellow-500 mb-8 bg-yellow-100 py-3 px-8 rounded-3xl border-4 border-yellow-300 shadow-inner">
+                <span id="final-score">0</span> ⭐
+            </div>
+            
+            <button onclick="resetGame()" class="bg-green-400 hover:bg-green-500 text-white text-xl font-bold py-4 px-10 rounded-full shadow-bubbly transition-colors border-4 border-green-200">
+                🔄 Main Lagi
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA PERTANYAAN ---
+        const allQuestions = [
+            {
+                q: "Siapa yang bekerja mengobati orang sakit?",
+                img: "🏥",
+                correct: { name: "Dokter", icon: "👩‍⚕️" },
+                wrong: [{ name: "Polisi", icon: "👮" }, { name: "Koki", icon: "👨‍🍳" }, { name: "Petani", icon: "👩‍🌾" }]
+            },
+            {
+                q: "Siapa yang menggunakan alat pemadam ini?",
+                img: "🚒",
+                correct: { name: "Pemadam", icon: "👩‍🚒" },
+                wrong: [{ name: "Guru", icon: "👨‍🏫" }, { name: "Dokter", icon: "👨‍⚕️" }, { name: "Montir", icon: "👨‍🔧" }]
+            },
+            {
+                q: "Siapa yang memasak makanan lezat di restoran?",
+                img: "🍳",
+                correct: { name: "Koki", icon: "👨‍🍳" },
+                wrong: [{ name: "Polisi", icon: "👮" }, { name: "Pelukis", icon: "👨‍🎨" }, { name: "Petani", icon: "👨‍🌾" }]
+            },
+            {
+                q: "Siapa yang mengajar murid-murid di sekolah?",
+                img: "📚",
+                correct: { name: "Guru", icon: "👩‍🏫" },
+                wrong: [{ name: "Dokter", icon: "👩‍⚕️" }, { name: "Astronot", icon: "👩‍🚀" }, { name: "Koki", icon: "👩‍🍳" }]
+            },
+            {
+                q: "Siapa yang menanam padi di sawah?",
+                img: "🌾",
+                correct: { name: "Petani", icon: "👨‍🌾" },
+                wrong: [{ name: "Pilot", icon: "👨‍✈️" }, { name: "Polisi", icon: "👮" }, { name: "Guru", icon: "👨‍🏫" }]
+            },
+            {
+                q: "Siapa yang menerbangkan pesawat terbang?",
+                img: "✈️",
+                correct: { name: "Pilot", icon: "👩‍✈️" },
+                wrong: [{ name: "Montir", icon: "👨‍🔧" }, { name: "Pemadam", icon: "👨‍🚒" }, { name: "Dokter", icon: "👨‍⚕️" }]
+            },
+            {
+                q: "Siapa yang menjaga keamanan dan menangkap pencuri?",
+                img: "🚓",
+                correct: { name: "Polisi", icon: "👮" },
+                wrong: [{ name: "Koki", icon: "👨‍🍳" }, { name: "Petani", icon: "👨‍🌾" }, { name: "Guru", icon: "👨‍🏫" }]
+            },
+            {
+                q: "Siapa yang terbang tinggi ke luar angkasa?",
+                img: "🚀",
+                correct: { name: "Astronot", icon: "👨‍🚀" },
+                wrong: [{ name: "Pelukis", icon: "👨‍🎨" }, { name: "Pilot", icon: "👨‍✈️" }, { name: "Polisi", icon: "👮" }]
+            },
+            {
+                q: "Siapa yang memperbaiki mobil yang rusak?",
+                img: "🔧",
+                correct: { name: "Montir", icon: "👨‍🔧" },
+                wrong: [{ name: "Dokter", icon: "👨‍⚕️" }, { name: "Guru", icon: "👨‍🏫" }, { name: "Petani", icon: "👨‍🌾" }]
+            },
+            {
+                q: "Siapa yang melukis gambar yang indah?",
+                img: "🎨",
+                correct: { name: "Pelukis", icon: "👩‍🎨" },
+                wrong: [{ name: "Koki", icon: "👩‍🍳" }, { name: "Pemadam", icon: "👩‍🚒" }, { name: "Astronot", icon: "👩‍🚀" }]
+            }
+        ];
+
+        // --- STATE VARIABLES ---
+        let currentQuestions = [];
+        let currentQIndex = 0;
+        let score = 0;
+        let audioCtx;
+        const totalQuestions = 10;
+
+        // --- DOM ELEMENTS ---
+        const screenStart = document.getElementById('screen-start');
+        const screenGame = document.getElementById('screen-game');
+        const screenEnd = document.getElementById('screen-end');
+        
+        const questionText = document.getElementById('question-text');
+        const questionImage = document.getElementById('question-image');
+        const optionsContainer = document.getElementById('options-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const levelDisplay = document.getElementById('level-display');
+        
+        const feedbackMessage = document.getElementById('feedback-message');
+        const feedbackText = document.getElementById('feedback-text');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const nextBtn = document.getElementById('next-btn');
+        const finalScore = document.getElementById('final-score');
+
+        // --- AUDIO SYSTEM (No external files needed) ---
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq, type, duration) {
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + duration);
+        }
+
+        function playCorrectSound() {
+            playTone(440, 'sine', 0.1);
+            setTimeout(() => playTone(660, 'sine', 0.2), 100);
+            setTimeout(() => playTone(880, 'sine', 0.3), 200);
+        }
+
+        function playWrongSound() {
+            playTone(300, 'sawtooth', 0.2);
+            setTimeout(() => playTone(250, 'sawtooth', 0.3), 150);
+        }
+
+        function playWinSound() {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                setTimeout(() => playTone(freq, 'square', 0.2), i * 150);
+            });
+        }
+
+        // --- UTILITY FUNCTIONS ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Mengambil pertanyaan secara acak
+        function getRandomQuestions(num) {
+            let shuffled = shuffleArray([...allQuestions]);
+            return shuffled.slice(0, num);
+        }
+
+        // --- GAME LOGIC ---
+        function startGame() {
+            initAudio();
+            currentQuestions = getRandomQuestions(totalQuestions);
+            currentQIndex = 0;
+            score = 0;
+            
+            updateScoreDisplay();
+            
+            screenStart.classList.add('hidden');
+            screenEnd.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            screenGame.classList.add('flex');
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Reset feedback
+            feedbackMessage.classList.add('hidden');
+            feedbackMessage.classList.remove('flex');
+            nextBtn.classList.add('hidden');
+            
+            const qData = currentQuestions[currentQIndex];
+            
+            // Set Text & Image
+            questionText.textContent = qData.q;
+            questionImage.textContent = qData.img;
+            levelDisplay.textContent = currentQIndex + 1;
+
+            // Siapkan pilihan (1 benar + 3 salah)
+            let options = [
+                { ...qData.correct, isCorrect: true },
+                { ...qData.wrong[0], isCorrect: false },
+                { ...qData.wrong[1], isCorrect: false },
+                { ...qData.wrong[2], isCorrect: false }
+            ];
+            
+            options = shuffleArray(options);
+            
+            // Render tombol pilihan
+            optionsContainer.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'card-hover bg-white border-4 border-gray-200 rounded-3xl p-4 flex flex-col items-center justify-center shadow-bubbly transition-all hover:bg-gray-50';
+                btn.onclick = () => checkAnswer(opt.isCorrect, btn);
+                
+                btn.innerHTML = `
+                    <div class="text-5xl mb-2">${opt.icon}</div>
+                    <div class="text-lg font-bold text-gray-700">${opt.name}</div>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+            
+            // Tambah animasi muncul
+            optionsContainer.classList.add('pop-in');
+            setTimeout(() => optionsContainer.classList.remove('pop-in'), 500);
+        }
+
+        function checkAnswer(isCorrect, btnElement) {
+            feedbackMessage.classList.remove('hidden');
+            feedbackMessage.classList.add('flex');
+            
+            if (isCorrect) {
+                // Jawaban Benar
+                playCorrectSound();
+                score += 10;
+                updateScoreDisplay();
+                fireConfetti();
+                
+                feedbackIcon.textContent = "🌟";
+                feedbackText.textContent = "Pintar Sekali!";
+                feedbackText.className = "text-4xl font-bold text-green-500 mb-6 drop-shadow-sm pop-in";
+                
+                btnElement.classList.remove('border-gray-200');
+                btnElement.classList.add('border-green-400', 'bg-green-50');
+                
+                // Auto next setelah jeda singkat
+                setTimeout(() => {
+                    nextBtn.classList.remove('hidden');
+                    nextQuestion();
+                }, 1500);
+                
+            } else {
+                // Jawaban Salah
+                playWrongSound();
+                btnElement.classList.add('shake-wrong', 'border-red-400', 'bg-red-50');
+                
+                feedbackIcon.textContent = "Oops! 🙊";
+                feedbackText.textContent = "Coba lagi ya!";
+                feedbackText.className = "text-4xl font-bold text-orange-500 mb-6 drop-shadow-sm pop-in";
+                
+                setTimeout(() => {
+                    feedbackMessage.classList.add('hidden');
+                    feedbackMessage.classList.remove('flex');
+                    btnElement.classList.remove('shake-wrong');
+                    btnElement.classList.remove('border-red-400', 'bg-red-50');
+                    btnElement.classList.add('border-gray-200');
+                }, 1500);
+            }
+        }
+
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = score;
+            scoreDisplay.classList.add('pop-in');
+            setTimeout(() => scoreDisplay.classList.remove('pop-in'), 500);
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < totalQuestions) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            playWinSound();
+            fireConfetti(true); // Lebih banyak confetti
+            
+            screenGame.classList.add('hidden');
+            screenGame.classList.remove('flex');
+            
+            screenEnd.classList.remove('hidden');
+            screenEnd.classList.add('flex');
+            
+            finalScore.textContent = score;
+        }
+
+        function resetGame() {
+            screenEnd.classList.add('hidden');
+            screenEnd.classList.remove('flex');
+            screenStart.classList.remove('hidden');
+            screenStart.classList.add('flex');
+            clearConfetti();
+        }
+
+        // --- SIMPLE CONFETTI SYSTEM ---
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function fireConfetti(isBig = false) {
+            const colors = ['#fce18a', '#ff726d', '#b48def', '#f4306d', '#6ee7b7', '#93c5fd'];
+            const count = isBig ? 150 : 50;
+            
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2 + (Math.random() * 50),
+                    r: Math.random() * 6 + 4,
+                    dx: Math.random() * 10 - 5,
+                    dy: Math.random() * -10 - 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.floor(Math.random() * 10) - 10,
+                    tiltAngleInc: (Math.random() * 0.07) + 0.05,
+                    tiltAngle: 0
+                });
+            }
+
+            if (!animationId) loopConfetti();
+        }
+
+        function loopConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let activeParticles = 0;
+
+            particles.forEach(p => {
+                p.tiltAngle += p.tiltAngleInc;
+                p.y += (Math.cos(p.tiltAngle) + 1 + p.r / 2) / 2;
+                p.x += Math.sin(p.tiltAngle) * 2;
+                p.dy += 0.05; // gravity
+                p.x += p.dx;
+                p.y += p.dy;
+
+                if (p.y <= canvas.height) {
+                    activeParticles++;
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+                    ctx.stroke();
+                }
+            });
+
+            // Hapus partikel yang sudah jatuh
+            particles = particles.filter(p => p.y <= canvas.height);
+
+            if (activeParticles > 0) {
+                animationId = requestAnimationFrame(loopConfetti);
+            } else {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        function clearConfetti() {
+            particles = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+    </script>
+</body>
+</html>

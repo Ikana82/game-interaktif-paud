@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game Klasifikasi Cerdas Anak Pintar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0fdf4;
+            background-image: radial-gradient(#bbf7d0 1.5px, transparent 1.5px), radial-gradient(#bbf7d0 1.5px, #f0fdf4 1.5px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            overflow-x: hidden;
+        }
+        .kids-font {
+            font-family: 'Fredoka One', cursive;
+        }
+        .3d-btn {
+            box-shadow: 0 8px 0px 0px #16a34a;
+            transition: all 0.1s ease;
+        }
+        .3d-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0px 0px #16a34a;
+        }
+        .card-wood {
+            background: #fef3c7;
+            border: 6px solid #b45309;
+            box-shadow: 0 10px 0px 0px #78350f;
+        }
+        .draggable-item {
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+            transform: scale(1.15);
+            z-index: 50;
+        }
+        .bounce-back {
+            animation: bounceBack 0.5s ease-out;
+        }
+        @keyframes bounceBack {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(0.8) rotate(-10deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        .success-pulse {
+            animation: pulseSuccess 0.5s ease-out;
+        }
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.12); filter: brightness(1.2); }
+            100% { transform: scale(1); }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .celebrate {
+            animation: celebrate 1s infinite alternate;
+        }
+        @keyframes celebrate {
+            0% { transform: translateY(0) rotate(-2deg); }
+            100% { transform: translateY(-10px) rotate(2deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
+
+    <!-- Main Board Game Container -->
+    <div id="main-board" class="w-full max-w-4xl card-wood rounded-[35px] p-4 sm:p-6 relative overflow-hidden flex flex-col justify-between min-h-[92vh] md:min-h-0">
+        
+        <!-- HEADER NAV -->
+        <div class="flex items-center justify-between gap-2 mb-4">
+            <button id="home-btn" onclick="showModeSelection()" class="w-12 h-12 bg-amber-500 rounded-full border-4 border-amber-700 flex items-center justify-center text-white text-xl font-black shadow-md hover:bg-amber-600 active:scale-95 transition-all hidden">
+                🏠
+            </button>
+            
+            <div class="bg-green-600 text-white px-4 py-2 sm:px-6 sm:py-2.5 rounded-full border-4 border-white flex items-center gap-2 shadow-lg">
+                <span id="player-tag" class="kids-font text-xs sm:text-sm uppercase tracking-wide">PINTAR</span>
+                <span class="bg-white text-green-700 font-extrabold px-3 py-0.5 rounded-full text-sm sm:text-lg kids-font">
+                    Skor: <span id="score-text">0</span>
+                </span>
+            </div>
+
+            <!-- Sound Effects Controller (Synthesized beep sounds) -->
+            <button onclick="toggleSound()" id="sound-toggle" class="w-12 h-12 bg-sky-400 rounded-full border-4 border-sky-600 flex items-center justify-center text-white text-xl font-black shadow-md hover:bg-sky-500 active:scale-95 transition-all">
+                🔊
+            </button>
+        </div>
+
+        <!-- PLAYGROUND AREA -->
+        <div class="flex-grow flex flex-col justify-center items-center">
+            
+            <!-- SCREEN 1: LOGIN & NAMA -->
+            <div id="screen-login" class="text-center py-6 max-w-md mx-auto w-full">
+                <div class="text-7xl sm:text-8xl mb-4 celebrate">🚜🍎</div>
+                <h1 class="text-3xl sm:text-5xl font-black text-amber-900 kids-font mb-2 tracking-wide">PILAH CERDAS</h1>
+                <p class="text-amber-800 text-sm sm:text-base font-bold mb-6">Kelompokkan benda-benda lucu ke tempat yang benar!</p>
+                
+                <div class="bg-white p-5 rounded-3xl border-4 border-amber-300 shadow-inner mb-6">
+                    <label class="block text-amber-900 font-extrabold text-base sm:text-lg mb-2 kids-font">Siapa namamu hari ini?</label>
+                    <input type="text" id="player-name-input" placeholder="TULIS NAMAMU..." maxlength="10"
+                           class="w-full text-center text-xl font-bold bg-amber-50 border-4 border-amber-200 rounded-2xl py-2 px-4 focus:outline-none focus:border-amber-500 text-amber-900 placeholder-amber-300 uppercase">
+                </div>
+
+                <button onclick="saveNameAndProceed()" class="3d-btn bg-green-500 text-white text-xl sm:text-2xl kids-font py-3.5 px-10 rounded-2xl w-full border-4 border-green-600">
+                    LANJUT ➔
+                </button>
+            </div>
+
+            <!-- SCREEN 2: MODE SELECTION -->
+            <div id="screen-modes" class="hidden text-center py-6 max-w-lg mx-auto w-full">
+                <h2 class="text-2xl sm:text-4xl font-black text-amber-950 kids-font mb-6">Pilih Mode Mainanmu! 🌟</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Mode 1 Card -->
+                    <button onclick="startClassificationGame('warna')" class="bg-[#ffedd5] hover:bg-[#fed7aa] p-6 rounded-3xl border-4 border-orange-400 shadow-md text-center flex flex-col items-center group transition-all transform hover:-translate-y-1">
+                        <span class="text-6xl mb-3 group-hover:scale-110 transition-transform">🎨</span>
+                        <span class="kids-font text-xl text-orange-900">PILAH WARNA</span>
+                        <p class="text-xs text-orange-700 font-bold mt-1">Saring buah & benda sesuai keranjang warna!</p>
+                    </button>
+                    
+                    <!-- Mode 2 Card -->
+                    <button onclick="startClassificationGame('jenis')" class="bg-[#e0f2fe] hover:bg-[#bae6fd] p-6 rounded-3xl border-4 border-sky-400 shadow-md text-center flex flex-col items-center group transition-all transform hover:-translate-y-1">
+                        <span class="text-6xl mb-3 group-hover:scale-110 transition-transform">🚜</span>
+                        <span class="kids-font text-xl text-sky-900">PILAH JENIS</span>
+                        <p class="text-xs text-sky-700 font-bold mt-1">Pisahkan Hewan Ternak & Buah Segar!</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SCREEN 3: GAMEPLAY AREA -->
+            <div id="screen-gameplay" class="hidden w-full flex flex-col justify-between items-center gap-4">
+                
+                <!-- Game Instructions bar -->
+                <div class="bg-amber-100 border-2 border-amber-300 rounded-full px-5 py-1.5 text-center text-amber-900 font-extrabold text-sm sm:text-base shadow-sm kids-font">
+                    💡 <span id="instruction-text">Kelompokkan benda-benda di bawah!</span>
+                </div>
+
+                <!-- Touch Selection Info (for mobile tap mode) -->
+                <div id="tap-indicator" class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full animate-pulse hidden">
+                    👉 Benda terpilih! Sekarang ketuk keranjang tujuan!
+                </div>
+
+                <!-- DRAGGABLE SOURCE ITEMS CONTAINER (POOL) -->
+                <div id="items-pool" class="w-full bg-white/70 rounded-3xl p-4 border-4 border-dashed border-amber-300 min-h-[110px] sm:min-h-[140px] flex flex-wrap justify-center items-center gap-3 sm:gap-4 shadow-inner relative">
+                    <!-- Dynamic draggable elements will render here -->
+                </div>
+
+                <!-- Match feedback toast (Replacing TTS speaking feedback visually) -->
+                <div id="visual-toast" class="h-6 text-sm font-bold text-emerald-700 tracking-wide text-center"></div>
+
+                <!-- Drag-and-drop info notice -->
+                <p class="text-[11px] text-amber-800/80 font-bold hidden sm:block">Seret benda di atas ke keranjang di bawah, atau ketuk benda lalu ketuk keranjang tujuan!</p>
+
+                <!-- TARGET CLASSIFICATION BINS/TRYS -->
+                <div id="targets-container" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full mt-2">
+                    <!-- Dynamic Targets buckets will load here -->
+                </div>
+
+            </div>
+
+            <!-- SCREEN 4: CONGRATULATIONS AND SUMMARY -->
+            <div id="screen-win" class="hidden text-center py-6 max-w-md mx-auto w-full">
+                <div class="text-8xl mb-4 celebrate">🏆</div>
+                <h2 class="text-3xl sm:text-5xl font-black text-emerald-600 kids-font mb-2">HEBAT, <span id="winner-tag">PINTAR</span>!</h2>
+                <p class="text-emerald-900 text-sm sm:text-base font-bold mb-6">Kamu telah berhasil mengelompokkan semua benda!</p>
+                
+                <div class="bg-amber-100 p-4 rounded-2xl border-4 border-amber-300 inline-block mb-6 px-10">
+                    <span class="text-xs font-bold text-amber-800 block">SKOR KAMU</span>
+                    <span class="text-4xl font-black text-amber-950 kids-font">100 / 100 🌟</span>
+                </div>
+
+                <div class="flex gap-3 justify-center">
+                    <button onclick="showModeSelection()" class="3d-btn bg-amber-500 text-white text-lg kids-font py-3 px-6 rounded-2xl border-4 border-amber-600">
+                        Pilih Game Lain 🎮
+                    </button>
+                    <button id="retry-btn" class="3d-btn bg-green-500 text-white text-lg kids-font py-3 px-6 rounded-2xl border-4 border-green-600">
+                        Main Lagi 🔄
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM PROGRESS BAR -->
+        <div class="w-full mt-4 bg-amber-950/10 rounded-full h-4 sm:h-5 p-1 overflow-hidden border border-amber-950/20">
+            <div id="progress-bar" class="bg-green-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Item datasets mirroring the classification themes from image_600d60.jpg
+        const colorGameItems = [
+            { name: "Apel Merah", emoji: "🍎", match: "merah" },
+            { name: "Stroberi", emoji: "🍓", match: "merah" },
+            { name: "Cabai", emoji: "🌶️", match: "merah" },
+            
+            { name: "Semangka", emoji: "🍉", match: "hijau" },
+            { name: "Brokoli", emoji: "🥦", match: "hijau" },
+            { name: "Alpukat", emoji: "🥑", match: "hijau" },
+            
+            { name: "Pisang", emoji: "🍌", match: "kuning" },
+            { name: "Lemon", emoji: "🍋", match: "kuning" },
+            { name: "Jagung", emoji: "🌽", match: "kuning" },
+            
+            { name: "Terong", emoji: "🍆", match: "ungu" },
+            { name: "Anggur", emoji: "🍇", match: "ungu" },
+            { name: "Ubi Ungu", emoji: "🍠", match: "ungu" }
+        ];
+
+        const categoryGameItems = [
+            // Farm Animals Category (from the "Farm Animal" theme in image_600d60.jpg)
+            { name: "Sapi", emoji: "🐄", match: "hewan" },
+            { name: "Domba", emoji: "🐑", match: "hewan" },
+            { name: "Ayam", emoji: "🐔", match: "hewan" },
+            { name: "Kuda", emoji: "🐎", match: "hewan" },
+            { name: "Bebek", emoji: "🦆", match: "hewan" },
+            { name: "Lebah", emoji: "🐝", match: "hewan" },
+            
+            // Fruits & Veggies Category (from the "Classification" theme in image_600d60.jpg)
+            { name: "Apel", emoji: "🍎", match: "tanaman" },
+            { name: "Wortel", emoji: "🥕", match: "tanaman" },
+            { name: "Tomat", emoji: "🍅", match: "tanaman" },
+            { name: "Jeruk", emoji: "🍊", match: "tanaman" },
+            { name: "Nanas", emoji: "🍍", match: "tanaman" },
+            { name: "Ceri", emoji: "🍒", match: "tanaman" }
+        ];
+
+        let activeGameMode = 'warna'; // 'warna' or 'jenis'
+        let playerName = "PINTAR";
+        let score = 0;
+        let isSoundEnabled = true;
+        let activeItems = [];
+        let totalItemsInitial = 0;
+        let selectedItemForTap = null; // For click-to-place fallback
+
+        // Target Trays definitions matching image styles
+        const colorTargets = [
+            { id: "merah", title: "Merah 🔴", colorClass: "bg-red-100 border-red-500 text-red-700", accentClass: "bg-red-500" },
+            { id: "hijau", title: "Hijau 🟢", colorClass: "bg-green-100 border-green-500 text-green-700", accentClass: "bg-green-500" },
+            { id: "kuning", title: "Kuning 🟡", colorClass: "bg-yellow-500/10 border-yellow-500 text-yellow-800", accentClass: "bg-yellow-500" },
+            { id: "ungu", title: "Ungu 🟣", colorClass: "bg-purple-100 border-purple-500 text-purple-700", accentClass: "bg-purple-500" }
+        ];
+
+        const categoryTargets = [
+            { id: "hewan", title: "Hewan Ternak 🚜", colorClass: "bg-amber-100 border-amber-600 text-amber-900", accentClass: "bg-amber-600", emoji: "🐄🐑" },
+            { id: "tanaman", title: "Buah & Sayur 🍎", colorClass: "bg-emerald-100 border-emerald-600 text-emerald-900", accentClass: "bg-emerald-600", emoji: "🍎🥕" }
+        ];
+
+        // Custom Synthesizer Engine (Replacing Text-To-Speech with cute audio feedback)
+        function playAudioFeedback(type) {
+            if (!isSoundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                
+                if (type === 'tap') {
+                    // Small playful high-pitched pop sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(350, now);
+                    osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.08);
+                } 
+                else if (type === 'correct') {
+                    // Cute happy double rising beep melody
+                    const osc1 = ctx.createOscillator();
+                    const gain1 = ctx.createGain();
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(523.25, now); // C5
+                    gain1.gain.setValueAtTime(0.12, now);
+                    gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc1.connect(gain1);
+                    gain1.connect(ctx.destination);
+                    osc1.start(now);
+                    osc1.stop(now + 0.1);
+                    
+                    const osc2 = ctx.createOscillator();
+                    const gain2 = ctx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(659.25, now + 0.07); // E5
+                    gain2.gain.setValueAtTime(0.12, now + 0.07);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                    osc2.connect(gain2);
+                    gain2.connect(ctx.destination);
+                    osc2.start(now + 0.07);
+                    osc2.stop(now + 0.22);
+                } 
+                else if (type === 'incorrect') {
+                    // Funny sliding robotic falling buzz
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now); // A3
+                    osc.frequency.linearRampToValueAtTime(120, now + 0.32); // Falling down
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.32);
+                } 
+                else if (type === 'win') {
+                    // Joyful arpeggio fanfare celebration song!
+                    const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]; // C4, E4, G4, C5, E5, G5, C6
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                        gain.gain.setValueAtTime(0.12, now + idx * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.07 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.07);
+                        osc.stop(now + idx * 0.07 + 0.25);
+                    });
+                }
+            } catch(e) {
+                console.log("Audio API issue", e);
+            }
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const soundBtn = document.getElementById('sound-toggle');
+            if (isSoundEnabled) {
+                soundBtn.textContent = "🔊";
+                soundBtn.className = soundBtn.className.replace('bg-gray-400 border-gray-600', 'bg-sky-400 border-sky-600');
+                playAudioFeedback('tap');
+            } else {
+                soundBtn.textContent = "🔇";
+                soundBtn.className = soundBtn.className.replace('bg-sky-400 border-sky-600', 'bg-gray-400 border-gray-600');
+            }
+        }
+
+        // Screen state transitions
+        function saveNameAndProceed() {
+            const inputVal = document.getElementById('player-name-input').value.trim();
+            if (inputVal.length > 0) {
+                playerName = inputVal.toUpperCase();
+            } else {
+                playerName = "PINTAR";
+            }
+            document.getElementById('player-tag').textContent = playerName;
+            document.getElementById('winner-tag').textContent = playerName;
+            
+            playAudioFeedback('tap');
+            showModeSelection();
+        }
+
+        function showModeSelection() {
+            document.getElementById('screen-login').classList.add('hidden');
+            document.getElementById('screen-gameplay').classList.add('hidden');
+            document.getElementById('screen-win').classList.add('hidden');
+            document.getElementById('home-btn').classList.add('hidden');
+            
+            document.getElementById('screen-modes').classList.remove('hidden');
+            
+            document.getElementById('progress-bar').style.width = "0%";
+            score = 0;
+            document.getElementById('score-text').textContent = score;
+        }
+
+        // Initialize Game based on selected mode
+        function startClassificationGame(mode) {
+            activeGameMode = mode;
+            document.getElementById('screen-modes').classList.add('hidden');
+            document.getElementById('screen-gameplay').classList.remove('hidden');
+            document.getElementById('home-btn').classList.remove('hidden');
+
+            // Reset scores, toast, & tap selection variables
+            selectedItemForTap = null;
+            document.getElementById('tap-indicator').classList.add('hidden');
+            document.getElementById('visual-toast').textContent = "";
+            score = 0;
+            document.getElementById('score-text').textContent = score;
+
+            // Setup dataset
+            if (mode === 'warna') {
+                document.getElementById('instruction-text').textContent = "Pilah buah & benda ke keranjang yang sewarna!";
+                activeItems = JSON.parse(JSON.stringify(colorGameItems));
+                activeItems.sort(() => Math.random() - 0.5);
+                totalItemsInitial = activeItems.length;
+                renderTargets(colorTargets);
+            } else {
+                document.getElementById('instruction-text').textContent = "Pisahkan hewan ternak dan buah/sayur segar!";
+                activeItems = JSON.parse(JSON.stringify(categoryGameItems));
+                activeItems.sort(() => Math.random() - 0.5);
+                totalItemsInitial = activeItems.length;
+                renderTargets(categoryTargets);
+            }
+
+            renderPoolItems();
+            updateProgress();
+            playAudioFeedback('tap');
+            
+            // Re-setup Win screen event
+            document.getElementById('retry-btn').onclick = () => startClassificationGame(mode);
+        }
+
+        // Render target baskets dynamically
+        function renderTargets(targets) {
+            const container = document.getElementById('targets-container');
+            container.innerHTML = "";
+            
+            if (targets.length === 2) {
+                container.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-2";
+            } else {
+                container.className = "grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full mt-2";
+            }
+
+            targets.forEach(tgt => {
+                const div = document.createElement('div');
+                div.id = `target-bin-${tgt.id}`;
+                div.className = `${tgt.colorClass} border-4 border-dashed rounded-[28px] p-4 sm:p-5 flex flex-col justify-between items-center min-h-[140px] sm:min-h-[180px] transition-all relative overflow-hidden shadow-md`;
+                
+                // Add Drop listener
+                div.addEventListener('dragover', dragOver);
+                div.addEventListener('dragenter', dragEnter);
+                div.addEventListener('dragleave', dragLeave);
+                div.addEventListener('drop', (e) => handleDrop(e, tgt.id));
+                
+                // Add click listener (Fallback for simple Tap-to-Move gameplay)
+                div.onclick = () => handleBinClick(tgt.id);
+
+                let extraHtml = "";
+                if (tgt.emoji) {
+                    extraHtml = `<div class="absolute bottom-2 right-2 text-3xl opacity-20 select-none pointer-events-none">${tgt.emoji}</div>`;
+                }
+
+                div.innerHTML = `
+                    <div class="w-full text-center">
+                        <span class="${tgt.accentClass} text-white font-extrabold px-3 py-1 rounded-full text-xs sm:text-sm kids-font inline-block tracking-wide shadow-sm">
+                            ${tgt.title}
+                        </span>
+                    </div>
+                    
+                    <div class="flex-grow flex items-center justify-center p-2 w-full">
+                        <div class="text-4xl sm:text-5xl opacity-40 select-none transform hover:scale-105 transition-transform">🧺</div>
+                    </div>
+                    
+                    <div class="text-[10px] font-bold tracking-wider text-amber-900/40 uppercase">Masukkan Sini</div>
+                    ${extraHtml}
+                `;
+
+                container.appendChild(div);
+            });
+        }
+
+        // Render draggable cards
+        function renderPoolItems() {
+            const pool = document.getElementById('items-pool');
+            pool.innerHTML = "";
+            
+            if (activeItems.length === 0) {
+                pool.innerHTML = `<span class="text-emerald-700 font-extrabold text-lg kids-font py-4 animate-bounce">👍 Selesai semua! Keren!</span>`;
+                return;
+            }
+
+            activeItems.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.id = `draggable-item-${index}`;
+                card.className = "draggable-item bg-amber-50 rounded-2xl border-4 border-amber-200 p-2 sm:p-3 w-16 h-16 sm:w-20 sm:h-20 flex flex-col justify-center items-center shadow-md relative";
+                card.draggable = true;
+                card.setAttribute('data-index', index);
+                card.setAttribute('data-match', item.match);
+                card.setAttribute('data-name', item.name);
+
+                // Attach touch/drag events
+                card.addEventListener('dragstart', (e) => dragStart(e, index, item));
+                card.addEventListener('dragend', dragEnd);
+                
+                // Touch events for drag-and-drop on mobile Safari/Chrome
+                card.addEventListener('touchstart', (e) => handleTouchStart(e, index, item), {passive: false});
+                card.addEventListener('touchmove', handleTouchMove, {passive: false});
+                card.addEventListener('touchend', (e) => handleTouchEnd(e, index, item), {passive: false});
+
+                // Standard tap behavior (Alternative Click to Match mode)
+                card.onclick = (e) => {
+                    e.stopPropagation();
+                    selectItemForTapping(index, item, card);
+                };
+
+                card.innerHTML = `
+                    <div class="text-3xl sm:text-4xl select-none pointer-events-none">${item.emoji}</div>
+                    <div class="text-[9px] sm:text-[10px] font-extrabold text-amber-800 text-center select-none pointer-events-none mt-1 truncate w-full">${item.name}</div>
+                `;
+
+                pool.appendChild(card);
+            });
+        }
+
+        // TAP SELECTION MECHANISM (Tap Object -> Tap Bucket)
+        function selectItemForTapping(index, item, element) {
+            // Remove previous highlights
+            document.querySelectorAll('.draggable-item').forEach(el => {
+                el.classList.remove('border-emerald-500', 'bg-emerald-50', 'ring-4', 'ring-emerald-300');
+            });
+
+            // If selected same item again, deselect
+            if (selectedItemForTap && selectedItemForTap.index === index) {
+                selectedItemForTap = null;
+                document.getElementById('tap-indicator').classList.add('hidden');
+                playAudioFeedback('tap');
+                return;
+            }
+
+            // Highlighting chosen
+            selectedItemForTap = { index, item, element };
+            element.classList.add('border-emerald-500', 'bg-emerald-50', 'ring-4', 'ring-emerald-300');
+            document.getElementById('tap-indicator').classList.remove('hidden');
+            
+            playAudioFeedback('tap');
+        }
+
+        function handleBinClick(targetBinId) {
+            if (!selectedItemForTap) return; // No selected item to put here
+            
+            const selected = selectedItemForTap;
+            // Validate Match
+            if (selected.item.match === targetBinId) {
+                processCorrectMatch(selected.index, selected.item.name, targetBinId);
+            } else {
+                processIncorrectMatch(selected.element, targetBinId);
+            }
+
+            // Clear Tap selection state
+            selectedItemForTap = null;
+            document.getElementById('tap-indicator').classList.add('hidden');
+        }
+
+        // DRAG & DROP EVENT HANDLERS (Desktop Drag & Touch Simulation fallback)
+        let dragData = null;
+
+        function dragStart(e, index, item) {
+            dragData = { index, item };
+            e.dataTransfer.setData('text/plain', index);
+            setTimeout(() => e.target.classList.add('opacity-40'), 0);
+            playAudioFeedback('tap');
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('opacity-40');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function dragEnter(e) {
+            e.preventDefault();
+            this.classList.add('scale-105', 'bg-opacity-90', 'border-solid');
+        }
+
+        function dragLeave() {
+            this.classList.remove('scale-105', 'bg-opacity-90', 'border-solid');
+        }
+
+        function handleDrop(e, targetId) {
+            e.preventDefault();
+            this.classList.remove('scale-105', 'bg-opacity-90', 'border-solid');
+            
+            if (!dragData) return;
+            
+            const index = dragData.index;
+            const item = dragData.item;
+            
+            if (item.match === targetId) {
+                processCorrectMatch(index, item.name, targetId);
+            } else {
+                const element = document.getElementById(`draggable-item-${index}`);
+                processIncorrectMatch(element, targetId);
+            }
+            dragData = null;
+        }
+
+        // TOUCH DRAG & DROP FOR SMARTPHONES (Touch Events mapping)
+        let touchStartPos = { x: 0, y: 0 };
+        let activeTouchElement = null;
+
+        function handleTouchStart(e, index, item) {
+            e.preventDefault();
+            activeTouchElement = e.currentTarget;
+            const touch = e.touches[0];
+            touchStartPos = { x: touch.clientX, y: touch.clientY };
+            
+            // Make floating item
+            activeTouchElement.style.transition = 'none';
+            activeTouchElement.style.zIndex = '100';
+            playAudioFeedback('tap');
+            
+            // Highlight as if selected for tapping
+            selectItemForTapping(index, item, activeTouchElement);
+        }
+
+        function handleTouchMove(e) {
+            if (!activeTouchElement) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - touchStartPos.x;
+            const deltaY = touch.clientY - touchStartPos.y;
+            
+            activeTouchElement.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.15)`;
+        }
+
+        function handleTouchEnd(e, index, item) {
+            if (!activeTouchElement) return;
+            e.preventDefault();
+            
+            const touch = e.changedTouches[0];
+            activeTouchElement.style.transition = '';
+            activeTouchElement.style.transform = '';
+            activeTouchElement.style.zIndex = '';
+            
+            // Query current target bin based on coordinates
+            const droppedOnElement = document.elementFromPoint(touch.clientX, touch.clientY);
+            let binElement = null;
+            
+            if (droppedOnElement) {
+                binElement = droppedOnElement.closest('[id^="target-bin-"]');
+            }
+            
+            if (binElement) {
+                const targetId = binElement.id.replace('target-bin-', '');
+                if (item.match === targetId) {
+                    processCorrectMatch(index, item.name, targetId);
+                    selectedItemForTap = null;
+                    document.getElementById('tap-indicator').classList.add('hidden');
+                } else {
+                    processIncorrectMatch(activeTouchElement, targetId);
+                }
+            } else {
+                playAudioFeedback('tap');
+            }
+            
+            activeTouchElement = null;
+        }
+
+        // EVALUATIONS MATCH LOGIC
+        function processCorrectMatch(index, itemName, targetId) {
+            score += Math.round(100 / totalItemsInitial);
+            document.getElementById('score-text').textContent = score;
+            
+            // Play correct match sound effect
+            playAudioFeedback('correct');
+            
+            // Show cute visual text feedback
+            const feedbackQuotes = ["Hebat!", "Pintar Sekali! 🌟", "Wow, Keren! ✨", "Sempurna! 👍", "Luar Biasa! 😍"];
+            const randomQuote = feedbackQuotes[Math.floor(Math.random() * feedbackQuotes.length)];
+            const toastEl = document.getElementById('visual-toast');
+            toastEl.textContent = `${randomQuote} ${itemName} masuk di keranjang ${targetId}!`;
+            toastEl.className = "h-6 text-sm font-extrabold text-emerald-600 tracking-wide text-center animate-bounce";
+            
+            setTimeout(() => {
+                toastEl.classList.remove('animate-bounce');
+            }, 800);
+
+            // Apply Visual animation to matching Tray
+            const targetBin = document.getElementById(`target-bin-${targetId}`);
+            targetBin.classList.add('scale-105', 'success-pulse');
+            setTimeout(() => {
+                targetBin.classList.remove('scale-105', 'success-pulse');
+            }, 600);
+
+            // Remove matched item from array
+            activeItems = activeItems.filter((_, idx) => idx !== index);
+            
+            // Re-render and review progress
+            renderPoolItems();
+            updateProgress();
+            checkWinState();
+        }
+
+        function processIncorrectMatch(element, targetId) {
+            if (element) {
+                element.classList.add('bounce-back', 'border-red-500', 'bg-red-50');
+                setTimeout(() => {
+                    element.classList.remove('bounce-back', 'border-red-500', 'bg-red-50');
+                }, 800);
+            }
+            
+            // Visual bounce feedback on wrong bin
+            const targetBin = document.getElementById(`target-bin-${targetId}`);
+            if (targetBin) {
+                targetBin.classList.add('shake', 'border-red-500');
+                setTimeout(() => targetBin.classList.remove('shake', 'border-red-500'), 500);
+            }
+
+            // Play sad falling robotic buzzer sound
+            playAudioFeedback('incorrect');
+
+            // Show temporary incorrect toast
+            const toastEl = document.getElementById('visual-toast');
+            toastEl.textContent = "Ayo coba pasangkan lagi dengan teliti! 🧐";
+            toastEl.className = "h-6 text-sm font-extrabold text-red-500 tracking-wide text-center";
+        }
+
+        // PROGRESS & WIN STATE CHECK
+        function updateProgress() {
+            const completedCount = totalItemsInitial - activeItems.length;
+            const progressPct = (completedCount / totalItemsInitial) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPct}%`;
+        }
+
+        function checkWinState() {
+            if (activeItems.length === 0) {
+                setTimeout(() => {
+                    // Switch to Congratulations display
+                    document.getElementById('screen-gameplay').classList.add('hidden');
+                    document.getElementById('screen-win').classList.remove('hidden');
+                    document.getElementById('home-btn').classList.add('hidden');
+                    
+                    // Fire celebratory fanfare audio melody
+                    playAudioFeedback('win');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

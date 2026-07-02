@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Petualangan Bentuk Ceria - Game PAUD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fef3c7;
+            background-image: 
+                radial-gradient(#fde68a 2px, transparent 2px), 
+                radial-gradient(#fde68a 2px, #fef3c7 2px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            overflow: hidden;
+            touch-action: none;
+            height: 100vh;
+            height: 100dvh;
+        }
+        .kids-title {
+            font-family: 'Fredoka One', cursive;
+            text-shadow: 3px 3px 0px #78350f;
+        }
+        .kids-font {
+            font-family: 'Fredoka One', cursive;
+        }
+        .wooden-board {
+            background: #fbcfe8;
+            background-image: repeating-linear-gradient(0deg, #fbcfe8, #fbcfe8 20px, #f472b6 20px, #f472b6 22px);
+            border: 8px solid #be185d;
+            box-shadow: inset 0 8px 0 rgba(255,255,255,0.4), 0 10px 0 #9d174d, 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+        .wooden-slot {
+            box-shadow: inset 4px 4px 10px rgba(0,0,0,0.35), 1px 1px 0px rgba(255,255,255,0.8);
+            background-color: rgba(157, 23, 77, 0.15);
+        }
+        .puzzle-piece {
+            filter: drop-shadow(0px 6px 0px rgba(0, 0, 0, 0.15));
+            transition: transform 0.15s ease;
+            cursor: grab;
+            touch-action: none;
+        }
+        .puzzle-piece:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+        .btn-3d {
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px 0px currentColor;
+        }
+        .bounce-in {
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake-element {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px) rotate(-2deg); }
+            40%, 80% { transform: translateX(8px) rotate(2deg); }
+        }
+        .float-bubble {
+            animation: floating 3s ease-in-out infinite alternate;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-10px) rotate(3deg); }
+        }
+    </style>
+</head>
+<body class="w-screen flex flex-col justify-between relative overflow-hidden py-3.5 px-3 sm:p-4 select-none">
+
+    <!-- Canvas Layer for Celebration Particle Bursts -->
+    <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-35"></canvas>
+
+    <!-- START SCREEN -->
+    <div id="screen-start" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-pink-50/95 backdrop-blur-sm transition-all duration-500">
+        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-pink-500 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
+            <!-- Decorative Floating Geometric Elements -->
+            <div class="absolute -top-8 -left-5 text-4xl sm:text-5xl float-bubble" style="animation-delay: 0.2s">🔴</div>
+            <div class="absolute -top-8 -right-5 text-4xl sm:text-5xl float-bubble" style="animation-delay: 0.8s">⭐</div>
+            <div class="absolute -bottom-6 -left-3 text-4xl sm:text-5xl float-bubble" style="animation-delay: 1.5s">🔺</div>
+            <div class="absolute -bottom-6 -right-3 text-4xl sm:text-5xl float-bubble" style="animation-delay: 2s">❤️</div>
+            
+            <h1 class="text-2xl sm:text-4xl font-black text-pink-600 kids-title tracking-wider mb-0.5">MAIN BENTUK</h1>
+            <h2 class="text-xl sm:text-3xl font-black text-amber-500 kids-title tracking-wider mb-2 sm:mb-4">CERIA! 🔷</h2>
+            
+            <p class="text-pink-900 text-xs sm:text-sm font-bold mb-3 sm:mb-4">Pasangkan setiap bentuk mainan ke dalam bayangan kayu yang cocok!</p>
+
+            <!-- Name Input Card -->
+            <div class="bg-pink-50 border-2 border-pink-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 mb-3 sm:mb-4 shadow-inner">
+                <label class="block text-pink-950 font-extrabold text-xs sm:text-base mb-1 kids-font">Siapa namamu, Anak Pintar?</label>
+                <input type="text" id="player-name" placeholder="TULIS NAMAMU..." maxlength="12"
+                       class="w-full text-center text-sm sm:text-lg font-bold bg-white border-2 border-pink-300 rounded-lg sm:rounded-xl py-1 sm:py-1.5 px-3 focus:outline-none focus:border-pink-500 text-pink-950 placeholder-pink-300 uppercase transition-colors">
+            </div>
+
+            <!-- Avatar Selection -->
+            <div class="mb-3 sm:mb-4">
+                <p class="text-pink-950 font-black text-xs sm:text-sm mb-1.5 kids-font">Pilih Teman Bermainmu:</p>
+                <div class="flex justify-center gap-2 sm:gap-3">
+                    <button onclick="selectAvatar('🐰')" id="avatar-bunny" class="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-full border-2 border-pink-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md ring-4 ring-transparent ring-pink-500">🐰</button>
+                    <button onclick="selectAvatar('🐯')" id="avatar-tiger" class="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-full border-2 border-pink-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🐯</button>
+                    <button onclick="selectAvatar('🐻')" id="avatar-bear" class="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-full border-2 border-pink-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🐻</button>
+                    <button onclick="selectAvatar('🐸')" id="avatar-frog" class="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-full border-2 border-pink-400 text-xl sm:text-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-md">🐸</button>
+                </div>
+            </div>
+
+            <!-- Start Button -->
+            <button onclick="startGame()" class="btn-3d w-full bg-pink-500 hover:bg-pink-400 text-white text-base sm:text-xl kids-font py-2.5 sm:py-3 px-6 rounded-xl sm:rounded-2xl border-2 border-pink-700 shadow-[0_6px_0px_0px_#9d174d] tracking-wider">
+                AYO MAIN SEKARANG! 🧩
+            </button>
+        </div>
+    </div>
+
+    <!-- GAMEPLAY CONTAINER -->
+    <div id="game-container" class="w-full max-w-4xl mx-auto flex-grow flex flex-col justify-between hidden h-full overflow-hidden">
+        
+        <!-- HEADER MODULE -->
+        <div class="flex items-center justify-between gap-2 mb-1">
+            <!-- Home/Exit -->
+            <button onclick="showMainMenu()" class="w-8 h-8 sm:w-11 sm:h-11 bg-rose-500 rounded-full border-2 sm:border-4 border-rose-700 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-rose-600 active:scale-90 transition-all">
+                🏠
+            </button>
+
+            <!-- Score / Player Panel -->
+            <div class="flex-grow max-w-[140px] sm:max-w-xs bg-pink-600 text-white px-2 py-0.5 sm:py-1 rounded-xl border-2 border-white flex items-center justify-between shadow-lg">
+                <div class="flex items-center gap-1 sm:gap-2 overflow-hidden">
+                    <span id="player-avatar-badge" class="text-base sm:text-xl flex-shrink-0">🐰</span>
+                    <span id="player-name-badge" class="kids-font text-[8px] sm:text-xs tracking-wide uppercase truncate max-w-[45px] sm:max-w-[80px]">Pintar</span>
+                </div>
+                <div class="bg-pink-950/40 text-yellow-300 font-extrabold px-1.5 py-0.5 rounded-full text-[10px] sm:text-base kids-font flex items-center gap-0.5">
+                    ⭐️ <span id="score-text">0</span>
+                </div>
+            </div>
+
+            <!-- Current Level Badge -->
+            <div id="level-indicator" class="bg-amber-500 text-white text-[8px] sm:text-xs font-black px-2.5 py-1 rounded-xl border-2 border-white shadow-md">
+                LEVEL 1
+            </div>
+
+            <!-- Sound Controller -->
+            <button onclick="toggleSound()" id="sound-btn" class="w-8 h-8 sm:w-11 sm:h-11 bg-indigo-400 rounded-full border-2 sm:border-4 border-indigo-600 flex items-center justify-center text-white text-sm sm:text-lg font-black shadow-lg hover:bg-indigo-500 active:scale-90 transition-all">
+                🔊
+            </button>
+        </div>
+
+        <!-- LEVEL PROGRESS BAR -->
+        <div class="w-full bg-pink-950/15 rounded-full h-2 sm:h-3.5 p-0.5 mb-1 border border-pink-950/10 overflow-hidden relative">
+            <div id="progress-indicator" class="bg-gradient-to-r from-pink-400 to-rose-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- MAIN ARENA -->
+        <div class="flex-grow flex flex-col justify-center gap-2 sm:gap-4 relative overflow-hidden max-w-md md:max-w-4xl mx-auto w-full py-1">
+            
+            <!-- GUIDING TIP BOX -->
+            <div id="tip-indicator" class="bg-pink-100 border border-pink-300 rounded-full px-2.5 py-0.5 text-center text-pink-900 font-extrabold text-[8px] sm:text-xs shadow-sm mx-auto animate-pulse">
+                🧩 Tarik bentuk warna-warni ke bayangan kayu yang cocok!
+            </div>
+
+            <!-- THE WOODEN BOARD Puzzle Slots -->
+            <div id="board-slots" class="wooden-board w-full rounded-2xl p-4 sm:p-6 grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-4 justify-items-center items-center relative min-h-[110px] sm:min-h-[160px]">
+                <!-- Recessed slots/shadows injected here -->
+            </div>
+
+            <!-- FEEDBACK TEXT TOAST -->
+            <div id="feedback-toast" class="h-4 sm:h-6 flex items-center justify-center text-center text-pink-800 kids-font text-[10px] sm:text-base font-black tracking-wide flex-shrink-0"></div>
+
+            <!-- SPAWNING DRAWER (Tray container for physical colored items) -->
+            <div class="w-full bg-pink-100/60 rounded-xl sm:rounded-2xl border-2 border-pink-300 p-2 sm:p-4 min-h-[80px] sm:min-h-[120px] flex items-center justify-center relative overflow-hidden">
+                <div id="shapes-tray" class="flex justify-center items-center gap-3 sm:gap-6 flex-wrap">
+                    <!-- Color pieces spawn here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- REWARD/CONGRATULATIONS SCREEN -->
+    <div id="screen-win" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-4 bg-pink-50/95 backdrop-blur-sm transition-all duration-500 hidden">
+        <div class="max-w-md w-full text-center bg-white border-[6px] sm:border-[8px] border-emerald-400 rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 shadow-2xl relative">
+            <div class="text-5xl sm:text-7xl mb-1 float-bubble">🏆</div>
+            <h2 class="text-lg sm:text-3xl font-black text-emerald-600 kids-title mb-0.5">HEBAT SEKALI!</h2>
+            <p id="win-salute" class="text-pink-950 text-[10px] sm:text-sm font-bold mb-3">Kamu berhasil menyelesaikan teka-teki bentuk dengan sempurna!</p>
+            
+            <!-- Performance Stars -->
+            <div class="flex justify-center gap-1 mb-2.5">
+                <span id="star-1" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
+                <span id="star-2" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
+                <span id="star-3" class="text-2xl sm:text-4xl opacity-30 transition-all duration-500">⭐</span>
+            </div>
+
+            <!-- Stats Badge -->
+            <div class="bg-emerald-50 border-2 border-emerald-200 rounded-lg sm:rounded-xl p-2.5 mb-3">
+                <span class="text-[8px] sm:text-xs font-bold text-emerald-800 block uppercase tracking-widest">SKOR AKHIR</span>
+                <span id="win-score" class="text-xl sm:text-3xl font-black text-emerald-950 kids-font">0</span>
+                <span class="text-[8px] sm:text-xs font-bold text-pink-600 block mt-0.5">Hore! Kamu ahli geometri cilik sekarang! 🎉</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2 justify-center">
+                <button onclick="showMainMenu()" class="btn-3d flex-1 bg-amber-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-amber-600 shadow-[0_4px_0_0_#d97706] active:scale-95 text-[10px] sm:text-sm kids-font">
+                    MENU UTAMA 🏠
+                </button>
+                <button onclick="startGame()" class="btn-3d flex-1 bg-emerald-500 text-white font-extrabold py-1.5 px-3 rounded-lg sm:rounded-xl border-2 border-emerald-600 shadow-[0_4px_0_0_#059669] active:scale-95 text-[10px] sm:text-sm kids-font">
+                    MAIN LAGI 🔄
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOUND & LOGIC -->
+    <script>
+        // Geometric Shapes with inline high-quality crisp SVGs
+        const shapesList = [
+            {
+                id: "circle",
+                name: "Lingkaran",
+                color: "#ef4444", // Red
+                svg: `<svg viewBox="0 0 100 100" class="w-12 h-12 sm:w-16 sm:h-16"><circle cx="50" cy="50" r="40" fill="currentColor"/></svg>`
+            },
+            {
+                id: "square",
+                name: "Persegi",
+                color: "#f59e0b", // Yellow
+                svg: `<svg viewBox="0 0 100 100" class="w-12 h-12 sm:w-16 sm:h-16"><rect x="12" y="12" width="76" height="76" rx="10" fill="currentColor"/></svg>`
+            },
+            {
+                id: "triangle",
+                name: "Segitiga",
+                color: "#10b981", // Green
+                svg: `<svg viewBox="0 0 100 100" class="w-12 h-12 sm:w-16 sm:h-16"><polygon points="50,12 90,85 10,85" fill="currentColor"/></svg>`
+            },
+            {
+                id: "star",
+                name: "Bintang",
+                color: "#a855f7", // Purple
+                svg: `<svg viewBox="0 0 100 100" class="w-12 h-12 sm:w-16 sm:h-16"><polygon points="50,6 64,36 97,36 71,56 81,89 50,69 19,89 29,56 3,36 36,36" fill="currentColor"/></svg>`
+            },
+            {
+                id: "heart",
+                name: "Hati",
+                color: "#ec4899", // Pink
+                svg: `<svg viewBox="0 0 100 100" class="w-12 h-12 sm:w-16 sm:h-16"><path d="M50,32 C50,15 22,15 22,39 C22,62 50,85 50,85 C50,85 78,62 78,39 C78,15 50,15 50,32 Z" fill="currentColor"/></svg>`
+            }
+        ];
+
+        // Levels Config mapping number of active shapes
+        const levels = [
+            { id: 1, count: 3, shapes: ["circle", "square", "triangle"] },
+            { id: 2, count: 4, shapes: ["circle", "square", "triangle", "star"] },
+            { id: 3, count: 5, shapes: ["circle", "square", "triangle", "star", "heart"] }
+        ];
+
+        let currentLevelIndex = 0;
+        let selectedAvatar = '🐰';
+        let playerName = 'Pintar';
+        let score = 0;
+        let isSoundEnabled = true;
+        let selectedTrayPiece = null;
+        let levelFinishedCount = 0;
+        let shapesToMatch = []; // Active shapes in current round
+
+        // Canvas Particle Setup
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Synthesizer Audio Generator
+        function playSound(type) {
+            if (!isSoundEnabled) return;
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioCtx.currentTime;
+
+                if (type === 'pop') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(250, now);
+                    osc.frequency.exponentialRampToValueAtTime(700, now + 0.12);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(now + 0.12);
+                } 
+                else if (type === 'correct') {
+                    const notes = [440, 554.37, 659.25, 880];
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.1, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.08 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.25);
+                    });
+                } 
+                else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(80, now + 0.35);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(now + 0.35);
+                } 
+                else if (type === 'tada') {
+                    const chords = [261.63, 329.63, 392, 523.25];
+                    chords.forEach(freq => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now);
+                        osc.frequency.exponentialRampToValueAtTime(freq * 2, now + 0.8);
+                        gain.gain.setValueAtTime(0.08, now);
+                        gain.gain.exponentialRampToValueAtTime(0.005, now + 0.8);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(now + 0.8);
+                    });
+                }
+            } catch(e) {
+                console.log("Audio synthesis error: ", e);
+            }
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const btn = document.getElementById('sound-btn');
+            if (isSoundEnabled) {
+                btn.textContent = "🔊";
+                btn.className = btn.className.replace('bg-gray-400 border-gray-600', 'bg-indigo-400 border-indigo-600');
+                playSound('pop');
+            } else {
+                btn.textContent = "🔇";
+                btn.className = btn.className.replace('bg-indigo-400 border-indigo-600', 'bg-gray-400 border-gray-600');
+            }
+        }
+
+        // Particle System
+        class StarParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = Math.random() * 6 + 4;
+                this.speedX = Math.random() * 8 - 4;
+                this.speedY = Math.random() * -8 - 2;
+                this.gravity = 0.2;
+                this.opacity = 1;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.1 - 0.05;
+            }
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.angle += this.spin;
+                this.opacity -= 0.02;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.opacity);
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                // Draw star shape
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size,
+                               Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
+                    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (this.size/2),
+                               Math.sin((54 + i * 72) * Math.PI / 180) * (this.size/2));
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function triggerSuccessBurst(x, y, color) {
+            for (let i = 0; i < 25; i++) {
+                particles.push(new StarParticle(x, y, color));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].opacity <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Start Screen Selection
+        function selectAvatar(avatar) {
+            selectedAvatar = avatar;
+            ['avatar-bunny', 'avatar-tiger', 'avatar-bear', 'avatar-frog'].forEach(id => {
+                document.getElementById(id).classList.remove('ring-4', 'ring-pink-500', 'bg-pink-200');
+            });
+            const selId = avatar === '🐰' ? 'avatar-bunny' : avatar === '🐯' ? 'avatar-tiger' : avatar === '🐻' ? 'avatar-bear' : 'avatar-frog';
+            document.getElementById(selId).classList.add('ring-4', 'ring-pink-500', 'bg-pink-200');
+            playSound('pop');
+        }
+
+        function showMainMenu() {
+            document.getElementById('screen-start').classList.remove('hidden');
+            document.getElementById('game-container').classList.add('hidden');
+            document.getElementById('screen-win').classList.add('hidden');
+        }
+
+        // Gameplay Initialization
+        function startGame() {
+            const val = document.getElementById('player-name').value.trim();
+            playerName = val.length > 0 ? val.toUpperCase() : "PINTAR";
+
+            document.getElementById('player-avatar-badge').textContent = selectedAvatar;
+            document.getElementById('player-name-badge').textContent = playerName;
+
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-win').classList.add('hidden');
+            document.getElementById('game-container').classList.remove('hidden');
+
+            score = 0;
+            currentLevelIndex = 0;
+            levelFinishedCount = 0;
+            document.getElementById('score-text').textContent = score;
+            document.getElementById('progress-indicator').style.width = "0%";
+            document.getElementById('feedback-toast').textContent = "";
+            
+            selectedTrayPiece = null;
+
+            loadLevel();
+        }
+
+        function loadLevel() {
+            const currentLevel = levels[currentLevelIndex];
+            document.getElementById('level-indicator').textContent = `LEVEL ${currentLevel.id}`;
+            document.getElementById('feedback-toast').textContent = "";
+            levelFinishedCount = 0;
+            selectedTrayPiece = null;
+
+            // Gather shapes config for active level
+            shapesToMatch = shapesList.filter(s => currentLevel.shapes.includes(s.id));
+
+            renderSlots();
+            renderTray();
+            updateProgressBar();
+            playSound('pop');
+        }
+
+        function updateProgressBar() {
+            const totalSteps = levels.length;
+            const currentStep = currentLevelIndex;
+            const pct = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-indicator').style.width = `${pct}%`;
+        }
+
+        // Render slots with wooden style and shadows inside board
+        function renderSlots() {
+            const board = document.getElementById('board-slots');
+            board.innerHTML = "";
+
+            // Rearrange order on wooden board for puzzle variety
+            const shuffledSlots = [...shapesToMatch].sort(() => Math.random() - 0.5);
+
+            shuffledSlots.forEach(shape => {
+                const slotDiv = document.createElement('div');
+                slotDiv.id = `slot-${shape.id}`;
+                slotDiv.className = `wooden-slot w-16 h-16 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center text-slate-400 relative border-2 border-pink-900/30 transition-transform duration-200`;
+                
+                // Shadow / recesed item SVG
+                slotDiv.innerHTML = `
+                    <div class="opacity-30 flex items-center justify-center text-pink-950">
+                        ${shape.svg}
+                    </div>
+                    <!-- Empty dot helper or silhouette style inside -->
+                    <span class="absolute bottom-1 font-bold text-[8px] sm:text-[10px] tracking-wider uppercase opacity-40 text-pink-950">${shape.name}</span>
+                `;
+
+                // Support drag/drop target
+                slotDiv.addEventListener('dragover', (e) => e.preventDefault());
+                slotDiv.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    slotDiv.classList.add('scale-105', 'bg-pink-300/20');
+                });
+                slotDiv.addEventListener('dragleave', () => {
+                    slotDiv.classList.remove('scale-105', 'bg-pink-300/20');
+                });
+                slotDiv.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    slotDiv.classList.remove('scale-105', 'bg-pink-300/20');
+                    const droppedShapeId = e.dataTransfer.getData('text/plain');
+                    handleShapeMatchAttempt(droppedShapeId, shape.id, slotDiv);
+                });
+
+                // Support tap to match logic
+                slotDiv.onclick = () => {
+                    if (selectedTrayPiece) {
+                        handleShapeMatchAttempt(selectedTrayPiece.id, shape.id, slotDiv);
+                    }
+                };
+
+                board.appendChild(slotDiv);
+            });
+        }
+
+        // Render colorful real shapes on the tray for drag
+        function renderTray() {
+            const tray = document.getElementById('shapes-tray');
+            tray.innerHTML = "";
+
+            // Shuffled tray elements
+            const shuffledTray = [...shapesToMatch].sort(() => Math.random() - 0.5);
+
+            shuffledTray.forEach(shape => {
+                const pieceDiv = document.createElement('div');
+                pieceDiv.id = `piece-${shape.id}`;
+                pieceDiv.className = `puzzle-piece flex flex-col items-center justify-center p-1 cursor-grab transition-all rounded-xl border border-transparent active:cursor-grabbing`;
+                pieceDiv.style.color = shape.color;
+
+                pieceDiv.innerHTML = `
+                    <div class="hover:scale-105 transition-transform flex items-center justify-center">
+                        ${shape.svg}
+                    </div>
+                `;
+
+                // Drag Setup
+                pieceDiv.draggable = true;
+                pieceDiv.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', shape.id);
+                    selectedTrayPiece = shape;
+                    pieceDiv.classList.add('opacity-50');
+                    playSound('pop');
+                };
+                pieceDiv.ondragend = () => {
+                    pieceDiv.classList.remove('opacity-50');
+                };
+
+                // Mobile/Tap support (Tap-to-match style)
+                pieceDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    playSound('pop');
+                    selectPieceForTap(shape, pieceDiv);
+                };
+
+                // Draggable Touch Support
+                let touchStartPos = { x: 0, y: 0 };
+                pieceDiv.ontouchstart = (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    touchStartPos = { x: touch.clientX, y: touch.clientY };
+                    pieceDiv.style.transition = 'none';
+                    pieceDiv.style.zIndex = '100';
+                    selectPieceForTap(shape, pieceDiv);
+                };
+
+                pieceDiv.ontouchmove = (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - touchStartPos.x;
+                    const deltaY = touch.clientY - touchStartPos.y;
+                    pieceDiv.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.15)`;
+                };
+
+                pieceDiv.ontouchend = (e) => {
+                    e.preventDefault();
+                    pieceDiv.style.transition = '';
+                    pieceDiv.style.transform = '';
+                    pieceDiv.style.zIndex = '';
+
+                    const touch = e.changedTouches[0];
+                    const elementOver = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (elementOver) {
+                        const slotDiv = elementOver.closest('[id^="slot-"]');
+                        if (slotDiv) {
+                            const targetShapeId = slotDiv.id.replace('slot-', '');
+                            handleShapeMatchAttempt(shape.id, targetShapeId, slotDiv);
+                        }
+                    }
+                };
+
+                tray.appendChild(pieceDiv);
+            });
+        }
+
+        // Tap Highlight logic
+        function selectPieceForTap(shape, element) {
+            // Remove previous active highlights
+            document.querySelectorAll('.puzzle-piece').forEach(p => {
+                p.classList.remove('ring-4', 'ring-pink-500', 'bg-pink-100/50');
+            });
+
+            selectedTrayPiece = shape;
+            element.classList.add('ring-4', 'ring-pink-500', 'bg-pink-100/50');
+            
+            document.getElementById('tip-indicator').textContent = `👉 Sekarang ketuk bayangan cetak untuk ${shape.name}!`;
+            document.getElementById('tip-indicator').className = "bg-amber-100 border border-amber-300 rounded-full px-4 py-1 text-center text-amber-950 font-extrabold text-[10px] sm:text-xs shadow-md mx-auto animate-bounce";
+        }
+
+        function resetTapTip() {
+            selectedTrayPiece = null;
+            document.querySelectorAll('.puzzle-piece').forEach(p => {
+                p.classList.remove('ring-4', 'ring-pink-500', 'bg-pink-100/50');
+            });
+            document.getElementById('tip-indicator').textContent = "🧩 Tarik bentuk warna-warni ke bayangan kayu yang cocok!";
+            document.getElementById('tip-indicator').className = "bg-pink-100 border border-pink-300 rounded-full px-4 py-1 text-center text-pink-900 font-extrabold text-[10px] sm:text-xs shadow-md mx-auto animate-pulse";
+        }
+
+        // Core match validator and animation executor
+        function handleShapeMatchAttempt(pieceId, slotId, slotElement) {
+            const isCorrect = pieceId === slotId;
+
+            if (isCorrect) {
+                // Correct Match Event
+                score += 15;
+                document.getElementById('score-text').textContent = score;
+
+                // Fill slot with high opacity beautiful color of geometry shape
+                const shapeObj = shapesList.find(s => s.id === pieceId);
+                slotElement.innerHTML = `
+                    <div class="flex items-center justify-center text-[${shapeObj.color}] scale-100 bounce-in" style="color: ${shapeObj.color};">
+                        ${shapeObj.svg}
+                    </div>
+                `;
+                slotElement.style.pointerEvents = "none"; // lock correct item
+                slotElement.classList.add('bg-white', 'shadow-md');
+
+                // Delete matched piece from Tray UI
+                const pieceElement = document.getElementById(`piece-${pieceId}`);
+                if (pieceElement) {
+                    pieceElement.style.opacity = '0';
+                    setTimeout(() => pieceElement.remove(), 250);
+                }
+
+                // Star Burst Particles effect
+                const slotRect = slotElement.getBoundingClientRect();
+                const burstX = slotRect.left + (slotRect.width / 2);
+                const burstY = slotRect.top + (slotRect.height / 2);
+                triggerSuccessBurst(burstX, burstY, shapeObj.color);
+
+                // Audio Success
+                playSound('correct');
+
+                // Feedback visual toast
+                const praises = ["Hebat Sekali! 🌟", "Sempurna! ❤️", "Pintar Pasangan! 🧩", "Wow, Kamu Hebat! ⭐", "Cerdas! 🔺"];
+                const toast = document.getElementById('feedback-toast');
+                toast.textContent = praises[Math.floor(Math.random() * praises.length)];
+                toast.className = "h-4 sm:h-6 flex items-center justify-center text-center text-emerald-600 kids-font text-xs sm:text-xl font-black tracking-wide animate-bounce";
+
+                levelFinishedCount++;
+                resetTapTip();
+
+                // Check if current board is completely solved
+                if (levelFinishedCount === shapesToMatch.length) {
+                    setTimeout(() => {
+                        proceedToNextLevel();
+                    }, 1500);
+                }
+
+            } else {
+                // Wrong Match Event
+                playSound('wrong');
+
+                // Shake Board Slot
+                slotElement.classList.add('shake-element', 'bg-red-100/30');
+                setTimeout(() => {
+                    slotElement.classList.remove('shake-element', 'bg-red-100/30');
+                }, 500);
+
+                // Shake Tray Piece if highlighted
+                if (selectedTrayPiece) {
+                    const pieceElement = document.getElementById(`piece-${selectedTrayPiece.id}`);
+                    if (pieceElement) {
+                        pieceElement.classList.add('shake-element');
+                        setTimeout(() => pieceElement.classList.remove('shake-element'), 500);
+                    }
+                }
+
+                const toast = document.getElementById('feedback-toast');
+                toast.textContent = "Ayo coba lagi, pasangkan ke bayangan yang sama! 🔷";
+                toast.className = "h-4 sm:h-6 flex items-center justify-center text-center text-rose-500 kids-font text-[9px] sm:text-sm font-black tracking-wide";
+                
+                resetTapTip();
+            }
+        }
+
+        function proceedToNextLevel() {
+            currentLevelIndex++;
+            if (currentLevelIndex < levels.length) {
+                loadLevel();
+            } else {
+                concludeGame();
+            }
+        }
+
+        // Win and Concluding Screens
+        function concludeGame() {
+            document.getElementById('progress-indicator').style.width = "100%";
+            playSound('tada');
+
+            document.getElementById('game-container').classList.add('hidden');
+            document.getElementById('screen-win').classList.remove('hidden');
+            document.getElementById('win-score').textContent = score;
+
+            // Custom Win Quotes based on performance
+            const salute = document.getElementById('win-salute');
+            salute.textContent = `Hore! Koki Cilik ${playerName} telah berhasil menyusun seluruh teka-teki bentuk dengan cerdas!`;
+
+            const star1 = document.getElementById('star-1');
+            const star2 = document.getElementById('star-2');
+            const star3 = document.getElementById('star-3');
+
+            star1.style.opacity = "0.2";
+            star2.style.opacity = "0.2";
+            star3.style.opacity = "0.2";
+
+            setTimeout(() => {
+                star1.style.opacity = "1";
+                star1.style.transform = "scale(1.2)";
+                playSound('pop');
+            }, 400);
+
+            if (score >= 100) {
+                setTimeout(() => {
+                    star2.style.opacity = "1";
+                    star2.style.transform = "scale(1.2)";
+                    playSound('pop');
+                }, 800);
+            }
+
+            if (score >= 150) {
+                setTimeout(() => {
+                    star3.style.opacity = "1";
+                    star3.style.transform = "scale(1.2)";
+                    playSound('pop');
+                }, 1200);
+            }
+        }
+    </script>
+</body>
+</html>
